@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   HeartPulse,
@@ -17,7 +17,8 @@ import ROUTES from "@/routes/routeConstants";
 const VerifyEmailPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
+  const params = useParams();
+  const token = params.token || searchParams.get("token");
   const [status, setStatus] = useState(() => (token ? "verifying" : "error"));
   const [errorMessage, setErrorMessage] = useState(() =>
     token ? "" : "Invalid or missing verification token."

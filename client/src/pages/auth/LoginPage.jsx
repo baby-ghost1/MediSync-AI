@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Mail, Lock, ArrowRight, HeartPulse, LoaderCircle, Shield, BrainCircuit, CalendarCheck2 } from "lucide-react";
+import { Mail, Lock, HeartPulse, Shield, BrainCircuit, CalendarCheck2 } from "lucide-react";
 
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
@@ -65,7 +65,7 @@ const LoginPage = () => {
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
           className="max-w-lg"
         >
-          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-(--gradient-primary) text-white shadow-[var(--shadow-lg)]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[var(--gradient-primary)] text-white shadow-[var(--shadow-lg)]">
             <HeartPulse size={32} />
           </div>
 
@@ -75,7 +75,7 @@ const LoginPage = () => {
             <span className="gradient-text">Back</span>
           </h1>
 
-          <p className="mt-5 text-base leading-relaxed text-(--muted-foreground)">
+          <p className="mt-5 text-base leading-relaxed text-[var(--muted-foreground)]">
             Continue managing appointments, prescriptions, AI consultations
             and your healthcare records.
           </p>
@@ -87,10 +87,10 @@ const LoginPage = () => {
               { icon: CalendarCheck2, text: "Instant Appointment Booking" },
             ].map((item) => (
               <div key={item.text} className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-(--primary-light)">
-                  <item.icon size={16} className="text-(--primary)" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary-light)]">
+                  <item.icon size={16} className="text-[var(--primary)]" />
                 </div>
-                <span className="text-sm font-medium text-(--foreground)">
+                <span className="text-sm font-medium text-[var(--foreground)]">
                   {item.text}
                 </span>
               </div>
@@ -100,104 +100,7 @@ const LoginPage = () => {
       </div>
 
       {/* Right — Form */}
-      {/* <div className="flex flex-1 items-center justify-center p-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-          className="relative w-full max-w-md"
-        >
-          <div className="absolute -top-12 right-0 lg:right-auto lg:-top-14">
-            <ThemeToggle />
-          </div>
-
-          <div className="rounded-[28px] border border-[var(--border)] bg-[var(--card)] p-8 shadow-[var(--shadow-xl)] sm:p-10">
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <motion.div variants={itemVariants}>
-                <h2 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">
-                  Login
-                </h2>
-              </motion.div>
-              <motion.div variants={itemVariants}>
-                <p className="mt-1.5 text-sm text-[var(--muted-foreground)]">
-                  Access your healthcare dashboard.
-                </p>
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6" noValidate>
-              <Input
-                label="Email"
-                type="email"
-                placeholder="john@example.com"
-                leftIcon={<Mail size={16} />}
-                error={errors.email?.message}
-                {...register("email")}
-              />
-
-              <Input
-                label="Password"
-                type="password"
-                placeholder="Enter your password"
-                leftIcon={<Lock size={16} />}
-                error={errors.password?.message}
-                {...register("password")}
-              />
-
-              {serverError && (
-                <motion.div
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="rounded-xl bg-[var(--danger-light)] border border-[var(--danger)]/20 px-4 py-3 text-sm font-medium text-[var(--danger)]"
-                >
-                  {serverError}
-                </motion.div>
-              )}
-
-              <div className="flex justify-end">
-                <Link
-                  to={ROUTES.FORGOT_PASSWORD}
-                  className="text-xs font-medium text-[var(--primary)] transition-colors hover:text-[var(--primary-hover)]"
-                >
-                  Forgot Password?
-                </Link>
-              </div>
-
-              <Button
-                type="submit"
-                loading={isSubmitting}
-                fullWidth
-                size="lg"
-                variant="gradient"
-              >
-                {isSubmitting ? "Signing in..." : "Login"}
-              </Button>
-                </form>
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <div className="mt-6 text-center">
-                  <p className="text-sm text-[var(--muted-foreground)]">
-                    Don&apos;t have an account?
-                  </p>
-                  <Link
-                    to={ROUTES.REGISTER}
-                    className="mt-1.5 inline-block text-sm font-semibold text-[var(--primary)] transition-colors hover:text-[var(--primary-hover)]"
-                  >
-                    Create Account
-                  </Link>
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </motion.div>
-      </div> */}
-
-      <div className="flex flex-1 items-center justify-center p-6 bg-[var(--background)]">
+      <div className="flex flex-1 items-center justify-center p-6 mt-10 bg-[var(--background)]">
   <motion.div
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}

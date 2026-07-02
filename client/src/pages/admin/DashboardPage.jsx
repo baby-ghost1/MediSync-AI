@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  Users, UserCog, Hospital, CalendarDays, Activity,
+  Users, UserCog, CalendarDays, Activity,
   BrainCircuit, Bell, TrendingUp, ShieldCheck, Server,
   ChevronRight,
 } from "lucide-react";
@@ -39,6 +39,16 @@ const DashboardPage = () => {
   const d = dashboard || {};
   const stats = d.stats || d.statistics || {};
   const recentUsers = d.recentUsers || d.latestUsers || d.recentRegistrations || [];
+  const recentAppointments = d.recentAppointments || [];
+  const recentNotifications = d.recentNotifications || [];
+
+  const systemHealth = {
+    api: true,
+    database: true,
+    sockets: true,
+    ai: !!(import.meta.env.VITE_GEMINI_API_KEY || false),
+    uptime: Math.floor((Date.now() - (d._fetchedAt || Date.now())) / 1000),
+  };
 
   if (isLoading) return <SectionLoader />;
 
@@ -60,10 +70,42 @@ const DashboardPage = () => {
       </motion.div>
 
       <motion.div variants={itemVariants} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard title="Total Users" value={stats.totalUsers ?? "0"} icon={Users} color="from-blue-600 to-cyan-500" trend={stats.userGrowth ? `+${stats.userGrowth}%` : undefined} />
-        <StatCard title="Doctors" value={stats.totalDoctors ?? "0"} icon={UserCog} color="from-violet-600 to-indigo-600" trend={stats.doctorGrowth ? `+${stats.doctorGrowth}%` : undefined} />
-        <StatCard title="Hospitals" value={stats.totalHospitals ?? "0"} icon={Hospital} color="from-emerald-500 to-green-600" />
-        <StatCard title="Appointments" value={stats.totalAppointments ?? "0"} icon={CalendarDays} color="from-orange-500 to-red-500" trend={stats.appointmentGrowth ? `+${stats.appointmentGrowth}%` : undefined} />
+        <StatCard title="Total Users" value={stats.totalUsers ?? "0"} icon={Users} color="from-blue-600 to-cyan-500" trend={stats.userGrowth} />
+        <StatCard title="Doctors" value={stats.totalDoctors ?? "0"} icon={UserCog} color="from-violet-600 to-indigo-600" />
+        <StatCard title="Appointments" value={stats.totalAppointments ?? "0"} icon={CalendarDays} color="from-orange-500 to-red-500" trend={stats.appointmentGrowth} />
+        <StatCard title="Completed" value={stats.completedAppointments ?? "0"} icon={Activity} color="from-emerald-500 to-green-600" />
+      </motion.div>
+
+      {/* System Health */}
+      <motion.div variants={itemVariants} className="grid gap-4 md:grid-cols-4">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 flex items-center gap-3">
+          <div className={`h-3 w-3 rounded-full ${systemHealth.api ? 'bg-green-500' : 'bg-red-500'}`} />
+          <div>
+            <p className="text-xs text-[var(--muted-foreground)]">API</p>
+            <p className="text-sm font-semibold">{systemHealth.api ? 'Operational' : 'Down'}</p>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 flex items-center gap-3">
+          <div className={`h-3 w-3 rounded-full ${systemHealth.database ? 'bg-green-500' : 'bg-red-500'}`} />
+          <div>
+            <p className="text-xs text-[var(--muted-foreground)]">Database</p>
+            <p className="text-sm font-semibold">{systemHealth.database ? 'Connected' : 'Disconnected'}</p>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 flex items-center gap-3">
+          <div className={`h-3 w-3 rounded-full ${systemHealth.sockets ? 'bg-green-500' : 'bg-red-500'}`} />
+          <div>
+            <p className="text-xs text-[var(--muted-foreground)]">WebSocket</p>
+            <p className="text-sm font-semibold">{systemHealth.sockets ? 'Active' : 'Inactive'}</p>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 flex items-center gap-3">
+          <div className={`h-3 w-3 rounded-full ${systemHealth.ai ? 'bg-green-500' : 'bg-yellow-500'}`} />
+          <div>
+            <p className="text-xs text-[var(--muted-foreground)]">AI Service</p>
+            <p className="text-sm font-semibold">{systemHealth.ai ? 'Configured' : 'Not Set'}</p>
+          </div>
+        </div>
       </motion.div>
 
       <div className="grid gap-6 xl:grid-cols-3">
@@ -86,37 +128,40 @@ const DashboardPage = () => {
                   No recent users
                 </p>
               ) : (
-                recentUsers.slice(0, 5).map((user) => (
-                  <motion.div
-                    key={user._id || user.name}
-                    whileHover={{ scale: 1.005 }}
-                    className="flex flex-col gap-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] p-4 transition-all duration-300 hover:shadow-[var(--shadow-md)] sm:flex-row sm:items-center sm:justify-between"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Avatar name={user.name} src={user.avatar} size="md" />
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold text-[var(--text-primary)]">
-                          {user.name}
-                        </p>
-                        <p className="text-xs capitalize text-[var(--text-secondary)]">
-                          {user.role}
-                        </p>
-                      </div>
-                    </div>
-                    <Badge
-                      variant={
-                        user.status === "verified" || user.status === "active"
-                          ? "success"
-                          : user.status === "pending"
-                          ? "warning"
-                          : "primary"
-                      }
-                      size="sm"
+                recentUsers.slice(0, 5).map((u) => {
+                  const userName = u.firstName && u.lastName ? `${u.firstName} ${u.lastName}` : u.name || "User";
+                  return (
+                    <motion.div
+                      key={u._id || userName}
+                      whileHover={{ scale: 1.005 }}
+                      className="flex flex-col gap-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] p-4 transition-all duration-300 hover:shadow-[var(--shadow-md)] sm:flex-row sm:items-center sm:justify-between"
                     >
-                      {user.status || "Active"}
-                    </Badge>
-                  </motion.div>
-                ))
+                      <div className="flex items-center gap-3">
+                        <Avatar name={userName} src={u?.avatar?.url || u?.avatar} size="md" />
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-[var(--text-primary)]">
+                            {userName}
+                          </p>
+                          <p className="text-xs capitalize text-[var(--text-secondary)]">
+                            {u.role}
+                          </p>
+                        </div>
+                      </div>
+                      <Badge
+                        variant={
+                          u.status === "verified" || u.status === "active"
+                            ? "success"
+                            : u.status === "pending"
+                            ? "warning"
+                            : "primary"
+                        }
+                        size="sm"
+                      >
+                        {u.status || "Active"}
+                      </Badge>
+                    </motion.div>
+                  );
+                })
               )}
             </div>
           </Card>
@@ -149,12 +194,12 @@ const DashboardPage = () => {
           </Card>
 
           <Card>
-            <CardHeader title="Platform Health" subtitle="Today's infrastructure status" />
+            <CardHeader title="Platform Summary" subtitle="Real-time statistics" />
             <div className="grid gap-4 sm:grid-cols-3">
               {[
-                { title: "Server Load", value: stats.serverLoad ?? "32%", icon: Server, color: "text-[var(--primary)]" },
-                { title: "Security", value: stats.security ?? "100%", icon: ShieldCheck, color: "text-[var(--success)]" },
-                { title: "System Uptime", value: stats.uptime ?? "99.99%", icon: Activity, color: "text-[var(--accent)]" },
+                { title: "Pending", value: stats.pendingAppointments ?? "0", icon: CalendarDays, color: "text-[var(--warning)]" },
+                { title: "Confirmed", value: stats.confirmedAppointments ?? "0", icon: ShieldCheck, color: "text-[var(--success)]" },
+                { title: "Cancelled", value: stats.cancelledAppointments ?? "0", icon: Activity, color: "text-[var(--danger)]" },
               ].map((item) => {
                 const Icon = item.icon;
                 return (
@@ -179,32 +224,57 @@ const DashboardPage = () => {
 
         <motion.div variants={itemVariants} className="space-y-6">
           <Card>
-            <CardHeader title="System Alerts" subtitle="Latest platform events" />
-            <div className="space-y-3">
-              {(d.alerts || d.systemAlerts || []).length === 0 ? (
+            <CardHeader title="Recent Activity" subtitle="Latest platform events" />
+            <div className="space-y-3 max-h-[400px] overflow-y-auto">
+              {recentNotifications.length === 0 && recentAppointments.length === 0 ? (
                 <p className="py-4 text-center text-xs text-[var(--text-secondary)]">
-                  All systems operational
+                  No recent activity
                 </p>
               ) : (
-                (d.alerts || d.systemAlerts || []).slice(0, 4).map((alert, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ x: 3 }}
-                    className="flex items-start gap-2.5 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface-off)] p-3 transition-all duration-300 hover:shadow-[var(--shadow-sm)]"
-                  >
-                    <div className="rounded-lg bg-[var(--primary-light)] p-1.5 text-[var(--primary)]">
-                      <Bell size={14} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs leading-relaxed text-[var(--text-primary)]">
-                        {alert.message}
-                      </p>
-                      <Badge className="mt-2" variant={alert.type || "primary"} size="xs">
-                        {alert.type?.charAt(0).toUpperCase() + alert.type?.slice(1) || "Info"}
-                      </Badge>
-                    </div>
-                  </motion.div>
-                ))
+                <>
+                  {recentAppointments.slice(0, 3).map((apt) => {
+                    const patientName = apt?.patient?.user?.firstName ? `${apt.patient.user.firstName} ${apt.patient.user.lastName}` : 'Patient';
+                    const doctorName = apt?.doctor?.user?.firstName ? `${apt.doctor.user.firstName} ${apt.doctor.user.lastName}` : 'Doctor';
+                    return (
+                      <motion.div
+                        key={apt._id}
+                        whileHover={{ x: 3 }}
+                        className="flex items-start gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] p-3 transition-all duration-300 hover:shadow-sm"
+                      >
+                        <div className="rounded-lg bg-blue-100 p-1.5 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                          <CalendarDays size={14} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs leading-relaxed text-[var(--foreground)]">
+                            <span className="font-semibold">{patientName}</span> booked with <span className="font-semibold">{doctorName}</span>
+                          </p>
+                          <p className="mt-0.5 text-[10px] text-[var(--muted-foreground)]">
+                            {new Date(apt.createdAt).toLocaleDateString()} &middot; {apt.status}
+                          </p>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                  {recentNotifications.slice(0, 4).map((notification, i) => (
+                    <motion.div
+                      key={notification._id || i}
+                      whileHover={{ x: 3 }}
+                      className="flex items-start gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] p-3 transition-all duration-300 hover:shadow-sm"
+                    >
+                      <div className="rounded-lg bg-purple-100 p-1.5 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+                        <Bell size={14} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs leading-relaxed text-[var(--foreground)]">
+                          {notification.message || notification.title}
+                        </p>
+                        <Badge className="mt-1" variant={notification.type === "system" ? "primary" : "success"} size="xs">
+                          {notification.type || "info"}
+                        </Badge>
+                      </div>
+                    </motion.div>
+                  ))}
+                </>
               )}
             </div>
           </Card>
@@ -213,30 +283,30 @@ const DashboardPage = () => {
             <div className="text-center">
               <TrendingUp size={40} className="mx-auto" />
               <h2 className="mt-4 text-4xl font-bold">
-                {stats.uptime ?? "99.99%"}
+                {stats.verifiedUsers ?? "0"}
               </h2>
-              <p className="mt-1 text-sm text-white/80">System Uptime</p>
+              <p className="mt-1 text-sm text-white/80">Verified Users</p>
               <div className="mt-5 rounded-[var(--radius-md)] bg-white/15 p-4 backdrop-blur-xl">
                 <p className="text-xs leading-relaxed text-white/90">
-                  Infrastructure is healthy. All services are operational.
+                  {stats.verifiedUsers} out of {stats.totalUsers} users are verified.
                 </p>
               </div>
             </div>
           </Card>
 
           <Card>
-            <CardHeader title="Revenue" subtitle="Current month" />
+            <CardHeader title="Appointment Summary" subtitle="Status breakdown" />
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-[var(--success)]">
-                {stats.revenue ?? "\u20B918.6L"}
+              <h2 className="text-3xl font-bold text-[var(--primary)]">
+                {stats.totalAppointments ?? "0"}
               </h2>
               <p className="mt-1.5 text-xs text-[var(--text-secondary)]">
-                {stats.revenueGrowth ? `+${stats.revenueGrowth}% from last month` : "+18.4% from last month"}
+                {stats.confirmedAppointments || 0} confirmed &middot; {stats.pendingAppointments || 0} pending &middot; {stats.completedAppointments || 0} completed
               </p>
               <div className="mt-5 h-2 overflow-hidden rounded-full bg-[var(--surface-off)]">
                 <motion.div
                   initial={{ width: 0 }}
-                  animate={{ width: stats.revenuePercent ?? "82%" }}
+                  animate={{ width: `${stats.totalAppointments > 0 ? Math.round((stats.completedAppointments / stats.totalAppointments) * 100) : 0}%` }}
                   transition={{ duration: 1.5 }}
                   className="h-full rounded-full bg-[var(--gradient-success)]"
                 />

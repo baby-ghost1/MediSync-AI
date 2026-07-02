@@ -6,26 +6,18 @@ const STORAGE_KEY = "medisync-theme";
 const THEMES = {
   LIGHT: "light",
   DARK: "dark",
-  SYSTEM: "system",
 };
-
-const getSystemTheme = () =>
-  window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? THEMES.DARK
-    : THEMES.LIGHT;
 
 const applyTheme = (selectedTheme) => {
   const html = document.documentElement;
   html.classList.remove("light", "dark");
-  const finalTheme =
-    selectedTheme === THEMES.SYSTEM ? getSystemTheme() : selectedTheme;
-  html.classList.add(finalTheme);
+  html.classList.add(selectedTheme);
 };
 
 const useThemeStore = create(
   persist(
     (set, get) => ({
-      theme: THEMES.SYSTEM,
+      theme: THEMES.LIGHT, // Default theme set to LIGHT instead of SYSTEM
       themes: THEMES,
 
       setTheme: (newTheme) => {
@@ -35,13 +27,12 @@ const useThemeStore = create(
 
       toggleTheme: () => {
         const current = get().theme;
-        const next =
-          current === THEMES.DARK ? THEMES.LIGHT : THEMES.DARK;
+        const next = current === THEMES.DARK ? THEMES.LIGHT : THEMES.DARK;
         get().setTheme(next);
       },
 
       initTheme: () => {
-        const saved = get().theme || THEMES.SYSTEM;
+        const saved = get().theme || THEMES.LIGHT; // Fallback to LIGHT
         applyTheme(saved);
       },
     }),

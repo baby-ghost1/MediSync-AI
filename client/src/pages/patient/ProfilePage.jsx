@@ -136,7 +136,7 @@ const ProfilePage = () => {
           <Card className="overflow-hidden border-[var(--border)]/70 bg-[linear-gradient(135deg,var(--surface),var(--surface-off))]">
             <div className="text-center">
               <div className="relative mx-auto inline-block">
-                <Avatar src={user?.avatar} name={`${user?.firstName || ""} ${user?.lastName || ""}`} size="xl" />
+                <Avatar src={user?.avatar?.url || user?.avatar} name={`${user?.firstName || ""} ${user?.lastName || ""}`} size="xl" />
                 <label className="absolute -bottom-1 -right-1 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[var(--primary)] text-white shadow-[var(--shadow-lg)] transition-all duration-300 hover:bg-[var(--primary-hover)]">
                   <Camera size={18} />
                   <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />

@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
+import { motion } from "framer-motion";
 import { cn } from "@/utils/cn";
 
 const SearchInput = ({
@@ -14,17 +15,22 @@ const SearchInput = ({
   const prevExternalRef = useRef(externalValue);
 
   const handleChange = (e) => {
-    const val = e.target.value;
-    setLocalValue(val);
+    const value = e.target.value;
+
+    setLocalValue(value);
+
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
     timeoutRef.current = setTimeout(() => {
-      onChange?.(val);
+      onChange?.(value);
     }, debounceMs);
   };
 
   const handleClear = () => {
     setLocalValue("");
+
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
     onChange?.("");
   };
 
@@ -42,33 +48,65 @@ const SearchInput = ({
   }, [externalValue]);
 
   return (
-    <div className={cn("relative w-full max-w-md", className)}>
+    <motion.div
+      initial={{ opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.25,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className={cn(
+        "relative w-full max-w-md",
+        className
+      )}
+    >
       <Search
-        size={16}
-        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)] pointer-events-none"
+        size={17}
+        className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-[var(--muted-foreground)]"
       />
+
       <input
         type="text"
         value={localValue}
         onChange={handleChange}
         placeholder={placeholder}
         className={cn(
-          "w-full rounded-xl border border-[var(--border)] bg-[var(--input)] py-2.5 pl-10 pr-10 text-sm text-[var(--foreground)] shadow-sm",
-          "placeholder:text-[var(--muted-foreground)] placeholder:font-normal",
+          "h-11 w-full rounded-2xl",
+          "border border-[var(--border)]",
+          "bg-[var(--card)]",
+          "pl-11 pr-11",
+          "text-sm font-medium",
+          "text-[var(--foreground)]",
+          "placeholder:font-normal",
+          "placeholder:text-[var(--muted-foreground)]",
+          "shadow-[0_1px_2px_rgba(15,23,42,.04)]",
           "transition-all duration-200",
-          "focus:border-[var(--primary)] focus:ring-[3px] focus:ring-[var(--primary)]/10 focus:outline-none focus:shadow-md",
-          "hover:border-[var(--border-hover)]"
+          "hover:border-[var(--border-hover)]",
+          "focus:border-[var(--primary)]",
+          "focus:ring-4",
+          "focus:ring-[rgba(37,99,235,.12)]",
+          "focus:outline-none"
         )}
       />
+
       {localValue && (
         <button
+          type="button"
           onClick={handleClear}
-          className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-0.5 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--surface-hover)] hover:text-[var(--foreground)]"
+          className={cn(
+            "absolute right-3 top-1/2 -translate-y-1/2",
+            "flex h-8 w-8 items-center justify-center",
+            "rounded-xl",
+            "text-[var(--muted-foreground)]",
+            "transition-all duration-200",
+            "hover:bg-[var(--secondary)]",
+            "hover:text-[var(--foreground)]"
+          )}
         >
           <X size={16} />
         </button>
       )}
-    </div>
+    </motion.div>
   );
 };
 

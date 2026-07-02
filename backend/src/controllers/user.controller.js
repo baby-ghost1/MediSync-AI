@@ -108,7 +108,10 @@ class UserController {
             req.params.id
           );
 
-        res.json(data);
+        res.json({
+          success: true,
+          data,
+        });
       }
     );
 
@@ -120,7 +123,10 @@ class UserController {
             req.params.id
           );
 
-        res.json(data);
+        res.json({
+          success: true,
+          data,
+        });
       }
     );
 

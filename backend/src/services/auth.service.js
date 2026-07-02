@@ -97,6 +97,10 @@ class AuthService {
       throw new ApiError(401, "Invalid email or password.");
     }
 
+    if (user.role === "admin") {
+      throw new ApiError(403, "Admins must use the Admin Portal login.");
+    }
+
     if (user.isBlocked) {
       throw new ApiError(403, "Account blocked.");
     }

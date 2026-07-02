@@ -22,6 +22,7 @@ router.get(
   NotificationController.getNotifications
 );
 
+// Static routes MUST come BEFORE /:id to avoid capture
 router.get(
   "/unread",
   NotificationController.getUnreadNotifications
@@ -38,18 +39,13 @@ router.get(
 );
 
 router.get(
-  "/:id",
-  NotificationController.getNotification
+  "/preferences",
+  NotificationController.getPreferences
 );
 
 router.patch(
-  "/:id/read",
-  NotificationController.markAsRead
-);
-
-router.patch(
-  "/:id/unread",
-  NotificationController.markAsUnread
+  "/preferences",
+  NotificationController.updatePreferences
 );
 
 router.patch(
@@ -65,6 +61,22 @@ router.delete(
 router.delete(
   "/all",
   NotificationController.clearAllNotifications
+);
+
+// Parameterized routes
+router.get(
+  "/:id",
+  NotificationController.getNotification
+);
+
+router.patch(
+  "/:id/read",
+  NotificationController.markAsRead
+);
+
+router.patch(
+  "/:id/unread",
+  NotificationController.markAsUnread
 );
 
 router.delete(

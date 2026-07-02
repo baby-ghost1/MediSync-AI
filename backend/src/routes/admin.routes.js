@@ -7,9 +7,20 @@ import {
 import {
   auth,
   authorize,
+  validate,
 } from "../middleware/index.js";
 
+import {
+  loginSchema,
+} from "../validators/index.js";
+
 const router = Router();
+
+router.post(
+  "/login",
+  validate(loginSchema),
+  AdminController.login
+);
 
 router.use(
   auth,
@@ -67,6 +78,16 @@ router.get(
 );
 
 router.get(
+  "/appointments",
+  AdminController.getAppointments
+);
+
+router.patch(
+  "/appointments/:id/status",
+  AdminController.updateAppointmentStatus
+);
+
+router.get(
   "/prescriptions",
   AdminController.getPrescriptions
 );
@@ -74,6 +95,16 @@ router.get(
 router.post(
   "/broadcast",
   AdminController.broadcastNotification
+);
+
+router.get(
+  "/settings",
+  AdminController.getSettings
+);
+
+router.patch(
+  "/settings",
+  AdminController.updateSettings
 );
 
 export default router;

@@ -136,7 +136,7 @@ const Select = ({
                     )}
                   >
                     <div className="flex items-center gap-2.5">
-                      {option.icon}
+                      {option.icon && <option.icon size={16} />}
                       <span>{option.label}</span>
                     </div>
                     {(value === option.value ||

@@ -54,6 +54,8 @@ export const ROUTES = {
 
     PROFILE: "/patient/profile",
 
+    SETTINGS: "/patient/settings",
+
     APPOINTMENTS: "/patient/appointments",
 
     BOOK_APPOINTMENT:
@@ -97,6 +99,8 @@ export const ROUTES = {
 
     PROFILE: "/doctor/profile",
 
+    SETTINGS: "/doctor/settings",
+
     PATIENTS: "/doctor/patients",
 
     PATIENT_DETAILS: "/doctor/patients/:id",
@@ -136,6 +140,8 @@ export const ROUTES = {
   ADMIN: {
     ROOT: "/admin",
 
+    LOGIN: "/admin/login",
+
     DASHBOARD: "/admin/dashboard",
 
     USERS: "/admin/users",
@@ -143,6 +149,8 @@ export const ROUTES = {
     PATIENTS: "/admin/patients",
 
     DOCTORS: "/admin/doctors",
+
+    APPOINTMENTS: "/admin/appointments",
 
     REPORTS: "/admin/reports",
 

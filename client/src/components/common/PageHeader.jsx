@@ -1,26 +1,74 @@
 import { motion } from "framer-motion";
+import { cn } from "@/utils/cn";
 import Badge from "@/components/ui/Badge";
 
-const PageHeader = ({ title, description, badge, actions, className }) => {
+const PageHeader = ({
+  title,
+  description,
+  badge,
+  actions,
+  className,
+}) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
+    <motion.header
+      initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`flex flex-col justify-between gap-6 lg:flex-row lg:items-end ${className || ""}`}
+      transition={{
+        duration: 0.32,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className={cn(
+        "flex flex-col gap-6",
+        "lg:flex-row lg:items-end lg:justify-between",
+        className
+      )}
     >
-      <div className="max-w-2xl">
-        {badge && <Badge variant="primary">{badge}</Badge>}
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight text-[var(--foreground)] md:text-4xl lg:text-5xl">
+      <div className="min-w-0 flex-1">
+        {badge && (
+          <div className="mb-3">
+            <Badge size="sm" variant="primary">
+              {badge}
+            </Badge>
+          </div>
+        )}
+
+        <h1
+          className={cn(
+            "text-[30px] font-semibold tracking-[-0.03em]",
+            "leading-tight",
+            "text-[var(--foreground)]",
+            "sm:text-[34px]",
+            "lg:text-[42px]"
+          )}
+        >
           {title}
         </h1>
+
         {description && (
-          <p className="mt-2 text-base leading-relaxed text-[var(--muted-foreground)] md:text-lg">
+          <p
+            className={cn(
+              "mt-3 max-w-3xl",
+              "text-[15px] leading-7",
+              "text-[var(--muted-foreground)]",
+              "sm:text-base"
+            )}
+          >
             {description}
           </p>
         )}
       </div>
-      {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
-    </motion.div>
+
+      {actions && (
+        <div
+          className={cn(
+            "flex w-full flex-wrap items-center justify-start gap-3",
+            "lg:w-auto lg:justify-end"
+          )}
+        >
+          {actions}
+        </div>
+      )}
+    </motion.header>
   );
 };
 

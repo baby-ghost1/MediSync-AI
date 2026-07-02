@@ -101,17 +101,20 @@ const DashboardPage = () => {
                   No upcoming appointments
                 </p>
               ) : (
-                appointments.map((apt) => (
+                appointments.map((apt) => {
+                  const doc = apt.doctor || {};
+                  const docName = doc.firstName && doc.lastName ? `${doc.firstName} ${doc.lastName}` : doc.name || "Doctor";
+                  return (
                   <Link key={apt._id} to={`${ROUTES.PATIENT.APPOINTMENTS}/${apt._id}`}>
                     <motion.div
                       whileHover={{ scale: 1.005 }}
                       className="flex flex-col gap-4 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-card-hover)] sm:flex-row sm:items-center sm:justify-between"
                     >
                       <div className="flex items-center gap-3">
-                        <Avatar name={apt.doctor?.name || "Dr."} size="md" />
+                        <Avatar name={docName} size="md" />
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-[var(--foreground)]">
-                            {apt.doctor?.name || "Doctor"}
+                            {docName}
                           </p>
                           <p className="text-xs text-[var(--muted-foreground)]">
                             {apt.doctor?.specialization || "General"}
@@ -129,7 +132,8 @@ const DashboardPage = () => {
                       </div>
                     </motion.div>
                   </Link>
-                ))
+                  );
+                })
               )}
             </div>
           </Card>

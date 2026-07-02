@@ -1,3 +1,4 @@
+
 import { useMemo, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -12,7 +13,6 @@ import {
   Bell,
   ClipboardList,
   Settings,
-  HelpCircle,
   ChevronLeft,
   ChevronRight,
   LogOut,
@@ -23,6 +23,8 @@ import {
   Activity,
   Lightbulb,
   FileText,
+  TrendingUp,
+  Shield,
 } from "lucide-react";
 
 import Avatar from "@/components/ui/Avatar";
@@ -31,6 +33,7 @@ import Badge from "@/components/ui/Badge";
 import { useAuth } from "@/hooks/useAuth";
 import useAppStore from "@/store/appStore";
 import useFocusTrap from "@/hooks/useFocusTrap";
+import authService from "@/services/auth.service";
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
   const { user, logout } = useAuth();
@@ -40,8 +43,40 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
   const [hovered, setHovered] = useState(null);
 
   const menu = useMemo(() => {
-    const isDoctor = user?.role === "doctor";
-    const prefix = isDoctor ? "/doctor" : "/patient";
+    const role = user?.role || "patient";
+    const isDoctor = role === "doctor";
+    const isAdmin = role === "admin";
+    const prefix = isDoctor ? "/doctor" : isAdmin ? "/admin" : "/patient";
+
+    if (isAdmin) {
+      return [
+        {
+          title: "MAIN",
+          items: [
+            { title: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
+            { title: "Users", icon: Users, path: "/admin/users" },
+            { title: "Doctors", icon: Stethoscope, path: "/admin/doctors" },
+            { title: "Patients", icon: UserRound, path: "/admin/patients" },
+            { title: "Appointments", icon: CalendarDays, path: "/admin/appointments" },
+          ],
+        },
+        {
+          title: "MONITORING",
+          items: [
+            { title: "Reports", icon: FileHeart, path: "/admin/reports" },
+            { title: "Prescriptions", icon: ClipboardList, path: "/admin/prescriptions" },
+            { title: "Analytics", icon: TrendingUp, path: "/admin/analytics" },
+          ],
+        },
+        {
+          title: "SYSTEM",
+          items: [
+            { title: "Notifications", icon: Bell, path: "/admin/notifications" },
+            { title: "Settings", icon: Settings, path: "/admin/settings" },
+          ],
+        },
+      ];
+    }
 
     return [
       {
@@ -50,7 +85,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
           { title: "Dashboard", icon: LayoutDashboard, path: `${prefix}/dashboard` },
           { title: "Appointments", icon: CalendarDays, path: `${prefix}/appointments` },
           ...(!isDoctor ? [{ title: "Doctors", icon: Stethoscope, path: `${prefix}/doctors` }] : []),
-          { title: "Patients", icon: Users, path: `${prefix}/patients` },
+          { title: isDoctor ? "Patients" : "My Patients", icon: Users, path: `${prefix}/patients` },
         ],
       },
       {
@@ -77,7 +112,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
           { title: "Notifications", icon: Bell, path: `${prefix}/notifications` },
           { title: "Profile", icon: UserRound, path: `${prefix}/profile` },
           { title: "Settings", icon: Settings, path: `${prefix}/settings` },
-          { title: "Help Center", icon: HelpCircle, path: "/help" },
+          // { title: "Help Center", icon: HelpCircle, path: "/help" },
         ],
       },
     ];
@@ -91,31 +126,47 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={() => setMobileMenuOpen(false)}
-          aria-hidden="true"
-          className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-sm lg:hidden"
         />
       )}
 
       <motion.aside
         ref={focusTrapRef}
         animate={{
-          width: collapsed ? 72 : 260,
-          x: mobileMenuOpen ? 0 : -280,
+          width: collapsed ? 78 : 280,
+          x: mobileMenuOpen ? 0 : -300,
         }}
-        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-        aria-label="Main navigation"
-        className="fixed left-0 top-0 z-40 flex h-screen flex-col overflow-hidden border-r border-[var(--border)] bg-[var(--sidebar)] shadow-[0_20px_50px_rgba(15,23,42,0.08)] lg:static"
+        transition={{
+          duration: 0.28,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+        className={`
+          fixed left-0 top-0 z-50
+          flex h-screen flex-col
+          overflow-hidden
+          border-r border-[var(--border)]
+          bg-[var(--sidebar)]
+          shadow-[0_8px_40px_rgba(15,23,42,.08)]
+          lg:static
+        `}
       >
         {/* Logo */}
-        <div className="relative flex h-16 items-center justify-between border-b border-[var(--border)] px-4">
-          <motion.div layout className="flex items-center gap-3">
+
+        <div className="flex h-16 items-center justify-between border-b border-[var(--border)] px-5">
+          <div className="flex items-center gap-3">
             <motion.div
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.6 }}
-              className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--gradient-primary)] text-white shadow-[var(--shadow-md)]"
+              whileHover={{ rotate: 8 }}
+              className="
+                flex h-10 w-10 items-center justify-center
+                rounded-2xl
+                bg-[var(--primary)]
+                text-white
+                shadow-[0_8px_24px_rgba(37,99,235,.18)]
+              "
             >
               <HeartPulse size={18} />
             </motion.div>
+
             <AnimatePresence>
               {!collapsed && (
                 <motion.div
@@ -123,34 +174,43 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -8 }}
                 >
-                  <h2 className="text-sm font-bold tracking-tight text-[var(--foreground)] leading-tight">
-                    MediSync
+                  <h2 className="text-base font-semibold tracking-tight text-[var(--foreground)]">
+                    MediSync AI
                   </h2>
-                  <p className="text-[10px] text-[var(--muted-foreground)] leading-tight">
-                    AI Healthcare
+
+                  <p className="text-xs text-[var(--muted-foreground)]">
+                    Smart Healthcare
                   </p>
                 </motion.div>
               )}
             </AnimatePresence>
-          </motion.div>
+          </div>
+
           <Button
-            size="icon"
             variant="ghost"
+            size="icon"
             onClick={() => setCollapsed(!collapsed)}
-            className="hidden lg:flex h-7 w-7 text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+            className="hidden lg:flex h-8 w-8"
           >
-            {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+            {collapsed ? (
+              <ChevronRight size={15} />
+            ) : (
+              <ChevronLeft size={15} />
+            )}
           </Button>
         </div>
 
-        {/* User */}
-        <div className="px-3 py-3">
-          <motion.div
-            whileHover={{ scale: 1.01 }}
-            className="rounded-2xl border border-[var(--border)]/70 bg-[var(--surface-off)]/70 p-2.5"
-          >
-            <div className="flex items-center gap-2.5">
-              <Avatar src={user?.avatar} name={user?.name} size="sm" />
+        {/* User Card */}
+
+        <div className="px-4 py-4">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3">
+            <div className="flex items-center gap-3">
+              <Avatar
+                src={user?.avatar?.url}
+                name={user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : user?.name || ""}
+                size="md"
+              />
+
               <AnimatePresence>
                 {!collapsed && (
                   <motion.div
@@ -159,72 +219,116 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                     exit={{ opacity: 0 }}
                     className="min-w-0 flex-1"
                   >
-                    <p className="truncate text-sm font-medium text-[var(--foreground)] leading-tight">
-                      {user?.name}
+                    <p className="truncate font-semibold text-[var(--foreground)]">
+                      {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : user?.name || "User"}
                     </p>
-                    <p className="text-[11px] capitalize text-[var(--muted-foreground)] leading-tight">
+
+                    <p className="capitalize text-xs text-[var(--muted-foreground)]">
                       {user?.role}
                     </p>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
-          </motion.div>
+          </div>
         </div>
+                {/* Navigation */}
 
-        {/* Menu */}
-        <div className="flex-1 overflow-y-auto px-3 py-2 space-y-5">
+        <div className="flex-1 overflow-y-auto px-3 py-2">
           {menu.map((section) => (
-            <div key={section.title}>
+            <div key={section.title} className="mb-6">
               <AnimatePresence>
                 {!collapsed && (
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="mb-1.5 px-3 text-[10px] font-semibold tracking-widest text-[var(--muted-foreground)]"
+                    className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--muted-foreground)]"
                   >
                     {section.title}
                   </motion.p>
                 )}
               </AnimatePresence>
-              <div className="space-y-0.5">
+
+              <div className="space-y-1">
                 {section.items.map((item) => {
                   const Icon = item.icon;
-                  const active = location.pathname === item.path;
+                  const active =
+                    location.pathname === item.path;
 
                   return (
                     <div
                       key={item.path}
                       className="relative"
-                      onMouseEnter={() => setHovered(item.path)}
-                      onMouseLeave={() => setHovered(null)}
+                      onMouseEnter={() =>
+                        setHovered(item.path)
+                      }
+                      onMouseLeave={() =>
+                        setHovered(null)
+                      }
                     >
                       <NavLink
                         to={item.path}
-                        className={`relative flex items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 ${
-                          active
-                            ? "bg-[var(--primary)]/10 text-[var(--primary)] shadow-[0_8px_20px_rgba(37,99,235,0.08)]"
-                            : "text-[var(--muted-foreground)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--foreground)]"
-                        }`}
+                        className={`
+                          group
+                          flex items-center gap-3
+                          rounded-2xl
+                          px-3 py-3
+                          transition-all duration-200
+
+                          ${
+                            active
+                              ? `
+                                  border border-[var(--primary)]/10
+                                  bg-[var(--primary)]/8
+                                  text-[var(--primary)]
+                                  shadow-[0_6px_20px_rgba(37,99,235,.08)]
+                                `
+                              : `
+                                  text-[var(--muted-foreground)]
+                                  hover:bg-[var(--secondary)]
+                                  hover:text-[var(--foreground)]
+                                `
+                          }
+                        `}
                       >
-                        <Icon size={18} className="shrink-0" />
+                        <Icon
+                          size={19}
+                          className="shrink-0"
+                        />
+
                         <AnimatePresence>
                           {!collapsed && (
                             <motion.div
-                              initial={{ opacity: 0, x: -6 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              exit={{ opacity: 0, x: -6 }}
+                              initial={{
+                                opacity: 0,
+                                x: -6,
+                              }}
+                              animate={{
+                                opacity: 1,
+                                x: 0,
+                              }}
+                              exit={{
+                                opacity: 0,
+                                x: -6,
+                              }}
                               className="flex flex-1 items-center justify-between"
                             >
-                              <span>{item.title}</span>
+                              <span className="truncate text-sm font-medium">
+                                {item.title}
+                              </span>
+
                               {item.badge &&
-                                (typeof item.badge === "number" ? (
+                                (typeof item.badge ===
+                                "number" ? (
                                   <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[var(--danger)] px-1.5 text-[10px] font-bold text-white">
                                     {item.badge}
                                   </span>
                                 ) : (
-                                  <Badge variant="primary" size="xs">
+                                  <Badge
+                                    variant="primary"
+                                    size="xs"
+                                  >
                                     {item.badge}
                                   </Badge>
                                 ))}
@@ -233,16 +337,26 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                         </AnimatePresence>
                       </NavLink>
 
-                      {collapsed && hovered === item.path && (
-                        <motion.div
-                          initial={{ opacity: 0, x: -8 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -8 }}
-                          className="absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-lg bg-[var(--foreground)] px-2.5 py-1.5 text-xs font-medium text-[var(--background)] shadow-lg ring-1 ring-[var(--border)]"
-                        >
-                          {item.title}
-                        </motion.div>
-                      )}
+                      {collapsed &&
+                        hovered === item.path && (
+                          <motion.div
+                            initial={{
+                              opacity: 0,
+                              x: -6,
+                            }}
+                            animate={{
+                              opacity: 1,
+                              x: 0,
+                            }}
+                            exit={{
+                              opacity: 0,
+                              x: -6,
+                            }}
+                            className="absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 rounded-xl bg-[var(--foreground)] px-3 py-2 text-xs font-medium whitespace-nowrap text-[var(--background)] shadow-xl"
+                          >
+                            {item.title}
+                          </motion.div>
+                        )}
                     </div>
                   );
                 })}
@@ -250,51 +364,72 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             </div>
           ))}
         </div>
+                {/* Bottom Section */}
 
-        {/* Bottom */}
-        <div className="border-t border-[var(--border)] p-3 space-y-2">
-          <motion.div
-            whileHover={{ scale: 1.01 }}
-            className="rounded-2xl bg-gradient-to-br from-[var(--primary)]/95 to-[var(--accent)]/90 p-3 text-white shadow-[var(--shadow-md)]"
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
-                <Hospital size={16} />
-              </div>
-              <AnimatePresence>
-                {!collapsed && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <p className="text-xs font-semibold">Premium</p>
-                    <p className="text-[10px] text-white/70">AI Health Suite</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </motion.div>
-
-          <Button
-            fullWidth={!collapsed}
-            variant="ghost"
-            className={`justify-start text-[var(--muted-foreground)] hover:bg-[var(--danger)]/10 hover:text-[var(--danger)] ${collapsed ? "px-0" : ""}`}
-            onClick={logout}
-          >
-            <LogOut size={18} />
+        <div className="border-t border-[var(--border)] p-4">
+          <div className="space-y-3">
             <AnimatePresence>
               {!collapsed && (
-                <motion.span
-                  initial={{ opacity: 0, x: -6 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -6 }}
+                <motion.div
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 6 }}
+                  className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4"
                 >
-                  Logout
-                </motion.span>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-white shadow-[0_8px_20px_rgba(37,99,235,.18)]">
+                      <Hospital size={18} />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-[var(--foreground)]">
+                        Premium AI
+                      </p>
+
+                      <p className="text-xs text-[var(--muted-foreground)]">
+                        Healthcare Suite
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
               )}
             </AnimatePresence>
-          </Button>
+
+            <Button
+              variant="ghost"
+              onClick={async () => {
+                try {
+                  await authService.logout();
+                } catch {
+                  // proceed with client-side logout
+                }
+                logout();
+              }}
+              fullWidth={!collapsed}
+              className={`
+                justify-start
+                rounded-2xl
+                text-[var(--muted-foreground)]
+                hover:bg-[var(--danger)]/8
+                hover:text-[var(--danger)]
+                ${collapsed ? "px-0" : ""}
+              `}
+            >
+              <LogOut size={18} />
+
+              <AnimatePresence>
+                {!collapsed && (
+                  <motion.span
+                    initial={{ opacity: 0, x: -6 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -6 }}
+                  >
+                    Logout
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </Button>
+          </div>
         </div>
       </motion.aside>
     </>
@@ -302,3 +437,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 };
 
 export default Sidebar;
+
+
+
+

@@ -120,9 +120,9 @@ const MyAppointmentsPage = () => {
                 className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-[var(--border)]/80 bg-[linear-gradient(135deg,var(--surface),var(--surface-off))] p-6 shadow-[var(--shadow-sm)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-lg)] md:flex-row md:items-center md:justify-between"
               >
                 <div className="flex items-center gap-5">
-                  <Avatar name={apt.doctor?.name} src={apt.doctor?.avatar} size="lg" />
+                  <Avatar name={apt.doctor?.firstName && apt.doctor?.lastName ? `${apt.doctor.firstName} ${apt.doctor.lastName}` : apt.doctor?.name || "Doctor"} src={apt.doctor?.avatar} size="lg" />
                   <div>
-                    <h3 className="text-lg font-bold text-[var(--foreground)]">{apt.doctor?.name || "Doctor"}</h3>
+                    <h3 className="text-lg font-bold text-[var(--foreground)]">{apt.doctor?.firstName && apt.doctor?.lastName ? `${apt.doctor.firstName} ${apt.doctor.lastName}` : apt.doctor?.name || "Doctor"}</h3>
                     <p className="text-sm text-[var(--primary)]">{apt.doctor?.specialization || "General"}</p>
                     <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--muted-foreground)]">
                       <span className="flex items-center gap-1">

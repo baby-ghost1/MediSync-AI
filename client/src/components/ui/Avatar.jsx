@@ -26,7 +26,12 @@ const Avatar = ({
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-full bg-gradient-to-br from-[var(--primary)]/90 to-[var(--accent)]/80 flex items-center justify-center font-medium text-white shrink-0 ring-1 ring-white/10",
+        "relative shrink-0 overflow-hidden rounded-full",
+        "border border-white/70 dark:border-white/10",
+        "bg-gradient-to-br from-[var(--primary)] to-sky-500",
+        "shadow-[0_4px_14px_rgba(15,23,42,.08)]",
+        "transition-all duration-300",
+        "ring-1 ring-black/[0.03] dark:ring-white/[0.04]",
         sizes[size],
         className
       )}
@@ -35,12 +40,29 @@ const Avatar = ({
         <img
           src={src}
           alt={alt}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
         />
       ) : initials ? (
-        <span className="leading-none tracking-wide">{initials}</span>
+        <div className="flex h-full w-full items-center justify-center font-semibold tracking-tight text-white">
+          {initials}
+        </div>
       ) : (
-        <User size={size === "xs" ? 12 : size === "sm" ? 14 : 18} className="opacity-80" />
+        <div className="flex h-full w-full items-center justify-center">
+          <User
+            size={
+              size === "xs"
+                ? 12
+                : size === "sm"
+                ? 14
+                : size === "lg"
+                ? 20
+                : size === "xl"
+                ? 34
+                : 18
+            }
+            className="text-white/90"
+          />
+        </div>
       )}
     </div>
   );

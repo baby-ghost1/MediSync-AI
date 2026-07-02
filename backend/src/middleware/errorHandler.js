@@ -47,10 +47,19 @@ const errorHandler = (
     message = "Token expired.";
   }
 
+  const errors =
+    err.name !== "ValidationError" &&
+    Array.isArray(err.errors) &&
+    err.errors.length > 0
+      ? err.errors
+      : undefined;
+
   res.status(statusCode).json({
     success: false,
 
     message,
+
+    ...(errors && { errors }),
 
     ...(process.env.NODE_ENV !==
       "production" && {

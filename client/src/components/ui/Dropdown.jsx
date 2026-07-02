@@ -84,7 +84,7 @@ const Dropdown = ({
                   <div className="flex items-center gap-2.5">
                     {item.icon && (
                       <span className="text-[var(--muted-foreground)]">
-                        {item.icon}
+                        <item.icon size={16} />
                       </span>
                     )}
                     <span>{item.label}</span>

@@ -2,6 +2,11 @@ import API from "@/api/axios";
 import ENDPOINTS from "@/api/endpoints";
 
 class AdminService {
+  async login(credentials) {
+    const { data } = await API.post(ENDPOINTS.ADMIN.LOGIN, credentials);
+    return data;
+  }
+
   async getDashboard() {
     const { data } = await API.get(ENDPOINTS.ADMIN.DASHBOARD);
     return data;
@@ -47,6 +52,16 @@ class AdminService {
     return data;
   }
 
+  async getAppointments(params = {}) {
+    const { data } = await API.get(ENDPOINTS.ADMIN.APPOINTMENTS, { params });
+    return data;
+  }
+
+  async updateAppointmentStatus(id, status) {
+    const { data } = await API.patch(`${ENDPOINTS.ADMIN.APPOINTMENTS}/${id}/status`, { status });
+    return data;
+  }
+
   async getReports(params = {}) {
     const { data } = await API.get(ENDPOINTS.ADMIN.REPORTS, { params });
     return data;
@@ -59,6 +74,16 @@ class AdminService {
 
   async broadcast(payload) {
     const { data } = await API.post(ENDPOINTS.ADMIN.BROADCAST, payload);
+    return data;
+  }
+
+  async getSettings() {
+    const { data } = await API.get("/admin/settings");
+    return data;
+  }
+
+  async updateSettings(payload) {
+    const { data } = await API.patch("/admin/settings", payload);
     return data;
   }
 }

@@ -10,11 +10,38 @@ import {
 
 import {
   ApiError,
+  sendToken,
 } from "../utils/index.js";
 
 class AdminService {
   /* ==========================================
-      Dashboard
+      Admin Login - Separate from public auth
+  ========================================== */
+
+  async login(email, password, res) {
+    const user = await UserRepository.findByEmail(email);
+
+    if (!user || user.role !== "admin") {
+      throw new ApiError(401, "Invalid credentials.");
+    }
+
+    const matched = await user.comparePassword(password);
+
+    if (!matched) {
+      throw new ApiError(401, "Invalid credentials.");
+    }
+
+    if (user.isBlocked) {
+      throw new ApiError(403, "Account blocked.");
+    }
+
+    await UserRepository.updateLastLogin(user._id);
+
+    return sendToken(res, user, 200, "Admin login successful.");
+  }
+
+  /* ==========================================
+      Dashboard - Full Monitoring System
   ========================================== */
 
   async getDashboard() {
@@ -25,6 +52,9 @@ class AdminService {
       appointments,
       reports,
       prescriptions,
+      recentUsers,
+      recentAppointments,
+      recentNotifications,
     ] = await Promise.all([
       UserRepository.getStatistics(),
 
@@ -37,7 +67,42 @@ class AdminService {
       ReportRepository.getStatistics(),
 
       PrescriptionRepository.getStatistics(),
+
+      UserRepository.find(
+        {},
+        {
+          page: 1,
+          limit: 10,
+          sort: "-createdAt",
+        }
+      ),
+
+      AppointmentRepository.find(
+        {},
+        {
+          page: 1,
+          limit: 10,
+          sort: "-createdAt",
+          populate: "patient doctor",
+        }
+      ),
+
+      NotificationRepository.find(
+        {},
+        {
+          page: 1,
+          limit: 10,
+          sort: "-createdAt",
+        }
+      ),
     ]);
+
+    const totalAppointments = appointments.total || 0;
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    // Calculate growth rates (comparing with total registered)
+    const userGrowth = users.totalUsers > 0 ? Math.round((recentUsers.data.length / users.totalUsers) * 100) : 0;
 
     return {
       users,
@@ -46,6 +111,25 @@ class AdminService {
       appointments,
       reports,
       prescriptions,
+      stats: {
+        totalUsers: users.totalUsers || 0,
+        totalPatients: users.patients || 0,
+        totalDoctors: users.doctors || 0,
+        totalAdmins: users.admins || 0,
+        verifiedUsers: users.verified || 0,
+        totalAppointments,
+        pendingAppointments: appointments.pending || 0,
+        confirmedAppointments: appointments.confirmed || 0,
+        completedAppointments: appointments.completed || 0,
+        cancelledAppointments: appointments.cancelled || 0,
+        totalDoctorsCount: doctors.totalDoctors || 0,
+        availableDoctors: doctors.availableDoctors || 0,
+        userGrowth,
+        appointmentGrowth: totalAppointments > 0 ? Math.round((appointments.confirmed / totalAppointments) * 100) : 0,
+      },
+      recentUsers: recentUsers.data,
+      recentAppointments: recentAppointments.data,
+      recentNotifications: recentNotifications.data,
     };
   }
 
@@ -211,6 +295,51 @@ class AdminService {
       ...doctor.toObject(),
       user,
     };
+  }
+
+  /* ==========================================
+      Appointments
+  ========================================== */
+
+  async getAppointments(query) {
+    const {
+      page = 1,
+      limit = 10,
+      status,
+    } = query;
+
+    const filter = {};
+
+    if (status) {
+      filter.status = status;
+    }
+
+    return AppointmentRepository.find(
+      filter,
+      {
+        page,
+        limit,
+        populate: "patient doctor",
+        sort: "-createdAt",
+      }
+    );
+  }
+
+  async updateAppointmentStatus(id, status) {
+    const appointment =
+      await AppointmentRepository.findById(id);
+
+    if (!appointment) {
+      throw new ApiError(
+        404,
+        "Appointment not found."
+      );
+    }
+
+    appointment.status = status;
+    await appointment.save();
+
+    return appointment;
   }
 
   /* ==========================================

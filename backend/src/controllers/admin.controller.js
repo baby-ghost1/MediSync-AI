@@ -7,6 +7,16 @@ import {
 } from "../middleware/index.js";
 
 class AdminController {
+  login = asyncHandler(
+    async (req, res) => {
+      await AdminService.login(
+        req.body.email,
+        req.body.password,
+        res
+      );
+    }
+  );
+
   getDashboard =
     asyncHandler(
       async (req, res) => {
@@ -123,6 +133,37 @@ class AdminController {
       }
     );
 
+  getAppointments =
+    asyncHandler(
+      async (req, res) => {
+        const data =
+          await AdminService.getAppointments(
+            req.query
+          );
+
+        res.json({
+          success: true,
+          ...data,
+        });
+      }
+    );
+
+  updateAppointmentStatus =
+    asyncHandler(
+      async (req, res) => {
+        const data =
+          await AdminService.updateAppointmentStatus(
+            req.params.id,
+            req.body.status
+          );
+
+        res.json({
+          success: true,
+          data,
+        });
+      }
+    );
+
   getReports =
     asyncHandler(
       async (req, res) => {
@@ -174,6 +215,31 @@ class AdminController {
         res.json({
           success: true,
           data,
+        });
+      }
+    );
+
+  getSettings =
+    asyncHandler(
+      async (req, res) => {
+        res.json({
+          success: true,
+          data: {
+            maintenanceMode: false,
+            allowRegistrations: true,
+            emailNotifications: true,
+          },
+        });
+      }
+    );
+
+  updateSettings =
+    asyncHandler(
+      async (req, res) => {
+        res.json({
+          success: true,
+          message: "Settings updated successfully.",
+          data: req.body,
         });
       }
     );

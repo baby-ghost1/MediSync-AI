@@ -22,9 +22,33 @@ export const io = new Server(server, {
 
 setupSocket(io);
 
+const { User } = await import("./models/index.js");
+
+const seedDefaultAdmin = async () => {
+  const adminEmail = process.env.ADMIN_EMAIL || "admin@medisync.ai";
+  const adminPassword = process.env.ADMIN_PASSWORD || "Admin@123456";
+
+  const existing = await User.findOne({ email: adminEmail.toLowerCase() });
+
+  if (!existing) {
+    await User.create({
+      firstName: "System",
+      lastName: "Admin",
+      email: adminEmail.toLowerCase(),
+      password: adminPassword,
+      role: "admin",
+      isVerified: true,
+    });
+    console.log(`Default admin seeded: ${adminEmail}`);
+  } else {
+    console.log("Admin account already exists, skipping seed.");
+  }
+};
+
 const startServer = async () => {
   try {
     await connectDB();
+    await seedDefaultAdmin();
     server.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });

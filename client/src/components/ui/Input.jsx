@@ -1,5 +1,6 @@
-import { forwardRef, useState, useId } from "react";
-import { Eye, EyeOff, AlertCircle } from "lucide-react";
+import { forwardRef, useId, useState } from "react";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
+import { motion } from "framer-motion";
 import { cn } from "@/utils/cn";
 
 const Input = forwardRef(
@@ -30,22 +31,34 @@ const Input = forwardRef(
         : type;
 
     return (
-      <div className={cn("w-full", containerClassName)}>
+      <div
+        className={cn(
+          "flex w-full flex-col gap-2",
+          containerClassName
+        )}
+      >
         {label && (
           <label
             htmlFor={inputId}
-            className="mb-1.5 block text-sm font-medium tracking-tight text-[var(--foreground)]"
+            className="flex items-center gap-1 text-sm font-semibold tracking-[-0.01em] text-[var(--foreground)]"
           >
             {label}
             {required && (
-              <span className="ml-0.5 text-[var(--danger)]">*</span>
+              <span className="text-[var(--danger)]">*</span>
             )}
           </label>
         )}
 
-        <div className="relative">
+        <motion.div
+          whileFocus={{ scale: 1.005 }}
+          transition={{
+            duration: 0.18,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className="relative"
+        >
           {leftIcon && (
-            <div className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]">
+            <div className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-[var(--muted-foreground)]">
               {leftIcon}
             </div>
           )}
@@ -56,48 +69,81 @@ const Input = forwardRef(
             type={inputType}
             disabled={disabled}
             className={cn(
-              "w-full rounded-xl border px-4 py-3 text-sm transition-all duration-150",
-              "bg-[var(--input)] text-[var(--foreground)]",
-              "border-[var(--border)]",
+              "h-11 w-full rounded-2xl",
+              "border",
+              "bg-[var(--card)]",
+              "text-sm",
+              "font-medium",
+              "text-[var(--foreground)]",
               "placeholder:text-[var(--muted-foreground)]",
+              "transition-all duration-200",
+              "border-[var(--border)]",
+              "shadow-[0_1px_2px_rgba(15,23,42,.04)]",
               "hover:border-[var(--border-hover)]",
-              "focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_var(--ring)] focus:outline-none",
-              "disabled:cursor-not-allowed disabled:opacity-40",
+              "focus:border-[var(--primary)]",
+              "focus:ring-4",
+              "focus:ring-[rgba(37,99,235,.12)]",
+              "focus:outline-none",
+              "disabled:pointer-events-none",
+              "disabled:opacity-50",
               leftIcon ? "pl-11" : "pl-4",
-              type === "password" || rightIcon ? "pr-11" : "pr-4",
+              rightIcon || type === "password"
+                ? "pr-11"
+                : "pr-4",
               error &&
-                "border-[var(--danger)] focus:border-[var(--danger)] focus:shadow-[0_0_0_3px_var(--ring)]",
+                "border-[var(--danger)] focus:border-[var(--danger)] focus:ring-[rgba(220,38,38,.12)]",
               className
             )}
             {...props}
-          />
-
-          {type === "password" ? (
+          />          {type === "password" ? (
             <button
               type="button"
               tabIndex={-1}
-              aria-label={showPassword ? "Hide password" : "Show password"}
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]"
+              aria-label={
+                showPassword
+                  ? "Hide password"
+                  : "Show password"
+              }
+              onClick={() =>
+                setShowPassword((prev) => !prev)
+              }
+              className={cn(
+                "absolute right-3 top-1/2 -translate-y-1/2",
+                "flex h-8 w-8 items-center justify-center",
+                "rounded-xl",
+                "text-[var(--muted-foreground)]",
+                "transition-all duration-200",
+                "hover:bg-[var(--secondary)]",
+                "hover:text-[var(--foreground)]"
+              )}
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showPassword ? (
+                <EyeOff size={18} />
+              ) : (
+                <Eye size={18} />
+              )}
             </button>
           ) : (
             rightIcon && (
-              <div className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]">
+              <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]">
                 {rightIcon}
               </div>
             )
           )}
-        </div>
+        </motion.div>
 
         {helperText && !error && (
-          <p className="mt-1.5 text-xs text-[var(--muted-foreground)]">{helperText}</p>
+          <p className="pl-1 text-xs leading-relaxed text-[var(--muted-foreground)]">
+            {helperText}
+          </p>
         )}
 
         {error && (
-          <div className="mt-1.5 flex items-center gap-1.5 text-xs text-[var(--danger)]">
-            <AlertCircle size={14} className="shrink-0" />
+          <div className="flex items-center gap-2 pl-1 text-xs font-medium text-[var(--danger)]">
+            <AlertCircle
+              size={14}
+              className="shrink-0"
+            />
             <span>{error}</span>
           </div>
         )}

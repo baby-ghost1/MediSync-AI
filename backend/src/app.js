@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import rateLimit from "express-rate-limit";
+import hpp from "hpp";
 
 import { Router } from "express";
 import routes from "./routes/index.js";
@@ -19,8 +21,8 @@ import {
 const app = express();
 
 /* ==========================================
-   Core Middleware
-========================================== */
+   Security Middleware
+========================================= */
 
 app.use(
   cors({
@@ -30,10 +32,34 @@ app.use(
 );
 
 app.use(helmet());
-
 app.use(compression());
-
 app.use(cookieParser());
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { success: false, message: "Too many requests, try again later." },
+});
+app.use("/api", limiter);
+
+// Auth rate limiter (stricter)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { success: false, message: "Too many auth attempts, try again later." },
+});
+app.use("/api/auth", authLimiter);
+
+// Custom sanitization middleware (Express v5 compatible)
+// express-mongo-sanitize & xss-clean both break in Express v5 because
+// req.query is a getter-only property — they try to reassign it.
+// This middleware sanitizes in-place without reassignment.
+import sanitize from "./middleware/sanitize.js";
+app.use(sanitize());
+
+// Prevent parameter pollution
+app.use(hpp());
 
 const uploadsRouter = Router();
 uploadsRouter.use(auth);
@@ -49,14 +75,14 @@ app.use("/uploads", uploadsRouter);
 
 app.use(
   express.json({
-    limit: "20mb",
+    limit: "10mb",
   })
 );
 
 app.use(
   express.urlencoded({
     extended: true,
-    limit: "20mb",
+    limit: "10mb",
   })
 );
 

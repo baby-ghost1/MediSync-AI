@@ -99,6 +99,10 @@ const DoctorSettings = lazy(() =>
   import("@/pages/doctor/SettingsPage")
 );
 
+const AdminLoginPage = lazy(() =>
+  import("@/pages/admin/AdminLoginPage")
+);
+
 const AdminDashboard = lazy(() =>
   import("@/pages/admin/DashboardPage")
 );
@@ -113,6 +117,10 @@ const AdminPatients = lazy(() =>
 
 const AdminDoctors = lazy(() =>
   import("@/pages/admin/DoctorsPage")
+);
+
+const AdminAppointments = lazy(() =>
+  import("@/pages/admin/AppointmentsPage")
 );
 
 const AdminReports = lazy(() =>
@@ -199,6 +207,14 @@ const NotFoundPage = lazy(() =>
   import("@/pages/common/NotFoundPage")
 );
 
+const ForbiddenPage = lazy(() =>
+  import("@/pages/common/ForbiddenPage")
+);
+
+const ServerErrorPage = lazy(() =>
+  import("@/pages/common/ServerErrorPage")
+);
+
 /* ------------------------------------------------ */
 /* Loader */
 /* ------------------------------------------------ */
@@ -220,6 +236,47 @@ const GuestRoute = ({
     useAuth();
 
   if (isAuthenticated) {
+    return (
+      <Navigate
+        to="/dashboard"
+        replace
+      />
+    );
+  }
+
+  return children;
+};
+
+/* ------------------------------------------------ */
+/* Admin Guest Route */
+/* ------------------------------------------------ */
+
+const AdminGuestRoute = ({
+  children,
+}) => {
+  const {
+    isAuthenticated,
+    user,
+    loading,
+  } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--primary)] border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    if (user?.role === "admin") {
+      return (
+        <Navigate
+          to="/admin/dashboard"
+          replace
+        />
+      );
+    }
     return (
       <Navigate
         to="/dashboard"
@@ -282,7 +339,7 @@ const RoleRoute = ({
   ) {
     return (
       <Navigate
-        to="/404"
+        to="/403"
         replace
       />
     );
@@ -309,6 +366,12 @@ const AppRoutes = () => {
           </Route>
 
           {/* ========================================= */}
+          {/* Admin Authentication */}
+          {/* ========================================= */}
+
+          <Route path="/admin/login" element={<AdminGuestRoute><AdminLoginPage /></AdminGuestRoute>} />
+
+          {/* ========================================= */}
           {/* Authentication */}
           {/* ========================================= */}
 
@@ -317,7 +380,9 @@ const AppRoutes = () => {
             <Route path="/register" element={<PageTransition><RegisterPage /></PageTransition>} />
             <Route path="/forgot-password" element={<PageTransition><ForgotPasswordPage /></PageTransition>} />
             <Route path="/reset-password" element={<PageTransition><ResetPasswordPage /></PageTransition>} />
+            <Route path="/reset-password/:token" element={<PageTransition><ResetPasswordPage /></PageTransition>} />
             <Route path="/verify-email" element={<PageTransition><VerifyEmailPage /></PageTransition>} />
+            <Route path="/verify-email/:token" element={<PageTransition><VerifyEmailPage /></PageTransition>} />
           </Route>
 
           {/* ========================================= */}
@@ -362,15 +427,16 @@ const AppRoutes = () => {
             <Route path="/admin/users" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminUsers /></PageTransition></RoleRoute>} />
             <Route path="/admin/patients" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminPatients /></PageTransition></RoleRoute>} />
             <Route path="/admin/doctors" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminDoctors /></PageTransition></RoleRoute>} />
+            <Route path="/admin/appointments" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminAppointments /></PageTransition></RoleRoute>} />
             <Route path="/admin/reports" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminReports /></PageTransition></RoleRoute>} />
             <Route path="/admin/prescriptions" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminPrescriptions /></PageTransition></RoleRoute>} />
             <Route path="/admin/analytics" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminAnalytics /></PageTransition></RoleRoute>} />
             <Route path="/admin/notifications" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminNotifications /></PageTransition></RoleRoute>} />
             <Route path="/admin/settings" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminSystemSettings /></PageTransition></RoleRoute>} />
 
-            {/* Shared (All Roles) */}
-            <Route path="/settings" element={<RoleRoute allowedRoles={["patient", "doctor", "admin"]}><PageTransition><PatientSettings /></PageTransition></RoleRoute>} />
-            <Route path="/notifications" element={<RoleRoute allowedRoles={["patient", "doctor", "admin"]}><PageTransition><PatientNotifications /></PageTransition></RoleRoute>} />
+            {/* Shared (All Roles) - Redirect to role-specific pages */}
+            <Route path="/settings" element={<RoleRoute allowedRoles={["patient", "doctor", "admin"]}><SettingsRedirect /></RoleRoute>} />
+            <Route path="/notifications" element={<RoleRoute allowedRoles={["patient", "doctor", "admin"]}><NotificationsRedirect /></RoleRoute>} />
 
           </Route>
 
@@ -385,6 +451,8 @@ const AppRoutes = () => {
           {/* ========================================= */}
 
           <Route path="/404" element={<PageTransition><NotFoundPage /></PageTransition>} />
+          <Route path="/403" element={<PageTransition><ForbiddenPage /></PageTransition>} />
+          <Route path="/500" element={<PageTransition><ServerErrorPage /></PageTransition>} />
 
           {/* ========================================= */}
           {/* Catch All */}
@@ -437,6 +505,26 @@ const DashboardRedirect = () => {
           replace
         />
       );
+  }
+};
+
+const SettingsRedirect = () => {
+  const { user } = useAuth();
+  switch (user?.role) {
+    case "patient": return <Navigate to="/patient/settings" replace />;
+    case "doctor": return <Navigate to="/doctor/settings" replace />;
+    case "admin": return <Navigate to="/admin/settings" replace />;
+    default: return <Navigate to="/login" replace />;
+  }
+};
+
+const NotificationsRedirect = () => {
+  const { user } = useAuth();
+  switch (user?.role) {
+    case "patient": return <Navigate to="/patient/notifications" replace />;
+    case "doctor": return <Navigate to="/doctor/notifications" replace />;
+    case "admin": return <Navigate to="/admin/notifications" replace />;
+    default: return <Navigate to="/login" replace />;
   }
 };
 

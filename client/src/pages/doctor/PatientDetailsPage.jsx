@@ -91,9 +91,9 @@ const PatientDetailsPage = () => {
       <motion.div variants={fadeSlide} className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}><ArrowLeft size={20} /></Button>
-          <Avatar name={patient.name} src={patient.avatar} size="xl" />
+          <Avatar name={patient.firstName && patient.lastName ? `${patient.firstName} ${patient.lastName}` : patient.name || "Patient"} src={patient.avatar} size="xl" />
           <div>
-            <h1 className="text-3xl font-black text-[var(--text-primary)]">{patient.name}</h1>
+            <h1 className="text-3xl font-black text-[var(--text-primary)]">{patient.firstName && patient.lastName ? `${patient.firstName} ${patient.lastName}` : patient.name || "Patient"}</h1>
             <p className="flex items-center gap-2 text-[var(--text-secondary)]">
               {patient.email} {patient.phone && `· ${patient.phone}`}
             </p>

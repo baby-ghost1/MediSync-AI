@@ -53,6 +53,7 @@ const PatientsPage = () => {
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {patients.map((patient, i) => {
               const p = patient.patient || patient;
+              const patientName = p.firstName && p.lastName ? `${p.firstName} ${p.lastName}` : p.name || "Patient";
               return (
                 <Link key={patient._id} to={`${ROUTES.DOCTOR.PATIENTS}/${p._id || patient._id}`}>
                   <motion.div
@@ -63,9 +64,9 @@ const PatientsPage = () => {
                     className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-6 transition-all duration-300 hover:shadow-[var(--shadow-xl)]"
                   >
                     <div className="flex items-center gap-4">
-                      <Avatar name={p.name} src={p.avatar} size="lg" />
+                      <Avatar name={patientName} src={p.avatar} size="lg" />
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-bold truncate text-[var(--text-primary)]">{p.name || "Patient"}</h3>
+                        <h3 className="font-bold truncate text-[var(--text-primary)]">{patientName}</h3>
                         <p className="text-sm text-[var(--text-secondary)]">{p.email}</p>
                       </div>
                       <ChevronRight size={18} className="shrink-0 text-[var(--text-muted)] transition-transform duration-300 group-hover:translate-x-1" />

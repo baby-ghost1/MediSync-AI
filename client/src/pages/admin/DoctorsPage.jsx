@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
-  Stethoscope, CheckCircle, XCircle,
+  Stethoscope, CheckCircle,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -14,13 +14,12 @@ import Pagination from "@/components/common/Pagination";
 import StatusBadge from "@/components/common/StatusBadge";
 import SectionLoader from "@/components/common/SectionLoader";
 import EmptyState from "@/components/ui/EmptyState";
-import Modal from "@/components/ui/Modal";
 import adminService from "@/services/admin.service";
 import { useApiQuery, useApiMutation } from "@/hooks/useQuery";
 import { useDebounce } from "@/hooks/useDebounce";
 import { usePagination } from "@/hooks/usePagination";
 
-const statusFilters = ["All", "verified", "pending", "rejected"];
+const statusFilters = ["All", "verified", "pending"];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -38,8 +37,6 @@ const itemVariants = {
 const DoctorsPage = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [rejectTarget, setRejectTarget] = useState(null);
-  const [rejectReason, setRejectReason] = useState("");
   const debouncedSearch = useDebounce(search);
   const { page, setPage, limit } = usePagination();
 
@@ -58,12 +55,6 @@ const DoctorsPage = () => {
     mutationFn: (id) => adminService.verifyDoctor(id),
     onSuccess: () => { refetch(); toast.success("Doctor verified"); },
     successMessage: "Doctor verified",
-  });
-
-  const { mutate: rejectDoctor } = useApiMutation({
-    mutationFn: () => adminService.rejectDoctor(rejectTarget, rejectReason),
-    onSuccess: () => { setRejectTarget(null); setRejectReason(""); refetch(); },
-    successMessage: "Doctor rejected",
   });
 
   const doctors = data?.doctors || data?.data || [];
@@ -133,10 +124,7 @@ const DoctorsPage = () => {
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-2">
                           {!doc.isVerified && doc.status !== "verified" && (
-                            <>
-                              <Button variant="ghost" size="icon" onClick={() => verifyDoctor(doc._id)}><CheckCircle size={16} className="text-[var(--success)]" /></Button>
-                              <Button variant="ghost" size="icon" onClick={() => setRejectTarget(doc._id)}><XCircle size={16} className="text-[var(--danger)]" /></Button>
-                            </>
+                            <Button variant="ghost" size="icon" onClick={() => verifyDoctor(doc._id)}><CheckCircle size={16} className="text-[var(--success)]" /></Button>
                           )}
                         </div>
                       </td>
@@ -150,18 +138,6 @@ const DoctorsPage = () => {
         </motion.div>
       )}
 
-      <Modal open={!!rejectTarget} onClose={() => setRejectTarget(null)} title="Reject Doctor" size="md">
-        <div className="space-y-4">
-          <p className="text-sm text-[var(--text-secondary)]">Provide a reason for rejecting this doctor's verification.</p>
-          <textarea value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} rows={3}
-            className="w-full rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] p-4 text-sm text-[var(--text-primary)] outline-none transition-all duration-300 placeholder:text-[var(--text-muted)] focus:border-[var(--primary)]/50 focus:ring-2 focus:ring-[var(--primary)]/10"
-            placeholder="Enter rejection reason..." />
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setRejectTarget(null)}>Cancel</Button>
-            <Button variant="danger" onClick={rejectDoctor} disabled={!rejectReason.trim()}>Reject</Button>
-          </div>
-        </div>
-      </Modal>
     </motion.div>
   );
 };

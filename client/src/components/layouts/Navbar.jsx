@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
 import {
@@ -16,6 +16,8 @@ import {
   FileHeart,
   BrainCircuit,
   Stethoscope,
+  User,
+  Settings,
 } from "lucide-react";
 
 import Avatar from "@/components/ui/Avatar";
@@ -27,224 +29,410 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 import SocketStatus from "@/components/common/SocketStatus";
 import useAppStore from "@/store/appStore";
+import authService from "@/services/auth.service";
+import notificationService from "@/services/notification.service";
+import ROUTES from "@/routes/routeConstants";
+import { useApiQuery } from "@/hooks/useQuery";
 
 const Navbar = () => {
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const { user, logout, isAuthenticated } = useAuth();
+
   const [search, setSearch] = useState("");
-  const { mobileMenuOpen, setMobileMenuOpen } = useAppStore();
+
   const [showSearch, setShowSearch] = useState(false);
+
   const [scrolled, setScrolled] = useState(false);
 
+  const { mobileMenuOpen, setMobileMenuOpen } =
+    useAppStore();
+
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
+    const handleScroll = () =>
+      setScrolled(window.scrollY > 8);
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () =>
+      window.removeEventListener(
+        "scroll",
+        handleScroll
+      );
   }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        e.key.toLowerCase() === "k"
+      ) {
         e.preventDefault();
         setShowSearch(true);
       }
+
       if (e.key === "Escape") {
         setShowSearch(false);
         setMobileMenuOpen(false);
       }
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+
+    window.addEventListener(
+      "keydown",
+      handleKeyDown
+    );
+
+    return () =>
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown
+      );
   }, [setMobileMenuOpen]);
 
-  const navigation = useMemo(
-    () => [
-      { title: "Dashboard", path: "/patient/dashboard", icon: Home },
-      { title: "Doctors", path: "/doctors", icon: Users },
-      { title: "Appointments", path: "/appointments", icon: CalendarDays },
-      { title: "Medical Records", path: "/records", icon: FileHeart },
-      { title: "AI Assistant", path: "/assistant", icon: BrainCircuit },
-    ],
-    []
-  );
+  // Navigation items for mobile drawer (role-aware)
+  const navigation = useMemo(() => {
+    const role = user?.role || "patient";
+    const prefix = role === "doctor" ? "/doctor" : role === "admin" ? "/admin" : "/patient";
+
+    const items = [
+      {
+        title: "Dashboard",
+        path: `${prefix}/dashboard`,
+        icon: Home,
+      },
+    ];
+
+    if (role === "admin") {
+      items.push(
+        { title: "Users", path: "/admin/users", icon: Users },
+        { title: "Doctors", path: "/admin/doctors", icon: Stethoscope },
+        { title: "Patients", path: "/admin/patients", icon: Users },
+        { title: "Appointments", path: "/admin/appointments", icon: CalendarDays },
+        { title: "Reports", path: "/admin/reports", icon: FileHeart },
+        { title: "Analytics", path: "/admin/analytics", icon: BrainCircuit }
+      );
+    } else {
+      items.push(
+        { title: "Appointments", path: `${prefix}/appointments`, icon: CalendarDays },
+        { title: role === "doctor" ? "Patients" : "Doctors", path: role === "doctor" ? `${prefix}/patients` : `${prefix}/doctors`, icon: Users },
+        { title: role === "doctor" ? "Reports" : "Medical Records", path: `${prefix}/reports`, icon: FileHeart },
+        { title: role === "doctor" ? "AI Analysis" : "AI Assistant", path: role === "doctor" ? `${prefix}/ai-analysis` : `${prefix}/ai-assistant`, icon: BrainCircuit }
+      );
+    }
+
+    return items;
+  }, [user?.role]);
+
+  // Get profile and settings routes based on user role
+  const getProfileRoute = () => {
+    if (!user?.role) return ROUTES.LOGIN;
+    const roleKey = user.role.toUpperCase();
+    const profileRoute = ROUTES[roleKey]?.PROFILE;
+    // If profile doesn't exist (e.g., for admin), use settings instead
+    return profileRoute || ROUTES[roleKey]?.SETTINGS || ROUTES.LOGIN;
+  };
+
+  const getSettingsRoute = () => {
+    if (!user?.role) return ROUTES.LOGIN;
+    const roleKey = user.role.toUpperCase();
+    return ROUTES[roleKey]?.SETTINGS || ROUTES.LOGIN;
+  };
+
+  const { data: unreadCount } = useApiQuery({
+    queryKey: ["notification-count"],
+    queryFn: () => notificationService.getUnreadCount(),
+    enabled: isAuthenticated,
+    refetchInterval: 30000,
+  });
+
+  const notificationCount = unreadCount?.data?.unread || unreadCount?.unread || 0;
+
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+    } catch {
+      // proceed with client-side logout even if API fails
+    }
+    logout(true);
+  };
+
+  // Compute user full name from firstName and lastName
+  const userFullName = user?.firstName && user?.lastName 
+    ? `${user.firstName} ${user.lastName}` 
+    : user?.name || "Guest";
+
+  const userRole = user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : "Patient";
 
   const profileItems = [
-    { label: "Profile", onClick: () => {} },
-    { label: "Settings", onClick: () => {} },
-    { divider: true },
-    { label: "Logout", onClick: logout },
+    {
+      label: "Profile",
+      icon: User,
+      onClick: () => {
+        navigate(getProfileRoute());
+        setMobileMenuOpen(false);
+      },
+    },
+    {
+      label: "Settings",
+      icon: Settings,
+      onClick: () => {
+        navigate(getSettingsRoute());
+        setMobileMenuOpen(false);
+      },
+    },
+    {
+      divider: true,
+    },
+    {
+      label: "Logout",
+      onClick: handleLogout,
+    },
   ];
 
   return (
     <>
       <motion.header
-        initial={{ y: -64 }}
+        initial={{ y: -70 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-200 ${
+        transition={{
+          duration: 0.28,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+        className={`fixed inset-x-0 top-1 z-50 border-b transition-all duration-300 ${
           scrolled
-            ? "bg-[var(--navbar)] backdrop-blur-xl border-[var(--navbar-border)] shadow-[0_8px_24px_rgba(15,23,42,0.06)]"
-            : "bg-[var(--navbar)] backdrop-blur-xl border-transparent"
+            ? "border-[var(--border)] bg-[var(--navbar)]/90 backdrop-blur-2xl shadow-[0_8px_30px_rgba(15,23,42,.06)]"
+            : "border-transparent bg-[var(--navbar)]/75 backdrop-blur-xl"
         }`}
       >
         <div className="mx-auto flex h-16 items-center justify-between px-4 lg:px-6">
           {/* Left */}
-          <div className="flex items-center gap-2">
+
+          <div className="flex items-center gap-3">
             <Button
               size="icon"
               variant="ghost"
-              className="lg:hidden h-8 w-8"
-              onClick={() => setMobileMenuOpen(true)}
-              aria-label="Open navigation menu"
-              aria-expanded={mobileMenuOpen}
+              className="h-9 w-9"
+              onClick={() =>
+                setMobileMenuOpen(true)
+              }
             >
-              <Menu size={18} />
+              <Menu size={25} />
             </Button>
 
-            <Link to="/" className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[var(--gradient-primary)] text-white shadow-[var(--shadow-md)]">
-                <Stethoscope size={16} />
+            <Link
+              to="/"
+              className="flex items-center gap-3"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-white shadow-[0_10px_24px_rgba(37,99,235,.18)]">
+                <Stethoscope size={17} />
               </div>
+
               <div className="hidden md:block">
-                <h2 className="text-sm font-bold text-[var(--foreground)] leading-tight">
+                <h2 className="text-sm font-semibold tracking-tight text-[var(--foreground)]">
                   MediSync AI
                 </h2>
-                <p className="text-[10px] text-[var(--muted-foreground)] leading-tight">
+
+                <p className="text-[11px] text-[var(--muted-foreground)]">
                   Healthcare Platform
                 </p>
               </div>
             </Link>
           </div>
+                    {/* Search */}
 
-          {/* Search */}
-          <div className="hidden lg:block w-full max-w-xl px-8">
+          <div className="hidden w-full max-w-2xl px-8 lg:block">
             <div className="relative">
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search doctors, patients, appointments..."
-                leftIcon={<Search size={15} />}
+                placeholder="Search doctors, patients, appointments, reports..."
+                leftIcon={<Search size={16} />}
+                className="bg-[var(--card)]"
               />
-              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 rounded-md border border-[var(--border)] bg-[var(--card)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--muted-foreground)] pointer-events-none">
-                <Command size={11} strokeWidth={1.5} />K
+
+              <div
+                className="
+                  pointer-events-none
+                  absolute right-3 top-1/2
+                  flex -translate-y-1/2 items-center gap-1
+                  rounded-lg
+                  border border-[var(--border)]
+                  bg-[var(--secondary)]
+                  px-2 py-1
+                  text-[10px]
+                  font-medium
+                  text-[var(--muted-foreground)]
+                "
+              >
+                <Command size={11} />
+                K
               </div>
             </div>
           </div>
 
           {/* Right */}
-          <div className="flex items-center gap-0.5">
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => setShowSearch(true)}
-              className="lg:hidden h-8 w-8"
-            >
-              <Search size={18} />
-            </Button>
 
-            <SocketStatus />
-            <ThemeToggle />
+          <div className="flex items-center gap-1">
 
-            <Button size="icon" variant="ghost" className="h-8 w-8">
-              <MessageSquareMore size={18} />
-            </Button>
-
-            <Button size="icon" variant="ghost" className="relative h-8 w-8">
-              <Bell size={18} />
-              <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[var(--danger)] ring-2 ring-[var(--navbar)]" />
-            </Button>
-
-            <Dropdown
-              trigger={
-                <button className="ml-1 flex items-center gap-2 rounded-lg p-1.5 transition-colors hover:bg-[var(--surface-hover)]">
-                  <Avatar name={user?.name} src={user?.avatar} size="xs" />
-                  <div className="hidden lg:block text-left">
-                    <p className="text-xs font-medium text-[var(--foreground)] leading-tight">
-                      {user?.name || "Guest"}
-                    </p>
-                    <p className="text-[10px] capitalize text-[var(--muted-foreground)] leading-tight">
-                      {user?.role || "Patient"}
-                    </p>
-                  </div>
-                  <ChevronDown size={14} className="hidden lg:block text-[var(--muted-foreground)]" />
-                </button>
-              }
-              items={profileItems}
-            />
-          </div>
-        </div>
-
-        {/* Desktop Nav */}
-        <div className="hidden lg:block border-t border-[var(--border)]/80">
-          <div className="mx-auto flex h-11 items-center gap-5 px-6">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              return (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  className={({ isActive }) =>
-                    `relative flex items-center gap-1.5 py-2 text-xs font-medium transition-colors duration-150 ${
-                      isActive
-                        ? "text-[var(--primary)]"
-                        : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-                    }`
-                  }
+            {isAuthenticated ? (
+              <>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 lg:hidden"
+                  onClick={() => setShowSearch(true)}
                 >
-                  {({ isActive }) => (
-                    <>
-                      <Icon size={14} strokeWidth={isActive ? 2.5 : 2} />
-                      {item.title}
-                      <AnimatePresence>
-                        {isActive && (
-                          <motion.div
-                            layoutId="navbar-indicator"
-                            className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full bg-[var(--primary)]"
-                          />
-                        )}
-                      </AnimatePresence>
-                    </>
+                  <Search size={18} />
+                </Button>
+
+                <SocketStatus />
+
+                <ThemeToggle />
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9"
+                >
+                  <MessageSquareMore size={18} />
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative h-9 w-9"
+                  onClick={() => navigate(`/${user?.role}/notifications`)}
+                >
+                  <Bell size={18} />
+
+                  {notificationCount > 0 && (
+                    <span
+                      className="
+                        absolute -right-1 -top-1
+                        flex h-5 min-w-[20px] items-center justify-center
+                        rounded-full
+                        bg-[var(--danger)]
+                        px-1
+                        text-[10px]
+                        font-bold
+                        text-white
+                        ring-2
+                        ring-[var(--navbar)]
+                      "
+                    >
+                      {notificationCount > 99 ? "99+" : notificationCount}
+                    </span>
                   )}
-                </NavLink>
-              );
-            })}
+                </Button>
+
+                <Dropdown
+                  trigger={
+                    <button
+                      className="
+                        ml-2
+                        flex items-center gap-2
+                        rounded-2xl
+                        border border-transparent
+                        px-2 py-1.5
+                        transition-all duration-200
+                        hover:border-[var(--border)]
+                        hover:bg-[var(--secondary)]
+                      "
+                    >
+                      <Avatar
+                        src={user?.avatar?.url}
+                        name={userFullName}
+                        size="xs"
+                      />
+
+                      <div className="hidden text-left lg:block">
+                        <p className="text-xs font-semibold text-[var(--foreground)]">
+                          {userFullName}
+                        </p>
+
+                        <p className="text-[10px] capitalize text-[var(--muted-foreground)]">
+                          {userRole}
+                        </p>
+                      </div>
+
+                      <ChevronDown
+                        size={15}
+                        className="hidden text-[var(--muted-foreground)] lg:block"
+                      />
+                    </button>
+                  }
+                  items={profileItems}
+                />
+              </>
+            ) : (
+              <>
+                <ThemeToggle />
+                <Link to="/login">
+                  <Button variant="ghost" size="sm">Login</Button>
+                </Link>
+                <Link to="/register">
+                  <Button variant="gradient" size="sm">Sign Up</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </motion.header>
 
       {/* Mobile Search */}
+
       <AnimatePresence>
         {showSearch && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm p-4 lg:hidden"
+            className="
+              fixed inset-0 z-[70]
+              bg-black/40
+              backdrop-blur-sm
+              p-4
+              lg:hidden
+            "
           >
             <motion.div
-              initial={{ y: -24, opacity: 0 }}
+              initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -24, opacity: 0 }}
-              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="rounded-2xl bg-[var(--card)] p-4 shadow-[var(--shadow-2xl)]"
+              exit={{ y: -20, opacity: 0 }}
+              transition={{
+                duration: 0.25,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="
+                rounded-3xl
+                border border-[var(--border)]
+                bg-[var(--card)]
+                p-5
+                shadow-[0_20px_60px_rgba(15,23,42,.12)]
+              "
             >
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-[var(--foreground)]">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-base font-semibold text-[var(--foreground)]">
                   Search
-                </h2>
+                </h3>
+
                 <Button
                   size="icon"
                   variant="ghost"
+                  className="h-8 w-8"
                   onClick={() => setShowSearch(false)}
-                  className="h-7 w-7"
                 >
                   <X size={18} />
                 </Button>
               </div>
+
               <Input
                 autoFocus
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) =>
+                  setSearch(e.target.value)
+                }
                 leftIcon={<Search size={16} />}
                 placeholder="Search..."
               />
@@ -252,8 +440,8 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
+            {/* Mobile Drawer */}
 
-      {/* Mobile Drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
@@ -261,55 +449,73 @@ const Navbar = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
+              transition={{ duration: 0.2 }}
               onClick={() => setMobileMenuOpen(false)}
-              aria-label="Close navigation menu"
               className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
             />
+
             <motion.aside
-              initial={{ x: -300 }}
+              initial={{ x: -320 }}
               animate={{ x: 0 }}
-              exit={{ x: -300 }}
-              transition={{ type: "spring", stiffness: 350, damping: 30, mass: 0.8 }}
-              className="fixed left-0 top-0 z-[61] flex h-screen w-72 flex-col bg-[var(--card)] shadow-[0_8px_30px_rgba(0,0,0,0.12)]"
+              exit={{ x: -320 }}
+              transition={{
+                type: "spring",
+                stiffness: 320,
+                damping: 30,
+              }}
+              className="
+                fixed left-0 top-0 z-[61]
+                flex h-screen w-[290px] flex-col
+                border-r border-[var(--border)]
+                bg-[var(--card)]
+                shadow-[0_20px_60px_rgba(15,23,42,.14)]
+              "
             >
-              <div className="flex items-center justify-between border-b border-[var(--border)] p-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--gradient-primary)] text-white">
-                    <Stethoscope size={16} />
+              <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-white shadow-[0_10px_24px_rgba(37,99,235,.18)]">
+                    <Stethoscope size={17} />
                   </div>
+
                   <div>
-                    <h2 className="text-sm font-bold text-[var(--foreground)]">
+                    <h2 className="text-sm font-semibold text-[var(--foreground)]">
                       MediSync AI
                     </h2>
-                    <p className="text-[10px] text-[var(--muted-foreground)]">
-                      Healthcare
+
+                    <p className="text-[11px] text-[var(--muted-foreground)]">
+                      Healthcare Platform
                     </p>
                   </div>
                 </div>
+
                 <Button
-                  size="icon"
                   variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="h-7 w-7"
                 >
                   <X size={18} />
                 </Button>
               </div>
 
-              <nav className="flex-1 space-y-1 p-3">
+              <nav className="flex-1 space-y-1 overflow-y-auto p-4">
                 {navigation.map((item) => {
                   const Icon = item.icon;
-                  const active = location.pathname === item.path;
+
+                  const active =
+                    location.pathname === item.path;
+
                   return (
                     <NavLink
                       key={item.path}
                       to={item.path}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors duration-150 ${
+                      onClick={() =>
+                        setMobileMenuOpen(false)
+                      }
+                      className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-200 ${
                         active
-                          ? "bg-[var(--primary)]/10 text-[var(--primary)]"
-                          : "text-[var(--muted-foreground)] hover:bg-[var(--surface-hover)] hover:text-[var(--foreground)]"
+                          ? "bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/10"
+                          : "text-[var(--muted-foreground)] hover:bg-[var(--secondary)] hover:text-[var(--foreground)]"
                       }`}
                     >
                       <Icon size={18} />
@@ -320,14 +526,20 @@ const Navbar = () => {
               </nav>
 
               <div className="border-t border-[var(--border)] p-4">
-                <div className="flex items-center gap-2.5">
-                  <Avatar name={user?.name} src={user?.avatar} size="sm" />
+                <div className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3">
+                  <Avatar
+                    src={user?.avatar?.url || user?.avatar}
+                    name={userFullName}
+                    size="sm"
+                  />
+
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-[var(--foreground)]">
-                      {user?.name}
+                    <p className="truncate text-sm font-semibold text-[var(--foreground)]">
+                      {userFullName}
                     </p>
+
                     <p className="text-xs capitalize text-[var(--muted-foreground)]">
-                      {user?.role}
+                      {userRole}
                     </p>
                   </div>
                 </div>

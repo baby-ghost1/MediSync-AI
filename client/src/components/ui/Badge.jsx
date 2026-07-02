@@ -2,41 +2,41 @@ import { cn } from "@/utils/cn";
 
 const variants = {
   primary:
-    "bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/20 shadow-sm",
+    "border border-[var(--primary)]/15 bg-[var(--primary)]/8 text-[var(--primary)]",
 
   success:
-    "bg-[var(--success)]/10 text-[var(--success)] border border-[var(--success)]/20",
+    "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400",
 
   warning:
-    "bg-[var(--warning)]/10 text-[var(--warning)] border border-[var(--warning)]/20",
+    "border border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400",
 
   danger:
-    "bg-[var(--danger)]/10 text-[var(--danger)] border border-[var(--danger)]/20 shadow-sm",
-
-  secondary:
-    "bg-[var(--secondary)] text-[var(--muted-foreground)] border border-[var(--border)]",
-
-  outline:
-    "bg-transparent text-[var(--muted-foreground)] border border-[var(--border)]",
-
-  glass:
-    "bg-white/10 text-white border border-white/20 backdrop-blur-xl shadow-sm",
-
-  gradient:
-    "bg-[var(--gradient-primary)] text-white border-0 shadow-md",
+    "border border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400",
 
   info:
-    "bg-[var(--info)]/10 text-[var(--info)] border border-[var(--info)]/20",
+    "border border-cyan-200 bg-cyan-50 text-cyan-700 dark:border-cyan-800 dark:bg-cyan-900/20 dark:text-cyan-400",
+
+  secondary:
+    "border border-[var(--border)] bg-[var(--secondary)] text-[var(--foreground)]",
+
+  outline:
+    "border border-[var(--border)] bg-transparent text-[var(--muted-foreground)]",
 
   accent:
-    "bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20 shadow-sm",
+    "border border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-800 dark:bg-violet-900/20 dark:text-violet-300",
+
+  glass:
+    "border border-white/20 bg-white/70 backdrop-blur-xl text-[var(--foreground)] dark:bg-white/10 dark:text-white",
+
+  gradient:
+    "border-0 bg-[var(--gradient-primary)] text-white shadow-sm",
 };
 
 const sizes = {
-  xs: "px-1.5 py-[3px] text-[10px] leading-none",
-  sm: "px-2 py-[3px] text-[11px] leading-tight",
-  md: "px-2.5 py-1 text-xs leading-tight",
-  lg: "px-3 py-1.5 text-sm leading-tight",
+  xs: "h-5 px-2 text-[10px]",
+  sm: "h-6 px-2.5 text-[11px]",
+  md: "h-7 px-3 text-xs",
+  lg: "h-8 px-3.5 text-sm",
 };
 
 const Badge = ({
@@ -44,15 +44,19 @@ const Badge = ({
   variant = "primary",
   size = "sm",
   rounded = true,
-  className = "",
-}) => {
-  return (
+  className,
+}) => {  return (
     <span
       className={cn(
-        "inline-flex items-center justify-center gap-1 whitespace-nowrap font-medium tracking-tight",
-        rounded ? "rounded-full" : "rounded-lg",
-        sizes[size],
+        "inline-flex items-center justify-center",
+        "whitespace-nowrap",
+        "font-medium tracking-[-0.01em]",
+        "transition-all duration-200",
+        "select-none",
+        "shadow-[0_1px_2px_rgba(15,23,42,.04)]",
+        rounded ? "rounded-full" : "rounded-xl",
         variants[variant],
+        sizes[size],
         className
       )}
     >

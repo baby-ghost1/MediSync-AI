@@ -1,5 +1,37 @@
 import axios from "axios";
 
+const STORAGE_KEY = "medisync-auth";
+
+const getPersistedState = () => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+};
+
+const setPersistedToken = (token) => {
+  try {
+    const persisted = getPersistedState();
+    if (persisted?.state) {
+      persisted.state.token = token;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(persisted));
+    }
+  } catch {
+    // ignore
+  }
+};
+
+const clearPersistedAuth = () => {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // ignore
+  }
+};
+
 const API = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL ||
@@ -27,8 +59,8 @@ const REFRESH_URL =
 
 API.interceptors.request.use(
   (config) => {
-    const token =
-      localStorage.getItem("token");
+    const persisted = getPersistedState();
+    const token = persisted?.state?.token || null;
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -86,10 +118,8 @@ API.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const refreshToken =
-          localStorage.getItem(
-            "refreshToken"
-          );
+        const persisted = getPersistedState();
+        const refreshToken = persisted?.state?.refreshToken || null;
 
         if (!refreshToken) {
           throw new Error("No refresh token available");
@@ -112,10 +142,7 @@ API.interceptors.response.use(
           throw new Error("No token in refresh response");
         }
 
-        localStorage.setItem(
-          "token",
-          token
-        );
+        setPersistedToken(token);
 
         originalRequest.headers.Authorization =
           `Bearer ${token}`;
@@ -130,13 +157,7 @@ API.interceptors.response.use(
 
         processQueue(err, null);
 
-        localStorage.removeItem(
-          "token"
-        );
-
-        localStorage.removeItem(
-          "refreshToken"
-        );
+        clearPersistedAuth();
 
         if (
           window.location.pathname !==

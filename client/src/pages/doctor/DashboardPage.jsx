@@ -109,6 +109,7 @@ const DashboardPage = () => {
                 ) : (
                   appointments.map((apt, i) => {
                     const patient = apt.patient || {};
+                    const patientName = patient.firstName && patient.lastName ? `${patient.firstName} ${patient.lastName}` : patient.name || "Patient";
                     return (
                       <Link key={apt._id} to={`${ROUTES.DOCTOR.APPOINTMENTS}/${apt._id}`}>
                         <motion.div
@@ -119,10 +120,10 @@ const DashboardPage = () => {
                           className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-4 transition-all duration-300 hover:shadow-[var(--shadow-md)] sm:flex-row sm:items-center sm:justify-between"
                         >
                           <div className="flex items-center gap-3">
-                            <Avatar name={patient.name} size="md" />
+                            <Avatar name={patientName} size="md" />
                             <div className="min-w-0">
                               <p className="text-sm font-semibold text-[var(--text-primary)]">
-                                {patient.name || "Patient"}
+                                {patientName}
                               </p>
                               <p className="text-xs text-[var(--text-secondary)]">
                                 {patient.age ? `Age ${patient.age} · ` : ""}
@@ -230,6 +231,7 @@ const DashboardPage = () => {
               <div className="space-y-3">
                 {appointments.slice(0, 4).map((apt, i) => {
                   const patient = apt.patient || {};
+                  const patientName = patient.firstName && patient.lastName ? `${patient.firstName} ${patient.lastName}` : patient.name || "Patient";
                   return (
                     <motion.div
                       key={apt._id || apt.time}
@@ -241,7 +243,7 @@ const DashboardPage = () => {
                     >
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-[var(--text-primary)]">
-                          {patient.name || "Patient"}
+                          {patientName}
                         </p>
                         <p className="text-xs text-[var(--text-secondary)]">
                           {apt.time || "N/A"}

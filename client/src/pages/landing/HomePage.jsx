@@ -125,10 +125,15 @@ const HomePage = () => {
             <div className="mt-10 flex flex-wrap gap-4">
               <Link to="/register">
                 <Button size="lg" variant="gradient" rightIcon={<ArrowRight size={16} />}>
-                  Get Started
+                  Sign Up
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" leftIcon={<PlayCircle size={16} />}>
+              <Link to="/login">
+                <Button size="lg" variant="outline">
+                  Login
+                </Button>
+              </Link>
+              <Button size="lg" variant="ghost" leftIcon={<PlayCircle size={16} />}>
                 Watch Demo
               </Button>
             </div>
@@ -517,15 +522,87 @@ const HomePage = () => {
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Link to="/register">
                 <Button variant="secondary" size="lg">
-                  Create Account
+                  Get Started Free
                 </Button>
               </Link>
-              <Link to="/#features">
+              <Link to="/login">
                 <Button variant="glass" size="lg">
-                  Learn More
+                  Sign In
                 </Button>
               </Link>
             </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Role-based CTA */}
+      <section className="py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            className="text-center"
+          >
+            <Badge variant="primary" size="md">For Everyone</Badge>
+            <h2 className="mt-5 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+              Choose Your <span className="gradient-text">Role</span>
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-[var(--muted-foreground)] sm:text-base">
+              Select how you want to use MediSync AI and get started instantly.
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            className="mt-14 grid gap-8 md:grid-cols-2"
+          >
+            {[
+              {
+                title: "Patient",
+                description: "Manage appointments, medical records, prescriptions, and get AI-powered health insights.",
+                features: ["Book appointments", "Track health records", "AI health assistant"],
+                link: "/register",
+                gradient: "from-blue-600 to-cyan-500",
+              },
+              {
+                title: "Doctor",
+                description: "Manage patients, appointments, reports, and leverage AI for better diagnosis.",
+                features: ["Patient management", "AI report analysis", "Digital prescriptions"],
+                link: "/register",
+                gradient: "from-violet-600 to-indigo-600",
+              },
+            ].map((role) => (
+              <motion.div
+                key={role.title}
+                variants={fadeInUp}
+                whileHover={{ y: -8, transition: { duration: 0.25 } }}
+                className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] p-8 shadow-[var(--shadow-card)] transition-all duration-300 hover:border-[var(--border-hover)] hover:shadow-[var(--shadow-card-hover)]"
+              >
+                <div className={`absolute right-[-30px] top-[-30px] h-36 w-36 rounded-full bg-gradient-to-br ${role.gradient} opacity-10 blur-3xl`} />
+                <h3 className="text-xl font-bold text-[var(--foreground)]">{role.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-[var(--muted-foreground)]">
+                  {role.description}
+                </p>
+                <ul className="mt-6 space-y-2">
+                  {role.features.map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-sm text-[var(--muted-foreground)]">
+                      <div className={`h-1.5 w-1.5 rounded-full bg-gradient-to-r ${role.gradient}`} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link to={role.link} className="mt-6 block">
+                  <Button fullWidth variant="gradient" size="sm">
+                    Get Started
+                  </Button>
+                </Link>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>

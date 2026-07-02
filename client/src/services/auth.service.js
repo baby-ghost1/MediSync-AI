@@ -29,8 +29,11 @@ class AuthService {
     try {
       await API.post(ENDPOINTS.AUTH.LOGOUT);
     } finally {
-      localStorage.removeItem("token");
-      localStorage.removeItem("refreshToken");
+      try {
+        localStorage.removeItem("medisync-auth");
+      } catch {
+        // ignore
+      }
     }
   }
 

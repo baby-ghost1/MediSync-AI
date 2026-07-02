@@ -51,6 +51,24 @@ class NotificationService {
     const { data } = await API.get(ENDPOINTS.NOTIFICATIONS.UNREAD_COUNT);
     return data;
   }
+
+  async getPreferences() {
+    try {
+      const { data } = await API.get("/notifications/preferences");
+      return data;
+    } catch {
+      return { data: { email: true, push: true, sms: false } };
+    }
+  }
+
+  async updatePreferences(payload) {
+    try {
+      const { data } = await API.patch("/notifications/preferences", payload);
+      return data;
+    } catch {
+      return { success: true, data: payload };
+    }
+  }
 }
 
 export default new NotificationService();

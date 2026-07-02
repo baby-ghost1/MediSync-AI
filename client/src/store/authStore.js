@@ -23,7 +23,8 @@ const useAuthStore = create(
             set({ loading: false });
             return;
           }
-          const profile = await authService.me();
+          const response = await authService.me();
+          const profile = response?.data || response;
           set({
             user: profile,
             token: savedToken,
@@ -69,6 +70,11 @@ const useAuthStore = create(
 
       logout: (redirect = true) => {
         set({ user: null, token: null, refreshToken: null, isAuthenticated: false, loading: false });
+        try {
+          localStorage.removeItem("medisync-auth");
+        } catch {
+          // ignore
+        }
         if (redirect && window.location.pathname !== "/login") {
           window.location.href = "/login";
         }
@@ -76,7 +82,8 @@ const useAuthStore = create(
 
       refreshProfile: async () => {
         try {
-          const profile = await authService.me();
+          const response = await authService.me();
+          const profile = response?.data || response;
           set({ user: profile });
           return profile;
         } catch (error) {
@@ -89,6 +96,15 @@ const useAuthStore = create(
           user: state.user ? { ...state.user, ...data } : null,
         }));
       },
+
+      setAuth: (authState) =>
+        set({
+          user: authState.user,
+          token: authState.token,
+          refreshToken: authState.refreshToken,
+          isAuthenticated: authState.isAuthenticated,
+          loading: false,
+        }),
 
       setLoading: (loading) => set({ loading }),
 

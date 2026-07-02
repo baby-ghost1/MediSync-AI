@@ -82,12 +82,14 @@ const ENDPOINTS = {
     FILE: "/upload",
   },
   ADMIN: {
+    LOGIN: "/admin/login",
     DASHBOARD: "/admin/dashboard",
     STATISTICS: "/admin/statistics",
     USERS: "/admin/users",
     DOCTORS: "/admin/doctors",
     REPORTS: "/admin/reports",
     PRESCRIPTIONS: "/admin/prescriptions",
+    APPOINTMENTS: "/admin/appointments",
     BROADCAST: "/admin/broadcast",
   },
 };

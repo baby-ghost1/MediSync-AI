@@ -79,14 +79,16 @@ const PatientsPage = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--border)]">
-                  {patients.map((patient, i) => (
+                    {patients.map((patient, i) => {
+                      const patientName = patient.firstName && patient.lastName ? `${patient.firstName} ${patient.lastName}` : patient.name || "Patient";
+                    return (
                     <motion.tr key={patient._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}
                       className="bg-[var(--surface)] transition-all duration-200 hover:bg-[var(--surface-off)]"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <Avatar name={patient.name} src={patient.avatar} size="md" />
-                          <span className="font-semibold text-[var(--text-primary)]">{patient.name}</span>
+                          <Avatar name={patientName} src={patient.avatar} size="md" />
+                          <span className="font-semibold text-[var(--text-primary)]">{patientName}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{patient.email}</td>
@@ -95,7 +97,8 @@ const PatientsPage = () => {
                       <td className="px-6 py-4"><StatusBadge status={patient.status || "active"} size="xs" /></td>
                       <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{patient.createdAt ? new Date(patient.createdAt).toLocaleDateString() : "N/A"}</td>
                     </motion.tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

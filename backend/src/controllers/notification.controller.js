@@ -152,6 +152,27 @@ class NotificationController {
         data,
       });
     });
+
+  getPreferences =
+    asyncHandler(async (req, res) => {
+      res.json({
+        success: true,
+        data: {
+          email: true,
+          push: true,
+          sms: false,
+        },
+      });
+    });
+
+  updatePreferences =
+    asyncHandler(async (req, res) => {
+      res.json({
+        success: true,
+        message: "Preferences updated.",
+        data: req.body,
+      });
+    });
 }
 
 export default new NotificationController();

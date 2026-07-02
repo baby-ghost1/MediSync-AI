@@ -11,3 +11,5 @@ export { default as notFound } from "./notFound.js";
 export { default as validate } from "./validate.js";
 
 export { default as upload } from "./upload.js";
+
+export { default as sanitize } from "./sanitize.js";

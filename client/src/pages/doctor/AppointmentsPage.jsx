@@ -73,8 +73,9 @@ const AppointmentsPage = () => {
       ) : (
         <>
           <div className="space-y-4">
-            {appointments.map((apt, i) => {
+              {appointments.map((apt, i) => {
               const patient = apt.patient || {};
+              const patientName = patient.firstName && patient.lastName ? `${patient.firstName} ${patient.lastName}` : patient.name || "Patient";
               return (
                 <Link key={apt._id} to={`${ROUTES.DOCTOR.APPOINTMENTS}/${apt._id}`}>
                   <motion.div
@@ -83,9 +84,9 @@ const AppointmentsPage = () => {
                     className="flex flex-col gap-4 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-6 transition-all duration-300 hover:shadow-[var(--shadow-lg)] md:flex-row md:items-center md:justify-between"
                   >
                     <div className="flex items-center gap-5">
-                      <Avatar name={patient.name} src={patient.avatar} size="lg" />
+                      <Avatar name={patientName} src={patient.avatar} size="lg" />
                       <div>
-                        <h3 className="text-lg font-bold text-[var(--text-primary)]">{patient.name || "Patient"}</h3>
+                        <h3 className="text-lg font-bold text-[var(--text-primary)]">{patientName}</h3>
                         <p className="text-sm text-[var(--text-secondary)]">{apt.reason || apt.type || "Consultation"}</p>
                         <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--text-secondary)]">
                           <span className="flex items-center gap-1"><CalendarDays size={14} />{new Date(apt.date).toLocaleDateString()}</span>
