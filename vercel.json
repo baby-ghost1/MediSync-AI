@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "projects": [
+    {
+      "name": "medisync-ai-client",
+      "rootDirectory": "client",
+      "framework": "vite",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist",
+      "installCommand": "npm install"
+    }
+  ]
+}
