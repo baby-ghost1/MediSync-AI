@@ -1,6 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 import { Toaster } from "react-hot-toast";
 
 import App from "./App";
@@ -46,7 +46,6 @@ function Root() {
               </SocketProvider>
             </AuthProvider>
           </ThemeProvider>
-          <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
         </QueryClientProvider>
       </BrowserRouter>
     </ErrorBoundary>

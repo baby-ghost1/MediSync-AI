@@ -87,14 +87,14 @@ const ProfilePage = () => {
     <div className="space-y-8">
       <PageHeader title="Profile" description="Manage your personal information" />
 
-      <Card paddingSize="lg" className="overflow-hidden border-0 bg-[linear-gradient(135deg,var(--primary),var(--accent))] text-white shadow-[var(--shadow-lg)]">
+      <Card paddingSize="lg" className="overflow-hidden border-0 bg-[linear-gradient(135deg,var(--primary),var(--accent))] text-[var(--primary-foreground)] shadow-[var(--shadow-lg)]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/70">Account overview</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--primary-foreground)]/70">Account overview</p>
             <h2 className="mt-2 text-xl font-semibold">Keep your profile current and secure</h2>
-            <p className="mt-2 max-w-2xl text-sm text-white/75">Update personal details, change your password and manage your medical profile with confidence.</p>
+            <p className="mt-2 max-w-2xl text-sm text-[var(--primary-foreground)]/75">Update personal details, change your password and manage your medical profile with confidence.</p>
           </div>
-          <div className="rounded-[var(--radius-lg)] bg-white/15 px-4 py-3 backdrop-blur-xl">
+          <div className="rounded-[var(--radius-lg)] bg-[var(--primary-foreground)]/15 px-4 py-3 backdrop-blur-xl">
             <p className="text-sm font-semibold">{user?.role || "Patient"}</p>
           </div>
         </div>
@@ -137,7 +137,7 @@ const ProfilePage = () => {
             <div className="text-center">
               <div className="relative mx-auto inline-block">
                 <Avatar src={user?.avatar?.url || user?.avatar} name={`${user?.firstName || ""} ${user?.lastName || ""}`} size="xl" />
-                <label className="absolute -bottom-1 -right-1 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[var(--primary)] text-white shadow-[var(--shadow-lg)] transition-all duration-300 hover:bg-[var(--primary-hover)]">
+                <label className="absolute -bottom-1 -right-1 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[var(--shadow-lg)] transition-all duration-300 hover:bg-[var(--primary-hover)]">
                   <Camera size={18} />
                   <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
                 </label>

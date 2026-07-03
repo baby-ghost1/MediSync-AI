@@ -95,7 +95,7 @@ const AIAssistantPage = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex w-full items-center gap-3 rounded-[var(--radius-lg)] px-4 py-3 text-sm font-medium transition-all duration-300 ${
                   activeTab === tab.id
-                    ? "bg-[var(--primary)] text-white shadow-[var(--shadow-lg)]"
+                    ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[var(--shadow-lg)]"
                     : "text-[var(--muted-foreground)] hover:bg-[var(--secondary)]"
                 }`}
               >
@@ -105,10 +105,10 @@ const AIAssistantPage = () => {
             ))}
           </nav>
 
-          <div className="mt-6 rounded-[var(--radius-lg)] bg-[var(--gradient-primary)] p-4 text-white">
+          <div className="mt-6 rounded-[var(--radius-lg)] bg-[var(--gradient-primary)] p-4 text-[var(--primary-foreground)]">
             <Brain size={24} className="mb-2" />
             <p className="text-sm font-bold">Powered by Gemini AI</p>
-            <p className="mt-1 text-xs text-white/80">Advanced medical intelligence for personalized healthcare</p>
+            <p className="mt-1 text-xs text-[var(--primary-foreground)]/80">Advanced medical intelligence for personalized healthcare</p>
           </div>
         </div>
 

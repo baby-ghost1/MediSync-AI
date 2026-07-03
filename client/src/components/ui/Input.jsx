@@ -82,7 +82,7 @@ const Input = forwardRef(
               "hover:border-[var(--border-hover)]",
               "focus:border-[var(--primary)]",
               "focus:ring-4",
-              "focus:ring-[rgba(37,99,235,.12)]",
+              "focus:ring-[var(--primary)]/12",
               "focus:outline-none",
               "disabled:pointer-events-none",
               "disabled:opacity-50",
@@ -91,7 +91,7 @@ const Input = forwardRef(
                 ? "pr-11"
                 : "pr-4",
               error &&
-                "border-[var(--danger)] focus:border-[var(--danger)] focus:ring-[rgba(220,38,38,.12)]",
+                "border-[var(--danger)] focus:border-[var(--danger)] focus:ring-[var(--danger)]/12",
               className
             )}
             {...props}

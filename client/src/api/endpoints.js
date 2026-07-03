@@ -64,10 +64,13 @@ const ENDPOINTS = {
     SEARCH: "/prescriptions/search",
   },
   AI: {
+    WEBSITE_ASSISTANT: "/ai/website-assistant",
     CHAT: "/ai/chat",
+    CHAT_HISTORY: "/ai/chat/history",
     ASK: "/ai/ask",
     SYMPTOMS: "/ai/symptoms",
     MEDICINE_ADVICE: "/ai/medicine",
+    HEALTH_SCORE_CALC: "/ai/health-score",
     HEALTH_TIPS: "/ai/health-tips",
     SUMMARIZE_REPORT: (id) => `/ai/report/${id}/summary`,
     HEALTH_SCORE: (id) => `/ai/report/${id}/health-score`,

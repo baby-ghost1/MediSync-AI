@@ -12,7 +12,7 @@ const Footer = () => {
       <div className="mx-auto flex flex-col items-center justify-between gap-5 px-8 py-6 md:flex-row md:gap-6 md:px-10 lg:px-12">
         {/* Left */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--gradient-primary)] text-white shadow-md shadow-[var(--primary)]/10">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--gradient-primary)] text-[var(--primary-foreground)] shadow-md shadow-[var(--primary)]/10">
             <Heart size={18} />
           </div>
           <div>

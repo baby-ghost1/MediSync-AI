@@ -9,6 +9,10 @@ const THEMES = {
   SYSTEM: "system",
 };
 
+const getSystemTheme = () => {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+};
+
 export const ThemeProvider = ({ children }) => {
   const { theme, setTheme, toggleTheme } = useThemeStore();
 
@@ -18,10 +22,10 @@ export const ThemeProvider = ({ children }) => {
       const current = useThemeStore.getState().theme;
       if (current === THEMES.SYSTEM) {
         const html = document.documentElement;
-        html.classList.remove("light", "dark");
-        html.classList.add(mediaQuery.matches ? "dark" : "light");
+        html.classList.toggle("dark", getSystemTheme() === "dark");
       }
     };
+    handler();
     mediaQuery.addEventListener("change", handler);
     return () => mediaQuery.removeEventListener("change", handler);
   }, []);

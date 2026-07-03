@@ -47,15 +47,9 @@ overflow-hidden
 
 rounded-2xl
 
-bg-gradient-to-br
+bg-[var(--gradient-primary)]
 
-from-sky-500
-
-via-blue-600
-
-to-indigo-700
-
-shadow-[0_15px_40px_rgba(37,99,235,0.35)]
+shadow-[var(--shadow-lg)]
 `}
       >
         {/* Glow */}
@@ -68,7 +62,7 @@ inset-0
 
 bg-gradient-to-br
 
-from-white/30
+from-[var(--primary-foreground)]/30
 
 to-transparent
 "
@@ -98,7 +92,7 @@ w-6
 
 rotate-12
 
-bg-white/20
+bg-[var(--primary-foreground)]/20
 
 blur-lg
 "
@@ -106,7 +100,7 @@ blur-lg
 
         <HeartPulse
           size={iconSize[size]}
-          className="relative z-10 text-white drop-shadow-sm"
+          className="relative z-10 text-[var(--primary-foreground)] drop-shadow-sm"
         />
       </motion.div>
 
@@ -132,23 +126,11 @@ font-bold
 
 tracking-tight
 
-bg-gradient-to-r
-
-from-blue-700
-
-via-cyan-600
-
-to-indigo-700
+bg-[var(--gradient-primary)]
 
 bg-clip-text
 
 text-transparent
-
-dark:from-blue-400
-
-dark:via-cyan-300
-
-dark:to-indigo-300
 "
           >
             MediSync
@@ -164,9 +146,7 @@ tracking-[0.2em]
 
 uppercase
 
-text-slate-400
-
-dark:text-slate-500
+text-[var(--muted-foreground)]
 "
           >
             AI HEALTHCARE

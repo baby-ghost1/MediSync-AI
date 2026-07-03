@@ -65,7 +65,7 @@ const LoginPage = () => {
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
           className="max-w-lg"
         >
-          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[var(--gradient-primary)] text-white shadow-[var(--shadow-lg)]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[var(--gradient-primary)] text-[var(--primary-foreground)] shadow-[var(--shadow-lg)]">
             <HeartPulse size={32} />
           </div>
 
@@ -153,7 +153,7 @@ const LoginPage = () => {
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
-                className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-xs font-medium text-red-500"
+                className="rounded-xl bg-[var(--danger-light)] border border-[var(--danger)]/20 px-4 py-3 text-xs font-medium text-[var(--danger)]"
               >
                 {serverError}
               </motion.div>

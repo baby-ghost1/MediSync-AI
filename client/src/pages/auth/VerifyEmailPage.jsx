@@ -85,7 +85,7 @@ const VerifyEmailPage = () => {
           animate={{ opacity: 1, x: 0 }}
           className="max-w-xl"
         >
-          <div className="flex h-24 w-24 items-center justify-center rounded-[30px] bg-[var(--gradient-primary)] text-white shadow-[var(--shadow-xl)]">
+          <div className="flex h-24 w-24 items-center justify-center rounded-[30px] bg-[var(--gradient-primary)] text-[var(--primary-foreground)] shadow-[var(--shadow-xl)]">
             <HeartPulse size={48} />
           </div>
 
@@ -149,7 +149,7 @@ const VerifyEmailPage = () => {
             {status === "success" && (
               <motion.div variants={itemVariants}>
                 <div className="text-center">
-                  <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[var(--success)] text-white shadow-[var(--shadow-lg)]">
+                  <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[var(--success)] text-[var(--primary-foreground)] shadow-[var(--shadow-lg)]">
                     <CheckCircle2 size={56} />
                   </div>
 
@@ -180,7 +180,7 @@ const VerifyEmailPage = () => {
             {status === "error" && (
               <motion.div variants={itemVariants}>
                 <div className="text-center">
-                  <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[var(--danger)] text-white shadow-[var(--shadow-lg)]">
+                  <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[var(--danger)] text-[var(--primary-foreground)] shadow-[var(--shadow-lg)]">
                     <XCircle size={56} />
                   </div>
 

@@ -25,13 +25,14 @@ const Spinner = ({
     >
       <LoaderCircle
         className={cn(
-          "animate-spin text-[var(--primary)]",
+          "animate-spin text-[var(--primary)] drop-shadow-sm",
           sizes[size]
         )}
-        strokeWidth={2}
+        style={{ animationDuration: "1.2s" }}
+        strokeWidth={2.5}
       />
       {text && (
-        <p className="text-sm font-medium text-[var(--muted-foreground)]">
+        <p className="animate-pulse text-sm font-semibold tracking-wide text-[var(--muted-foreground)]">
           {text}
         </p>
       )}
@@ -40,7 +41,7 @@ const Spinner = ({
 
   if (fullscreen) {
     return (
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[var(--background)]/60 backdrop-blur-2xl">
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[var(--background)]/80 backdrop-blur-md supports-[backdrop-filter]:bg-[var(--background)]/60">
         {content}
       </div>
     );
@@ -48,7 +49,7 @@ const Spinner = ({
 
   if (overlay) {
     return (
-      <div className="absolute inset-0 z-50 flex items-center justify-center rounded-2xl bg-[var(--background)]/50 backdrop-blur-xl">
+      <div className="absolute inset-0 z-50 flex items-center justify-center rounded-[inherit] bg-[var(--background)]/60 backdrop-blur-sm supports-[backdrop-filter]:bg-[var(--background)]/40 transition-all">
         {content}
       </div>
     );

@@ -84,7 +84,7 @@ const SearchInput = ({
           "hover:border-[var(--border-hover)]",
           "focus:border-[var(--primary)]",
           "focus:ring-4",
-          "focus:ring-[rgba(37,99,235,.12)]",
+          "focus:ring-[var(--primary)]/12",
           "focus:outline-none"
         )}
       />

@@ -57,16 +57,16 @@ const MyAppointmentsPage = () => {
         }
       />
 
-      <Card paddingSize="lg" className="overflow-hidden border-0 bg-[linear-gradient(135deg,var(--primary),var(--accent))] text-white shadow-[var(--shadow-lg)]">
+      <Card paddingSize="lg" className="overflow-hidden border-0 bg-[linear-gradient(135deg,var(--primary),var(--accent))] text-[var(--primary-foreground)] shadow-[var(--shadow-lg)]">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/70">Care coordination</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--primary-foreground)]/70">Care coordination</p>
             <h2 className="mt-2 text-xl font-semibold">Stay ahead of every appointment</h2>
-            <p className="mt-2 max-w-2xl text-sm text-white/75">
+            <p className="mt-2 max-w-2xl text-sm text-[var(--primary-foreground)]/75">
               Track your upcoming visits, review status at a glance and keep your healthcare plan moving smoothly.
             </p>
           </div>
-          <div className="rounded-[var(--radius-lg)] bg-white/15 px-4 py-3 backdrop-blur-xl">
+          <div className="rounded-[var(--radius-lg)] bg-[var(--primary-foreground)]/15 px-4 py-3 backdrop-blur-xl">
             <p className="text-sm font-semibold">{appointments.length} active appointment{appointments.length === 1 ? "" : "s"}</p>
           </div>
         </div>
@@ -87,7 +87,7 @@ const MyAppointmentsPage = () => {
                   onClick={() => { setStatusFilter(s); setPage(1); }}
                   className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${
                     statusFilter === s
-                      ? "bg-[var(--primary)] text-white shadow-[var(--shadow-sm)]"
+                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[var(--shadow-sm)]"
                       : "border border-[var(--border)] text-[var(--muted-foreground)] hover:border-[var(--primary)] hover:text-[var(--primary)]"
                   }`}
                 >

@@ -84,7 +84,7 @@ const StatCard = ({
 
           {Icon && (
             <div
-              className={`relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${color} text-white shadow-[0_10px_24px_rgba(15,23,42,.10)]`}
+              className={`relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${color} text-[var(--primary-foreground)] shadow-[var(--shadow-md)]`}
             >
               <Icon size={21} />
             </div>

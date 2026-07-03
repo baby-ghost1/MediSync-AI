@@ -2,29 +2,42 @@ import Joi from "joi";
 
 export const createAppointmentSchema =
   Joi.object({
-    patient: Joi.string()
+    doctorId: Joi.string()
       .hex()
       .length(24)
-      .required(),
+      .required()
+      .messages({
+        "string.hex": "doctorId must be a valid ObjectId",
+        "string.length": "doctorId must be 24 characters",
+        "any.required": "Doctor is required",
+      }),
 
-    doctor: Joi.string()
-      .hex()
-      .length(24)
-      .required(),
+    date: Joi.date()
+      .required()
+      .messages({
+        "date.base": "Appointment date is invalid",
+        "any.required": "Appointment date is required",
+      }),
 
-    appointmentDate: Joi.date()
-      .required(),
-
-    appointmentTime: Joi.string()
-      .required(),
+    time: Joi.string()
+      .required()
+      .messages({
+        "any.required": "Appointment time is required",
+      }),
 
     reason: Joi.string()
+      .min(10)
       .max(1000)
-      .allow("", null),
+      .required()
+      .messages({
+        "string.min": "Reason must be at least 10 characters",
+        "string.max": "Reason must not exceed 1000 characters",
+        "any.required": "Reason is required",
+      }),
 
-    symptoms: Joi.array().items(
-      Joi.string()
-    ),
+    notes: Joi.string()
+      .allow("", null)
+      .optional(),
   });
 
 export const updateAppointmentSchema =

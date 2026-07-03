@@ -84,7 +84,7 @@ const Dropdown = ({
                   <div className="flex items-center gap-2.5">
                     {item.icon && (
                       <span className="text-[var(--muted-foreground)]">
-                        <item.icon size={16} />
+                        {typeof item.icon === "function" || item.icon?.$$typeof === Symbol.for("react.forward_ref") || item.icon?.$$typeof === Symbol.for("react.memo") ? <item.icon size={16} /> : item.icon}
                       </span>
                     )}
                     <span>{item.label}</span>

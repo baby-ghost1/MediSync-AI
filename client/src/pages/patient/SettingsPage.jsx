@@ -59,14 +59,14 @@ const SettingsPage = () => {
     <div className="space-y-8">
       <PageHeader title="Settings" description="Manage your account preferences" />
 
-      <Card paddingSize="lg" className="overflow-hidden border-0 bg-[linear-gradient(135deg,var(--primary),var(--accent))] text-white shadow-[var(--shadow-lg)]">
+      <Card paddingSize="lg" className="overflow-hidden border-0 bg-[linear-gradient(135deg,var(--primary),var(--accent))] text-[var(--primary-foreground)] shadow-[var(--shadow-lg)]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/70">Personal preferences</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--primary-foreground)]/70">Personal preferences</p>
             <h2 className="mt-2 text-xl font-semibold">Fine-tune your experience and privacy settings</h2>
-            <p className="mt-2 max-w-2xl text-sm text-white/75">Adjust notifications, appearance and account security in one place.</p>
+            <p className="mt-2 max-w-2xl text-sm text-[var(--primary-foreground)]/75">Adjust notifications, appearance and account security in one place.</p>
           </div>
-          <div className="rounded-[var(--radius-lg)] bg-white/15 px-4 py-3 backdrop-blur-xl">
+          <div className="rounded-[var(--radius-lg)] bg-[var(--primary-foreground)]/15 px-4 py-3 backdrop-blur-xl">
             <p className="text-sm font-semibold">Secure and personalized</p>
           </div>
         </div>
@@ -92,7 +92,7 @@ const SettingsPage = () => {
                       : "border-[var(--border)] hover:border-[var(--primary)]/50"
                   }`}
                 >
-                  <div className={`rounded-xl p-3 ${isActive ? "bg-[var(--primary)] text-white" : "bg-[var(--secondary)] text-[var(--muted-foreground)]"}`}>
+                  <div className={`rounded-xl p-3 ${isActive ? "bg-[var(--primary)] text-[var(--primary-foreground)]" : "bg-[var(--secondary)] text-[var(--muted-foreground)]"}`}>
                     <Icon size={24} />
                   </div>
                   <span className={`text-sm font-semibold ${isActive ? "text-[var(--primary)]" : "text-[var(--muted-foreground)]"}`}>{opt.label}</span>
@@ -125,7 +125,7 @@ const SettingsPage = () => {
                 }`}
               >
                 <div
-                  className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow-[var(--shadow-sm)] transition-transform duration-300 ${
+                  className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-[var(--card-foreground)] shadow-[var(--shadow-sm)] transition-transform duration-300 ${
                     twoFactor ? "translate-x-5" : ""
                   }`}
                 />
@@ -149,7 +149,7 @@ const SettingsPage = () => {
                 }`}
               >
                 <div
-                  className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow-[var(--shadow-sm)] transition-transform duration-300 ${
+                  className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-[var(--card-foreground)] shadow-[var(--shadow-sm)] transition-transform duration-300 ${
                     showSensitive ? "translate-x-5" : ""
                   }`}
                 />
@@ -188,7 +188,7 @@ const SettingsPage = () => {
                   }`}
                 >
                   <div
-                    className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow-[var(--shadow-sm)] transition-transform duration-300 ${
+                    className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-[var(--card-foreground)] shadow-[var(--shadow-sm)] transition-transform duration-300 ${
                       isEnabled ? "translate-x-5" : ""
                     }`}
                   />

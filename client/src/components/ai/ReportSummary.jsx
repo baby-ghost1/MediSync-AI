@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { FileText, Brain, Search } from "lucide-react";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
@@ -41,9 +43,9 @@ const ReportSummary = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="overflow-hidden border-0 bg-gradient-to-br from-white to-slate-50 p-6 shadow-xl shadow-slate-200/50 dark:from-slate-900 dark:to-slate-950 dark:shadow-black/20">
-        <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-slate-800 dark:text-white">
-          <FileText size={20} className="text-blue-600" />
+      <Card className="overflow-hidden border-0 bg-gradient-to-br from-[var(--card)] to-[var(--secondary)] p-6 shadow-xl shadow-black/10">
+        <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-[var(--foreground)]">
+          <FileText size={20} className="text-[var(--primary)]" />
           AI Report Summary
         </h3>
         <div className="relative">
@@ -51,16 +53,16 @@ const ReportSummary = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search reports by name..."
-            className="w-full rounded-2xl border-2 border-slate-200/80 bg-white/80 px-5 py-3.5 pl-12 text-sm outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/20 dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-white dark:placeholder:text-slate-500"
+            className="w-full rounded-2xl border-2 border-[var(--border)]/80 bg-[var(--card)]/80 px-5 py-3.5 pl-12 text-sm outline-none transition-all duration-200 placeholder:text-[var(--muted-foreground)] focus:border-[var(--primary)]/50 focus:ring-4 focus:ring-[var(--primary)]/20 text-[var(--foreground)]"
           />
-          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" />
         </div>
       </Card>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-12"><div className="rounded-2xl bg-white/80 p-6 shadow-lg backdrop-blur-xl dark:bg-slate-800/80"><Spinner size="lg" /></div></div>
+        <div className="flex items-center justify-center py-12"><div className="rounded-2xl bg-[var(--card)]/80 p-6 shadow-lg backdrop-blur-xl"><Spinner size="lg" /></div></div>
       ) : reports.length === 0 ? (
-        <Card className="p-8 text-center border-0 shadow-lg"><p className="text-slate-400 dark:text-slate-500">No reports found.</p></Card>
+        <Card className="p-8 text-center border-0 shadow-lg"><p className="text-[var(--muted-foreground)]">No reports found.</p></Card>
       ) : (
         <div className="space-y-3">
           {reports.map((report) => (
@@ -71,19 +73,19 @@ const ReportSummary = () => {
               className={cn(
                 "rounded-2xl border-2 p-5 transition-all duration-200 cursor-pointer",
                 selected?._id === report._id
-                  ? "border-blue-500/50 bg-gradient-to-br from-blue-50 to-indigo-50/50 shadow-lg shadow-blue-500/10 dark:from-blue-950/30 dark:to-indigo-950/20"
-                  : "border-slate-200/60 bg-white/80 hover:border-slate-300/80 hover:shadow-xl hover:shadow-slate-200/50 dark:border-slate-700/50 dark:bg-slate-800/80 dark:hover:border-slate-600/80 dark:hover:shadow-black/20"
+                    ? "border-[var(--primary)]/50 bg-gradient-to-br from-[var(--primary-light)] to-[var(--info-light)] shadow-lg shadow-[var(--primary)]/10"
+                  : "border-[var(--border)]/60 bg-[var(--card)]/80 hover:border-[var(--border-hover)]/80 hover:shadow-xl hover:shadow-black/10"
               )}
               onClick={() => handleSummarize(report)}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/20">
-                    <FileText size={22} className="text-white" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--gradient-primary)] shadow-lg">
+                    <FileText size={22} className="text-[var(--primary-foreground)]" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-800 dark:text-white">{report.title || report.name || "Medical Report"}</h4>
-                    <p className="text-sm text-slate-400 dark:text-slate-500">
+                    <h4 className="font-bold text-[var(--foreground)]">{report.title || report.name || "Medical Report"}</h4>
+                    <p className="text-sm text-[var(--muted-foreground)]">
                       {report.patient?.name || "Patient"} · {new Date(report.createdAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -95,7 +97,7 @@ const ReportSummary = () => {
                   {summarizing && selected?._id === report._id ? (
                     <Spinner size="sm" />
                   ) : (
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-500 dark:bg-blue-950/30">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary-light)] text-[var(--primary)]">
                       <Brain size={16} />
                     </div>
                   )}
@@ -103,19 +105,23 @@ const ReportSummary = () => {
               </div>
 
               {selected?._id === report._id && expanded && (
-                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="mt-4 border-t border-slate-200/60 pt-4 dark:border-slate-700/50">
-                  <h5 className="mb-3 flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400">
+                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="mt-4 border-t border-[var(--border)]/60 pt-4">
+                  <h5 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--primary)]">
                     <Brain size={14} />
                     AI Analysis
                   </h5>
                   {summarizing ? (
-                    <div className="flex items-center gap-3 rounded-xl bg-slate-50/50 px-4 py-3 dark:bg-slate-700/30">
+                    <div className="flex items-center gap-3 rounded-xl bg-[var(--secondary)]/50 px-4 py-3">
                       <Spinner size="sm" />
-                      <span className="text-sm text-slate-500 dark:text-slate-400">Generating AI summary...</span>
+                      <span className="text-sm text-[var(--muted-foreground)]">Generating AI summary...</span>
                     </div>
                   ) : (
-                    <div className="rounded-xl bg-gradient-to-br from-slate-50 to-blue-50/30 p-4 dark:from-slate-800/50 dark:to-blue-950/10">
-                      <p className="text-sm leading-7 whitespace-pre-wrap text-slate-700 dark:text-slate-300">{summary}</p>
+                    <div className="rounded-xl bg-gradient-to-br from-[var(--secondary)] to-[var(--primary-light)]/30 p-4">
+                      <div className="prose prose-sm max-w-none leading-7 prose-headings:text-[var(--foreground)] prose-a:text-[var(--primary)] prose-code:text-[var(--primary)] prose-pre:bg-transparent prose-pre:p-0 prose-p:text-[var(--foreground)] prose-li:text-[var(--foreground)] prose-strong:text-[var(--foreground)]">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {summary}
+                        </ReactMarkdown>
+                      </div>
                     </div>
                   )}
                 </motion.div>

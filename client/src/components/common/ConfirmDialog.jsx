@@ -6,21 +6,21 @@ import { AlertTriangle, Info, AlertOctagon } from "lucide-react";
 const variantConfig = {
   danger: {
     icon: AlertOctagon,
-    bg: "bg-red-50 dark:bg-red-950/30",
-    iconColor: "text-red-600 dark:text-red-400",
-    ring: "ring-1 ring-red-200 dark:ring-red-900/50",
+    bg: "bg-[var(--danger-light)]",
+    iconColor: "text-[var(--danger)]",
+    ring: "ring-1 ring-[var(--danger)]/20",
   },
   warning: {
     icon: AlertTriangle,
-    bg: "bg-amber-50 dark:bg-amber-950/30",
-    iconColor: "text-amber-600 dark:text-amber-400",
-    ring: "ring-1 ring-amber-200 dark:ring-amber-900/50",
+    bg: "bg-[var(--warning-light)]",
+    iconColor: "text-[var(--warning)]",
+    ring: "ring-1 ring-[var(--warning)]/20",
   },
   info: {
     icon: Info,
-    bg: "bg-blue-50 dark:bg-blue-950/30",
-    iconColor: "text-blue-600 dark:text-blue-400",
-    ring: "ring-1 ring-blue-200 dark:ring-blue-900/50",
+    bg: "bg-[var(--info-light)]",
+    iconColor: "text-[var(--info)]",
+    ring: "ring-1 ring-[var(--info)]/20",
   },
 };
 

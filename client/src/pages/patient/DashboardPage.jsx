@@ -49,7 +49,7 @@ const DashboardPage = () => {
     { title: "Upcoming Appointments", value: stats.upcomingAppointments ?? 8, icon: CalendarDays, color: "from-[var(--primary)] to-[var(--info)]", trend: 12 },
     { title: "Medicines", value: stats.medicines ?? 12, icon: Pill, color: "from-[var(--success)] to-[#059669]", trend: 8 },
     { title: "AI Reports", value: stats.aiReports ?? 27, icon: BrainCircuit, color: "from-[var(--accent)] to-[var(--primary)]", trend: 24 },
-    { title: "Health Score", value: `${healthScore}%`, icon: HeartPulse, color: "from-pink-500 to-rose-500", trend: 5 },
+    { title: "Health Score", value: `${healthScore}%`, icon: HeartPulse, color: "from-[var(--primary)] to-[var(--accent)]", trend: 5 },
   ];
 
   return (
@@ -138,14 +138,14 @@ const DashboardPage = () => {
             </div>
           </Card>
 
-          <Card className="overflow-hidden border-0 bg-[var(--gradient-primary)] text-white">
+          <Card className="overflow-hidden border-0 bg-[var(--gradient-primary)] text-[var(--primary-foreground)]">
             <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <Badge variant="glass" size="md">AI Assistant</Badge>
                 <h2 className="mt-4 text-xl font-bold leading-tight sm:text-2xl">
                   Your Personal AI Doctor
                 </h2>
-                <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/80">
+                <p className="mt-3 max-w-xl text-sm leading-relaxed text-[var(--primary-foreground)]/80">
                   Describe your symptoms, upload reports and receive AI-powered
                   insights before visiting a doctor.
                 </p>
@@ -158,7 +158,7 @@ const DashboardPage = () => {
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ repeat: Infinity, duration: 4 }}
-                className="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-white/15 backdrop-blur-xl"
+                className="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-[var(--primary-foreground)]/15 backdrop-blur-xl"
               >
                 <BrainCircuit size={56} />
               </motion.div>
@@ -257,13 +257,13 @@ const DashboardPage = () => {
             </div>
           </Card>
 
-          <Card className="overflow-hidden bg-[var(--gradient-success)] text-white border-0">
+          <Card className="overflow-hidden bg-[var(--gradient-success)] text-[var(--primary-foreground)] border-0">
             <div className="text-center">
               <HeartPulse size={40} className="mx-auto" />
               <h2 className="mt-4 text-4xl font-bold">{healthScore}%</h2>
-              <p className="mt-1 text-sm text-white/80">Overall Health Score</p>
-              <div className="mt-5 rounded-xl bg-white/15 p-4 backdrop-blur-xl">
-                <p className="text-xs leading-relaxed text-white/90">
+              <p className="mt-1 text-sm text-[var(--primary-foreground)]/80">Overall Health Score</p>
+              <div className="mt-5 rounded-xl bg-[var(--primary-foreground)]/15 p-4 backdrop-blur-xl">
+                <p className="text-xs leading-relaxed text-[var(--primary-foreground)]/90">
                   {data?.healthMessage || "Your health indicators are excellent. Continue following your current routine."}
                 </p>
               </div>

@@ -27,11 +27,11 @@ const Avatar = ({
     <div
       className={cn(
         "relative shrink-0 overflow-hidden rounded-full",
-        "border border-white/70 dark:border-white/10",
-        "bg-gradient-to-br from-[var(--primary)] to-sky-500",
+        "border border-[var(--border)]",
+        "bg-gradient-to-br from-[var(--primary)] to-[var(--accent)]",
         "shadow-[0_4px_14px_rgba(15,23,42,.08)]",
         "transition-all duration-300",
-        "ring-1 ring-black/[0.03] dark:ring-white/[0.04]",
+        "ring-1 ring-[var(--border)]/40",
         sizes[size],
         className
       )}
@@ -43,7 +43,7 @@ const Avatar = ({
           className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
         />
       ) : initials ? (
-        <div className="flex h-full w-full items-center justify-center font-semibold tracking-tight text-white">
+        <div className="flex h-full w-full items-center justify-center font-semibold tracking-tight text-[var(--primary-foreground)]">
           {initials}
         </div>
       ) : (
@@ -60,7 +60,7 @@ const Avatar = ({
                 ? 34
                 : 18
             }
-            className="text-white/90"
+            className="text-[var(--primary-foreground)]"
           />
         </div>
       )}

@@ -57,7 +57,7 @@ const AdminLoginPage = () => {
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
           className="max-w-lg text-center"
         >
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-[var(--shadow-xl)] shadow-emerald-500/30 ring-4 ring-emerald-500/20">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-[var(--gradient-primary)] text-[var(--primary-foreground)] shadow-[var(--shadow-xl)] shadow-[var(--primary)]/30 ring-4 ring-[var(--primary)]/20">
             <Shield size={40} />
           </div>
 
@@ -85,8 +85,8 @@ const AdminLoginPage = () => {
               { icon: Shield, text: "Enterprise-Grade Security" },
             ].map((item) => (
               <div key={item.text} className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
-                  <item.icon size={16} className="text-emerald-500" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary-light)]">
+                  <item.icon size={16} className="text-[var(--primary)]" />
                 </div>
                 <span className="text-sm font-medium text-[var(--foreground)]">
                   {item.text}
@@ -104,7 +104,7 @@ const AdminLoginPage = () => {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="relative w-full max-w-[420px]"
         >
-          <div className="absolute -inset-1 rounded-[32px] bg-gradient-to-tr from-emerald-500/20 via-transparent to-emerald-500/10 blur-xl opacity-75" />
+          <div className="absolute -inset-1 rounded-[32px] bg-gradient-to-tr from-[var(--primary)]/20 via-transparent to-[var(--primary)]/10 blur-xl opacity-75" />
 
           <div className="relative rounded-[32px] border border-[var(--border)]/50 bg-[var(--card)]/80 backdrop-blur-xl p-8 sm:p-10 shadow-2xl">
             <motion.div
@@ -114,7 +114,7 @@ const AdminLoginPage = () => {
               className="space-y-8"
             >
               <div className="space-y-1.5 text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg mb-4">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--gradient-primary)] text-[var(--primary-foreground)] shadow-lg mb-4">
                   <Shield size={28} />
                 </div>
                 <h2 className="text-3xl font-extrabold tracking-tight text-[var(--foreground)]">
@@ -152,7 +152,7 @@ const AdminLoginPage = () => {
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
-                    className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-xs font-medium text-red-500"
+                    className="rounded-xl bg-[var(--danger-light)] border border-[var(--danger)]/20 px-4 py-3 text-xs font-medium text-[var(--danger)]"
                   >
                     {serverError}
                   </motion.div>
@@ -163,7 +163,7 @@ const AdminLoginPage = () => {
                   loading={isSubmitting}
                   fullWidth
                   size="lg"
-                  className="mt-2 font-bold shadow-lg shadow-emerald-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all bg-gradient-to-r from-emerald-500 to-green-600 text-white"
+                  variant="gradient"
                 >
                   {isSubmitting ? "Authenticating..." : "Access Admin Panel"}
                 </Button>

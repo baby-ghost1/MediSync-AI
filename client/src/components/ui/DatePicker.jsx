@@ -159,7 +159,7 @@ const DatePicker = ({
                       className={cn(
                         "rounded-lg py-1.5 text-sm transition-colors",
                         isSelected &&
-                          "bg-[var(--primary)] text-white font-medium",
+                          "bg-[var(--primary)] text-[var(--primary-foreground)] font-medium",
                         !isSelected &&
                           !isDisabled &&
                           "hover:bg-[var(--surface-hover)]",

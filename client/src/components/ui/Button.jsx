@@ -114,14 +114,14 @@ const variants = {
   primary: [
     "relative overflow-hidden",
     "bg-[var(--primary)]",
-    "text-white",
+    "text-[var(--primary-foreground)]",
     "border border-[var(--primary)]",
     "shadow-[0_1px_2px_rgba(15,23,42,.06),0_8px_20px_rgba(37,99,235,.14)]",
     "hover:bg-[var(--primary-hover)]",
     "hover:shadow-[0_10px_28px_rgba(37,99,235,.18)]",
     "active:shadow-[0_4px_12px_rgba(37,99,235,.12)]",
     "before:absolute before:inset-0",
-    "before:bg-gradient-to-b before:from-white/10 before:to-transparent",
+    "before:bg-gradient-to-b before:from-[var(--primary-foreground)]/10 before:to-transparent",
     "before:pointer-events-none",
   ].join(" "),
 
@@ -152,7 +152,7 @@ const variants = {
   danger: [
     "bg-[var(--danger)]",
     "border border-[var(--danger)]",
-    "text-white",
+    "text-[var(--danger-foreground)]",
     "shadow-[0_8px_20px_rgba(220,38,38,.14)]",
     "hover:brightness-105",
   ].join(" "),
@@ -160,7 +160,7 @@ const variants = {
   success: [
     "bg-[var(--success)]",
     "border border-[var(--success)]",
-    "text-white",
+    "text-[var(--success-foreground)]",
     "shadow-[0_8px_20px_rgba(5,150,105,.14)]",
     "hover:brightness-105",
   ].join(" "),
@@ -168,20 +168,19 @@ const variants = {
   gradient: [
     "relative overflow-hidden",
     "bg-[var(--gradient-primary)]",
-    "text-white",
+    "text-[var(--primary-foreground)]",
     "shadow-[0_10px_26px_rgba(37,99,235,.16)]",
     "before:absolute before:inset-0",
     "before:bg-gradient-to-b",
-    "before:from-white/10",
+    "before:from-[var(--primary-foreground)]/10",
     "before:to-transparent",
     "before:pointer-events-none",
   ].join(" "),
 
   glass: [
     "backdrop-blur-xl",
-    "bg-white/70",
-    "dark:bg-white/10",
-    "border border-white/30",
+    "bg-[var(--card)]/70",
+    "border border-[var(--border)]/40",
     "text-[var(--foreground)]",
   ].join(" "),
 };

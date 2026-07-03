@@ -70,7 +70,7 @@ const NotificationsPage = () => {
           <span className="text-sm font-medium text-[var(--text-secondary)]">Filter:</span>
           {typeFilters.map((f) => (
             <button key={f} onClick={() => { setTypeFilter(f); setPage(1); }}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${typeFilter === f ? "bg-[var(--primary)] text-white shadow-sm" : "border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--primary)]"}`}
+              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${typeFilter === f ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm" : "border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--primary)]"}`}
             >{f.charAt(0).toUpperCase() + f.slice(1)}</button>
           ))}
         </div>

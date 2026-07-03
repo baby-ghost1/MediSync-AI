@@ -189,9 +189,9 @@ const AppointmentDetailsPage = () => {
 
           {a.status === "completed" && a.followUp && (
             <motion.div variants={fadeSlide}>
-              <Card variant="gradient" className="text-white">
+              <Card variant="gradient" className="text-[var(--primary-foreground)]">
                 <h3 className="text-xl font-bold">Follow-Up Scheduled</h3>
-                <p className="mt-2 text-blue-100">{new Date(a.followUp).toLocaleDateString()}</p>
+                <p className="mt-2 text-[var(--primary-light)]">{new Date(a.followUp).toLocaleDateString()}</p>
               </Card>
             </motion.div>
           )}

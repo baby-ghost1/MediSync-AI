@@ -92,7 +92,7 @@ const SettingsPage = () => {
                   <button key={opt.value} onClick={() => setTheme(opt.value)}
                     className={`flex flex-1 flex-col items-center gap-3 rounded-[var(--radius-lg)] border-2 p-6 transition-all duration-300 ${isActive ? "border-[var(--primary)] bg-[var(--primary)]/10" : "border-[var(--border)] hover:border-[var(--primary)]/50"}`}
                   >
-                    <div className={`rounded-[var(--radius-md)] p-3 transition-all duration-300 ${isActive ? "bg-[var(--primary)] text-white shadow-sm" : "bg-[var(--surface-off)] text-[var(--text-secondary)]"}`}>
+                    <div className={`rounded-[var(--radius-md)] p-3 transition-all duration-300 ${isActive ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm" : "bg-[var(--surface-off)] text-[var(--text-secondary)]"}`}>
                       <Icon size={24} />
                     </div>
                     <span className={`text-sm font-semibold transition-all duration-300 ${isActive ? "text-[var(--primary)]" : "text-[var(--text-secondary)]"}`}>{opt.label}</span>
@@ -114,7 +114,7 @@ const SettingsPage = () => {
                 </div>
                 <button onClick={() => setTwoFactor(!twoFactor)}
                   className={`relative h-7 w-12 shrink-0 rounded-full transition-all duration-300 ${twoFactor ? "bg-[var(--primary)]" : "bg-[var(--border)]"}`}
-                ><div className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform duration-300 ${twoFactor ? "translate-x-5" : ""}`} /></button>
+                ><div className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-[var(--card-foreground)] shadow transition-transform duration-300 ${twoFactor ? "translate-x-5" : ""}`} /></button>
               </div>
               <div className="flex items-center justify-between rounded-[var(--radius-lg)] bg-[var(--surface-off)] p-4 transition-all duration-300 hover:shadow-[var(--shadow-sm)]">
                 <div className="flex items-center gap-4">
@@ -123,7 +123,7 @@ const SettingsPage = () => {
                 </div>
                 <button onClick={() => setShowSensitive(!showSensitive)}
                   className={`relative h-7 w-12 shrink-0 rounded-full transition-all duration-300 ${showSensitive ? "bg-[var(--primary)]" : "bg-[var(--border)]"}`}
-                ><div className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform duration-300 ${showSensitive ? "translate-x-5" : ""}`} /></button>
+                ><div className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-[var(--card-foreground)] shadow transition-transform duration-300 ${showSensitive ? "translate-x-5" : ""}`} /></button>
               </div>
             </div>
           </Card>
@@ -144,7 +144,7 @@ const SettingsPage = () => {
                   </div>
                   <button onClick={() => updatePreferences({ [cat.key]: !isEnabled })}
                     className={`relative h-7 w-12 shrink-0 rounded-full transition-all duration-300 ${isEnabled ? "bg-[var(--primary)]" : "bg-[var(--border)]"}`}
-                  ><div className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform duration-300 ${isEnabled ? "translate-x-5" : ""}`} /></button>
+                  ><div className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-[var(--card-foreground)] shadow transition-transform duration-300 ${isEnabled ? "translate-x-5" : ""}`} /></button>
                 </div>
               );
             })}

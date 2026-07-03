@@ -56,7 +56,7 @@ const AnalyticsPage = () => {
               <button key={p} onClick={() => setPeriod(p)}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
                   period === p
-                    ? "bg-[var(--primary)] text-white shadow-[var(--shadow-sm)]"
+                    ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[var(--shadow-sm)]"
                     : "border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--primary)]/50 hover:text-[var(--primary)] bg-[var(--surface)]"
                 }`}
               >{p.charAt(0).toUpperCase() + p.slice(1)}</button>

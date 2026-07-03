@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Lightbulb, RefreshCw } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -39,9 +41,9 @@ const HealthTips = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="overflow-hidden border-0 bg-gradient-to-br from-white to-slate-50 p-6 shadow-xl shadow-slate-200/50 dark:from-slate-900 dark:to-slate-950 dark:shadow-black/20">
-        <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-slate-800 dark:text-white">
-          <Lightbulb size={20} className="text-yellow-500" />
+      <Card className="overflow-hidden border-0 bg-gradient-to-br from-[var(--card)] to-[var(--secondary)] p-6 shadow-xl shadow-black/10">
+        <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-[var(--foreground)]">
+          <Lightbulb size={20} className="text-[var(--warning)]" />
           Personalized Health Tips
         </h3>
         <div className="flex flex-wrap items-end gap-3">
@@ -49,11 +51,11 @@ const HealthTips = () => {
             <Input label="Age" type="number" value={age} onChange={(e) => setAge(e.target.value)} placeholder="e.g., 35" />
           </div>
           <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Gender</label>
+            <label className="mb-2 block text-sm font-semibold text-[var(--foreground)]">Gender</label>
             <select
               value={gender}
               onChange={(e) => setGender(e.target.value)}
-              className="rounded-xl border-2 border-slate-200/80 bg-white/80 px-4 py-3 text-sm outline-none transition-all duration-200 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/20 dark:border-slate-700/80 dark:bg-slate-800/80 dark:text-white"
+              className="rounded-xl border-2 border-[var(--border)]/80 bg-[var(--card)]/80 px-4 py-3 text-sm outline-none transition-all duration-200 focus:border-[var(--primary)]/50 focus:ring-4 focus:ring-[var(--primary)]/20 text-[var(--foreground)]"
             >
               <option value="male">Male</option>
               <option value="female">Female</option>
@@ -68,30 +70,32 @@ const HealthTips = () => {
 
       {loading && (
         <div className="flex items-center justify-center py-12">
-          <div className="flex items-center gap-4 rounded-2xl bg-white/80 px-6 py-4 shadow-lg backdrop-blur-xl dark:bg-slate-800/80">
+          <div className="flex items-center gap-4 rounded-2xl bg-[var(--card)]/80 px-6 py-4 shadow-lg backdrop-blur-xl">
             <Spinner size="lg" />
-            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Generating personalized tips...</span>
+            <span className="text-sm font-medium text-[var(--muted-foreground)]">Generating personalized tips...</span>
           </div>
         </div>
       )}
 
-      {error && <Card variant="danger" className="p-4"><p className="text-sm text-red-600">{error}</p></Card>}
+      {error && <Card variant="danger" className="p-4"><p className="text-sm text-[var(--danger)]">{error}</p></Card>}
 
       {parsed && !loading && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <Card className="overflow-hidden border-0 bg-gradient-to-br from-white to-slate-50 p-6 shadow-xl shadow-slate-200/50 dark:from-slate-900 dark:to-slate-950 dark:shadow-black/20">
+          <Card className="overflow-hidden border-0 bg-gradient-to-br from-[var(--card)] to-[var(--secondary)] p-6 shadow-xl shadow-black/10">
             <div className="mb-5 flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-500 shadow-lg shadow-amber-500/20">
-                <Lightbulb size={26} className="text-white" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--gradient-primary)] shadow-lg">
+                <Lightbulb size={26} className="text-[var(--primary-foreground)]" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-slate-800 dark:text-white">Health Tips for Age {age}</h3>
-                <p className="text-sm text-slate-400 dark:text-slate-500">Personalized AI-generated recommendations</p>
+                <h3 className="text-xl font-bold text-[var(--foreground)]">Health Tips for Age {age}</h3>
+                <p className="text-sm text-[var(--muted-foreground)]">Personalized AI-generated recommendations</p>
               </div>
             </div>
-            <div className="rounded-2xl bg-gradient-to-br from-amber-50/50 to-yellow-50/50 p-5 dark:from-amber-950/20 dark:to-yellow-950/10">
-              <div className="prose prose-sm prose-slate dark:prose-invert max-w-none whitespace-pre-wrap leading-7 prose-headings:text-slate-800 dark:prose-headings:text-slate-100">
-                {typeof result === "string" ? result : result.text || result.tips || parsed.full}
+            <div className="rounded-2xl bg-[var(--warning-light)]/50 p-5">
+              <div className="prose prose-sm max-w-none leading-7 prose-headings:text-[var(--foreground)] prose-a:text-[var(--primary)] prose-code:text-[var(--primary)] prose-pre:bg-transparent prose-pre:p-0 prose-p:text-[var(--foreground)] prose-li:text-[var(--foreground)] prose-strong:text-[var(--foreground)]">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {typeof result === "string" ? result : result.text || result.tips || parsed.full}
+                </ReactMarkdown>
               </div>
             </div>
           </Card>

@@ -89,14 +89,14 @@ const ReportsPage = () => {
         }
       />
 
-      <Card paddingSize="lg" className="overflow-hidden border-0 bg-[linear-gradient(135deg,var(--primary),var(--accent))] text-white shadow-[var(--shadow-lg)]">
+      <Card paddingSize="lg" className="overflow-hidden border-0 bg-[linear-gradient(135deg,var(--primary),var(--accent))] text-[var(--primary-foreground)] shadow-[var(--shadow-lg)]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/70">Clinical records</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--primary-foreground)]/70">Clinical records</p>
             <h2 className="mt-2 text-xl font-semibold">Keep medical history organized and accessible</h2>
-            <p className="mt-2 max-w-2xl text-sm text-white/75">Upload new reports, review summaries and manage important documents in one secure place.</p>
+            <p className="mt-2 max-w-2xl text-sm text-[var(--primary-foreground)]/75">Upload new reports, review summaries and manage important documents in one secure place.</p>
           </div>
-          <div className="rounded-[var(--radius-lg)] bg-white/15 px-4 py-3 backdrop-blur-xl">
+          <div className="rounded-[var(--radius-lg)] bg-[var(--primary-foreground)]/15 px-4 py-3 backdrop-blur-xl">
             <p className="text-sm font-semibold">{reports.length} report{reports.length === 1 ? "" : "s"} available</p>
           </div>
         </div>

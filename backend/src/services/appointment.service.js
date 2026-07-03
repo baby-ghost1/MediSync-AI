@@ -119,7 +119,10 @@ class AppointmentService {
 
     const filter = {};
 
-    if (status) {
+    if (status === "upcoming") {
+      filter.status = { $in: ["pending", "confirmed"] };
+      filter.appointmentDate = { $gte: new Date() };
+    } else if (status) {
       filter.status = status;
     }
 

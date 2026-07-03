@@ -54,7 +54,7 @@ const DoctorsPage = () => {
                 onClick={() => { setSpecialization(spec); setPage(1); }}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
                   specialization === spec
-                    ? "bg-[var(--primary)] text-white shadow-[var(--shadow-lg)]"
+                    ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[var(--shadow-lg)]"
                     : "border border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)] hover:border-[var(--primary)] hover:text-[var(--primary)]"
                 }`}
               >

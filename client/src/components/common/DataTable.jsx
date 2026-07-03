@@ -29,7 +29,7 @@ const DataTable = ({
   if (error) {
     return (
       <div className="flex min-h-[300px] items-center justify-center">
-        <p className="text-red-500">{error}</p>
+        <p className="text-[var(--danger)]">{error}</p>
       </div>
     );
   }
@@ -45,7 +45,7 @@ const DataTable = ({
   }
 
   const SortIcon = ({ column }) => {
-    if (sortColumn !== column) return <ChevronsUpDown size={14} className="text-slate-400" />;
+    if (sortColumn !== column) return <ChevronsUpDown size={14} className="text-[var(--muted-foreground)]" />;
     return sortDirection === "asc" ? <ChevronUp size={14} /> : <ChevronDown size={14} />;
   };
 
@@ -53,7 +53,7 @@ const DataTable = ({
     <div className="overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm">
       <table className="w-full border-collapse">
         <thead>
-          <tr className="border-b border-[var(--border)] bg-[var(--surface-subtle)]">
+          <tr className="border-b border-[var(--border)] bg-[var(--secondary)]/50">
             {columns.map((col) => (
               <th
                 key={col.key}

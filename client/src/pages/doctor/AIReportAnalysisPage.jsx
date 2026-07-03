@@ -98,7 +98,7 @@ const AIReportAnalysisPage = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex w-full items-center gap-3 rounded-[var(--radius-lg)] px-4 py-3 text-sm font-medium transition-all duration-300 ${
                   activeTab === tab.id
-                    ? "bg-[var(--accent)] text-white shadow-lg"
+                    ? "bg-[var(--accent)] text-[var(--primary-foreground)] shadow-lg"
                     : "text-[var(--text-secondary)] hover:bg-[var(--surface-off)]"
                 }`}
               >
@@ -112,11 +112,11 @@ const AIReportAnalysisPage = () => {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 rounded-[var(--radius-lg)] bg-[var(--gradient-accent)] p-5 text-white"
+            className="mt-6 rounded-[var(--radius-lg)] bg-[var(--gradient-accent)] p-5 text-[var(--primary-foreground)]"
           >
             <Microscope size={24} className="mb-2" />
             <p className="text-sm font-bold">Clinical AI Assistant</p>
-            <p className="mt-1 text-xs text-white/70">Evidence-based clinical decision support powered by Gemini</p>
+            <p className="mt-1 text-xs text-[var(--primary-foreground)]/70">Evidence-based clinical decision support powered by Gemini</p>
           </motion.div>
         </div>
 

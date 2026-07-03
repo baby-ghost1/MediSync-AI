@@ -80,10 +80,10 @@ const DashboardPage = () => {
       </motion.div>
 
       <motion.div variants={itemVariants} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard title="Today's Patients" value={stats.todayPatients ?? 0} icon={Users} color="from-blue-600 to-cyan-500" />
-        <StatCard title="Appointments" value={stats.totalAppointments ?? 0} icon={CalendarDays} color="from-emerald-500 to-green-600" />
-        <StatCard title="AI Reports" value={stats.aiReports ?? 0} icon={BrainCircuit} color="from-violet-500 to-indigo-600" />
-        <StatCard title="Success Rate" value={stats.successRate ?? "98%"} icon={HeartPulse} color="from-pink-500 to-rose-500" />
+        <StatCard title="Today's Patients" value={stats.todayPatients ?? 0} icon={Users} color="from-[var(--primary)] to-[var(--accent)]" />
+        <StatCard title="Appointments" value={stats.totalAppointments ?? 0} icon={CalendarDays} color="from-[var(--success)] to-[var(--success)]" />
+        <StatCard title="AI Reports" value={stats.aiReports ?? 0} icon={BrainCircuit} color="from-[var(--primary)] to-[var(--primary-hover)]" />
+        <StatCard title="Success Rate" value={stats.successRate ?? "98%"} icon={HeartPulse} color="from-[var(--primary)] to-[var(--accent)]" />
       </motion.div>
 
       <div className="grid gap-6 xl:grid-cols-3">
@@ -162,14 +162,14 @@ const DashboardPage = () => {
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <Card className="overflow-hidden bg-[var(--gradient-accent)] text-white border-0">
+            <Card className="overflow-hidden bg-[var(--gradient-accent)] text-[var(--primary-foreground)] border-0">
               <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <Badge variant="glass" size="md">AI Clinical Assistant</Badge>
                   <h2 className="mt-4 text-xl font-bold sm:text-2xl">
                     AI Assisted Diagnosis
                   </h2>
-                  <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/80">
+                  <p className="mt-3 max-w-xl text-sm leading-relaxed text-[var(--primary-foreground)]/80">
                     Upload reports, compare previous history and generate preliminary
                     diagnosis with evidence-backed AI recommendations.
                   </p>
@@ -185,7 +185,7 @@ const DashboardPage = () => {
                 <motion.div
                   animate={{ rotate: [0, 4, -4, 0] }}
                   transition={{ repeat: Infinity, duration: 5 }}
-                  className="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-white/15 backdrop-blur-xl"
+                  className="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-[var(--primary-foreground)]/15 backdrop-blur-xl"
                 >
                   <BrainCircuit size={56} />
                 </motion.div>
@@ -291,15 +291,15 @@ const DashboardPage = () => {
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <Card className="overflow-hidden bg-[var(--gradient-success)] text-white border-0">
+            <Card className="overflow-hidden bg-[var(--gradient-success)] text-[var(--primary-foreground)] border-0">
               <div className="text-center">
                 <HeartPulse size={40} className="mx-auto" />
                 <h2 className="mt-4 text-4xl font-bold">
                   {stats.satisfactionRate ?? stats.successRate ?? "98%"}
                 </h2>
-                <p className="mt-1 text-sm text-white/80">Patient Satisfaction</p>
-                <div className="mt-5 rounded-[var(--radius-lg)] bg-white/15 p-4 backdrop-blur-xl">
-                  <p className="text-xs leading-relaxed text-white/90">
+                <p className="mt-1 text-sm text-[var(--primary-foreground)]/80">Patient Satisfaction</p>
+                <div className="mt-5 rounded-[var(--radius-lg)] bg-[var(--primary-foreground)]/15 p-4 backdrop-blur-xl">
+                  <p className="text-xs leading-relaxed text-[var(--primary-foreground)]/90">
                     {stats.satisfactionMessage || "Your patient satisfaction score has improved by 6% compared to last month."}
                   </p>
                 </div>

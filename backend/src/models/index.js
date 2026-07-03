@@ -13,3 +13,5 @@ export { default as Prescription } from "./Prescription.js";
 export { default as Notification } from "./Notification.js";
 
 export { default as RefreshToken } from "./RefreshToken.js";
+
+export { default as Chat } from "./Chat.js";

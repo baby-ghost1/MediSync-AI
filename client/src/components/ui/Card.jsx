@@ -98,16 +98,15 @@ const variants = {
   ].join(" "),
 
   glass: [
-    "bg-white/80",
-    "dark:bg-[var(--card)]/80",
+    "bg-[var(--card)]/80",
     "backdrop-blur-2xl",
-    "border border-white/30 dark:border-[var(--border)]/60",
+    "border border-[var(--border)]/40",
     "shadow-[0_8px_24px_rgba(15,23,42,.06)]",
   ].join(" "),
 
   gradient: [
     "bg-[var(--gradient-primary)]",
-    "text-white",
+    "text-[var(--primary-foreground)]",
     "border-0",
     "shadow-[0_14px_34px_rgba(37,99,235,.18)]",
   ].join(" "),
@@ -190,14 +189,14 @@ const Card = ({
         "relative overflow-hidden",
         "transition-all duration-300",
         "ease-[cubic-bezier(0.16,1,0.3,1)]",
-        "ring-1 ring-black/[0.025] dark:ring-white/[0.04]",
+        "ring-1 ring-[var(--border)]/50",
         "before:absolute before:inset-0",
         "before:pointer-events-none",
         "before:bg-gradient-to-b",
-        "before:from-white/[0.04]",
+        "before:from-[var(--primary-foreground)]/[0.04]",
         "before:to-transparent",
         hover &&
-          "hover:ring-black/[0.04] dark:hover:ring-white/[0.06] hover:shadow-[0_18px_40px_rgba(15,23,42,.08)]",
+          "hover:ring-[var(--border-hover)]/50 hover:shadow-[0_18px_40px_rgba(15,23,42,.08)]",
         variants[variant],
         padding[paddingSize],
         radius[radiusSize],

@@ -93,7 +93,7 @@ const NotificationsPage = () => {
               onClick={() => { setTypeFilter(f); setPage(1); }}
               className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${
                 typeFilter === f
-                  ? "bg-[var(--primary)] text-white shadow-[var(--shadow-sm)]"
+                  ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[var(--shadow-sm)]"
                   : "border border-[var(--border)] text-[var(--muted-foreground)] hover:border-[var(--primary)] hover:text-[var(--primary)]"
               }`}
             >

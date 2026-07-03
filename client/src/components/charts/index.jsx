@@ -25,8 +25,8 @@ const BarChart = ({
       {showAxis && (
         <div className="absolute inset-x-0 top-0 bottom-8 flex flex-col justify-between pointer-events-none">
           {[0, 0.25, 0.5, 0.75, 1].map((ratio) => (
-            <div key={ratio} className="flex items-center border-t border-dashed border-slate-200 dark:border-slate-800">
-              <span className="-ml-10 text-xs text-slate-400">{Math.round(maxVal * (1 - ratio))}</span>
+            <div key={ratio} className="flex items-center border-t border-dashed border-[var(--border)]">
+              <span className="-ml-10 text-xs text-[var(--muted-foreground)]">{Math.round(maxVal * (1 - ratio))}</span>
             </div>
           ))}
         </div>
@@ -53,13 +53,13 @@ const BarChart = ({
                 className="transition-all duration-200 cursor-pointer"
                 style={{ filter: isHovered ? `drop-shadow(0 4px 8px ${color}44)` : "none" }}
               />
-              <text x={i * (barWidth + spacing) + barWidth / 2} y={height - 28} textAnchor="middle" className="fill-slate-500 text-xs">{d.label}</text>
+              <text x={i * (barWidth + spacing) + barWidth / 2} y={height - 28} textAnchor="middle" className="fill-[var(--muted-foreground)] text-xs">{d.label}</text>
               {showValues && (
-                <text x={i * (barWidth + spacing) + barWidth / 2} y={y - 6} textAnchor="middle" className="fill-slate-600 dark:fill-slate-400 text-xs font-medium">{d.value}</text>
+                <text x={i * (barWidth + spacing) + barWidth / 2} y={y - 6} textAnchor="middle" className="fill-[var(--foreground)] text-xs font-medium">{d.value}</text>
               )}
               {isHovered && d.tooltip && (
                 <foreignObject x={x - 20} y={y - 50} width={barWidth + 40} height={36}>
-                  <div className="flex items-center justify-center rounded-lg bg-slate-900 px-3 py-1.5 text-xs text-white shadow-lg dark:bg-slate-700">{d.tooltip}</div>
+                  <div className="flex items-center justify-center rounded-lg bg-[var(--foreground)] px-3 py-1.5 text-xs text-[var(--background)] shadow-lg">{d.tooltip}</div>
                 </foreignObject>
               )}
             </g>
@@ -106,8 +106,8 @@ const LineChart = ({
       {showAxis && (
         <div className="absolute inset-x-0 top-0 bottom-8 flex flex-col justify-between pointer-events-none" style={{ left: 50, right: 20 }}>
           {[0, 0.25, 0.5, 0.75, 1].map((ratio) => (
-            <div key={ratio} className="flex items-center border-t border-dashed border-slate-200 dark:border-slate-800">
-              <span className="-ml-12 text-xs text-slate-400">{Math.round(maxVal * (1 - ratio))}</span>
+            <div key={ratio} className="flex items-center border-t border-dashed border-[var(--border)]">
+              <span className="-ml-12 text-xs text-[var(--muted-foreground)]">{Math.round(maxVal * (1 - ratio))}</span>
             </div>
           ))}
         </div>
@@ -121,7 +121,7 @@ const LineChart = ({
           <circle
             key={i}
             cx={p.x} cy={p.y} r={hovered === i ? 6 : 4}
-            fill="#fff" stroke={strokeColor} strokeWidth="2.5"
+            fill="var(--card)" stroke={strokeColor} strokeWidth="2.5"
             className="transition-all duration-200 cursor-pointer"
             onMouseEnter={() => setHovered(i)}
             onMouseLeave={() => setHovered(null)}
@@ -129,14 +129,14 @@ const LineChart = ({
         ))}
 
         {points.map((p, i) => (
-          <text key={i} x={p.x} y={height - 10} textAnchor="middle" className="fill-slate-500 text-xs">{p.label}</text>
+          <text key={i} x={p.x} y={height - 10} textAnchor="middle" className="fill-[var(--muted-foreground)] text-xs">{p.label}</text>
         ))}
 
         {hovered !== null && (
           <g>
             <line x1={points[hovered].x} y1={padding.top} x2={points[hovered].x} y2={padding.top + chartH} stroke={strokeColor} strokeWidth="1" strokeDasharray="4,4" opacity={0.5} />
-            <rect x={points[hovered].x - 24} y={points[hovered].y - 42} width={48} height={28} rx={8} className="fill-slate-900 dark:fill-slate-700" />
-            <text x={points[hovered].x} y={points[hovered].y - 24} textAnchor="middle" className="fill-white text-xs font-medium">{points[hovered].value}</text>
+            <rect x={points[hovered].x - 24} y={points[hovered].y - 42} width={48} height={28} rx={8} className="fill-[var(--foreground)]" />
+            <text x={points[hovered].x} y={points[hovered].y - 24} textAnchor="middle" className="fill-[var(--background)] text-xs font-medium">{points[hovered].value}</text>
           </g>
         )}
       </svg>
@@ -193,18 +193,17 @@ const PieChart = ({
             <path
               d={s.path}
               fill={hovered === s.i ? s.color : `${s.color}CC`}
-              stroke="#fff"
               strokeWidth={2}
-              className="transition-all duration-200 cursor-pointer"
+              className="stroke-[var(--card)] transition-all duration-200 cursor-pointer"
               style={{ transform: hovered === s.i ? `scale(1.04)` : "scale(1)", transformOrigin: `${cx}px ${cy}px` }}
               onMouseEnter={() => setHovered(s.i)}
               onMouseLeave={() => setHovered(null)}
             />
             {innerRadius > 0 && (
-              <circle cx={cx} cy={cy} r={innerRadius} fill="white" className="dark:fill-slate-900" />
+              <circle cx={cx} cy={cy} r={innerRadius} fill="var(--card)" />
             )}
             {hovered === s.i && (
-              <text x={cx} y={cy + 4} textAnchor="middle" className="fill-slate-800 dark:fill-white text-sm font-bold">
+              <text x={cx} y={cy + 4} textAnchor="middle" className="fill-[var(--foreground)] text-sm font-bold">
                 {Math.round((s.value / total) * 100)}%
               </text>
             )}
@@ -217,9 +216,9 @@ const PieChart = ({
           {slices.map((s) => (
             <div key={s.i} className="flex items-center gap-3" onMouseEnter={() => setHovered(s.i)} onMouseLeave={() => setHovered(null)}>
               <div className="h-3 w-3 rounded-full" style={{ background: s.color }} />
-              <span className="text-sm text-slate-600 dark:text-slate-400">{s.label}</span>
-              <span className="text-sm font-medium text-slate-800 dark:text-white">{s.value}</span>
-              <span className="text-xs text-slate-400">({Math.round((s.value / total) * 100)}%)</span>
+              <span className="text-sm text-[var(--muted-foreground)]">{s.label}</span>
+              <span className="text-sm font-medium text-[var(--foreground)]">{s.value}</span>
+              <span className="text-xs text-[var(--muted-foreground)]">({Math.round((s.value / total) * 100)}%)</span>
             </div>
           ))}
         </div>

@@ -89,7 +89,7 @@ const RegisterPage = () => {
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
           className="max-w-lg"
         >
-          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[var(--gradient-primary)] text-white shadow-[var(--shadow-lg)]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[var(--gradient-primary)] text-[var(--primary-foreground)] shadow-[var(--shadow-lg)]">
             <HeartPulse size={32} />
           </div>
 

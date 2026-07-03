@@ -6,13 +6,48 @@ import {
   asyncHandler,
 } from "../middleware/index.js";
 
+import {
+  PatientRepository,
+} from "../repositories/index.js";
+
+import {
+  ApiError,
+} from "../utils/index.js";
+
 class AppointmentController {
   createAppointment =
     asyncHandler(
       async (req, res) => {
+        const patientProfile =
+          await PatientRepository.findByUserId(
+            req.user._id
+          );
+
+        if (!patientProfile) {
+          throw new ApiError(
+            404,
+            "Patient profile not found. Please complete your profile first."
+          );
+        }
+
+        const payload = {
+          patient:
+            patientProfile._id,
+          doctor:
+            req.body.doctorId,
+          appointmentDate:
+            req.body.date,
+          appointmentTime:
+            req.body.time,
+          reason:
+            req.body.reason,
+          notes:
+            req.body.notes || "",
+        };
+
         const data =
           await AppointmentService.createAppointment(
-            req.body
+            payload
           );
 
         res.status(201).json({

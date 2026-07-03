@@ -220,11 +220,13 @@ const Navbar = () => {
               <Menu size={25} />
             </Button>
 
+           
+
             <Link
               to="/"
               className="flex items-center gap-3"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-white shadow-[0_10px_24px_rgba(37,99,235,.18)]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[0_10px_24px_rgba(37,99,235,.18)]">
                 <Stethoscope size={17} />
               </div>
 
@@ -239,8 +241,21 @@ const Navbar = () => {
               </div>
             </Link>
           </div>
-                    {/* Search */}
 
+
+           {/* 
+           <Button
+              size="icon"
+              variant="ghost"
+              className="h-9 w-9"
+              onClick={() => navigate(`/`)}
+            >
+              <Home size={20} />
+            </Button>
+            */}
+
+            
+             {/* Search */}
           <div className="hidden w-full max-w-2xl px-8 lg:block">
             <div className="relative">
               <Input
@@ -316,7 +331,7 @@ const Navbar = () => {
                         px-1
                         text-[10px]
                         font-bold
-                        text-white
+                        text-[var(--primary-foreground)]
                         ring-2
                         ring-[var(--navbar)]
                       "
@@ -390,7 +405,7 @@ const Navbar = () => {
             exit={{ opacity: 0 }}
             className="
               fixed inset-0 z-[70]
-              bg-black/40
+              bg-[var(--foreground)]/40
               backdrop-blur-sm
               p-4
               lg:hidden
@@ -451,7 +466,7 @@ const Navbar = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={() => setMobileMenuOpen(false)}
-              className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
+              className="fixed inset-0 z-[60] bg-[var(--foreground)]/40 backdrop-blur-sm"
             />
 
             <motion.aside
@@ -473,7 +488,7 @@ const Navbar = () => {
             >
               <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-white shadow-[0_10px_24px_rgba(37,99,235,.18)]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[0_10px_24px_rgba(37,99,235,.18)]">
                     <Stethoscope size={17} />
                   </div>
 

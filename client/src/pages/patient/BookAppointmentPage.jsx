@@ -87,14 +87,14 @@ const BookAppointmentPage = () => {
       {loadingDoctors ? <SectionLoader /> : (
         <div className="grid gap-8 xl:grid-cols-3">
           <div className="space-y-6 xl:col-span-3">
-            <Card paddingSize="lg" className="overflow-hidden border-0 bg-[linear-gradient(135deg,var(--primary),var(--accent))] text-white shadow-[var(--shadow-lg)]">
+            <Card paddingSize="lg" className="overflow-hidden border-0 bg-[linear-gradient(135deg,var(--primary),var(--accent))] text-[var(--primary-foreground)] shadow-[var(--shadow-lg)]">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/70">Appointment flow</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--primary-foreground)]/70">Appointment flow</p>
                   <h2 className="mt-2 text-xl font-semibold">Book care in a few guided steps</h2>
-                  <p className="mt-2 max-w-2xl text-sm text-white/75">Choose a specialist, confirm a time and share the reason for your visit with confidence.</p>
+                  <p className="mt-2 max-w-2xl text-sm text-[var(--primary-foreground)]/75">Choose a specialist, confirm a time and share the reason for your visit with confidence.</p>
                 </div>
-                <div className="rounded-[var(--radius-lg)] bg-white/15 px-4 py-3 backdrop-blur-xl">
+                <div className="rounded-[var(--radius-lg)] bg-[var(--primary-foreground)]/15 px-4 py-3 backdrop-blur-xl">
                   <p className="text-sm font-semibold">Step {step} of 2</p>
                 </div>
               </div>
@@ -222,24 +222,24 @@ const BookAppointmentPage = () => {
           </div>
 
           <div className="space-y-6">
-            <Card variant="gradient" className="text-white">
+            <Card variant="gradient" className="text-[var(--primary-foreground)]">
               <Stethoscope size={36} />
               <h3 className="mt-4 text-xl font-bold">Appointment Tips</h3>
-              <ul className="mt-4 space-y-3 text-sm text-white/80">
+              <ul className="mt-4 space-y-3 text-sm text-[var(--primary-foreground)]/80">
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-white" />
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[var(--card-foreground)]" />
                   Arrive 15 minutes early
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-white" />
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[var(--card-foreground)]" />
                   Bring previous medical records
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-white" />
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[var(--card-foreground)]" />
                   List your symptoms clearly
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-white" />
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[var(--card-foreground)]" />
                   24-hour cancellation policy
                 </li>
               </ul>

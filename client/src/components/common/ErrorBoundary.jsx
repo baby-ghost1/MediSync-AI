@@ -37,8 +37,8 @@ class ErrorBoundary extends Component {
       return (
         <div className="flex min-h-screen items-center justify-center bg-[var(--background)] p-8">
           <div className="w-full max-w-md text-center">
-            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-950/30 ring-1 ring-red-200 dark:ring-red-900/50">
-              <AlertTriangle size={32} className="text-red-600 dark:text-red-400" />
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--danger-light)] ring-1 ring-[var(--danger)]/20">
+              <AlertTriangle size={32} className="text-[var(--danger)]" />
             </div>
 
             <h1 className="mb-2 text-2xl font-bold text-[var(--foreground)]">
@@ -51,7 +51,7 @@ class ErrorBoundary extends Component {
 
             {this.props.showDetails && this.state.error && (
               <div className="mb-6 rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 text-left">
-                <p className="mb-1 font-mono text-sm font-semibold text-red-600 dark:text-red-400">
+                <p className="mb-1 font-mono text-sm font-semibold text-[var(--danger)]">
                   {this.state.error.name}: {this.state.error.message}
                 </p>
                 {this.state.errorInfo && (

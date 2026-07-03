@@ -2,19 +2,19 @@ import { cn } from "@/utils/cn";
 
 const variants = {
   primary:
-    "border border-[var(--primary)]/15 bg-[var(--primary)]/8 text-[var(--primary)]",
+    "border border-[var(--primary-light)] bg-[var(--primary-light)] text-[var(--primary)]",
 
   success:
-    "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400",
+    "border border-[var(--success-light)] bg-[var(--success-light)] text-[var(--success)]",
 
   warning:
-    "border border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400",
+    "border border-[var(--warning-light)] bg-[var(--warning-light)] text-[var(--warning)]",
 
   danger:
-    "border border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400",
+    "border border-[var(--danger-light)] bg-[var(--danger-light)] text-[var(--danger)]",
 
   info:
-    "border border-cyan-200 bg-cyan-50 text-cyan-700 dark:border-cyan-800 dark:bg-cyan-900/20 dark:text-cyan-400",
+    "border border-[var(--info-light)] bg-[var(--info-light)] text-[var(--info)]",
 
   secondary:
     "border border-[var(--border)] bg-[var(--secondary)] text-[var(--foreground)]",
@@ -23,13 +23,13 @@ const variants = {
     "border border-[var(--border)] bg-transparent text-[var(--muted-foreground)]",
 
   accent:
-    "border border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-800 dark:bg-violet-900/20 dark:text-violet-300",
+    "border border-[var(--accent-light)] bg-[var(--accent-light)] text-[var(--accent)]",
 
   glass:
-    "border border-white/20 bg-white/70 backdrop-blur-xl text-[var(--foreground)] dark:bg-white/10 dark:text-white",
+    "border border-[var(--border)] bg-[var(--card)] backdrop-blur-xl text-[var(--foreground)]",
 
   gradient:
-    "border-0 bg-[var(--gradient-primary)] text-white shadow-sm",
+    "border-0 bg-[var(--gradient-primary)] text-[var(--primary-foreground)] shadow-sm",
 };
 
 const sizes = {

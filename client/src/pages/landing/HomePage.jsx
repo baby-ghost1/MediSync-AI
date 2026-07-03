@@ -166,7 +166,7 @@ const HomePage = () => {
           >
             <div className="relative rounded-3xl border border-[var(--border)] bg-[var(--card)] p-7 shadow-[var(--shadow-xl)] ring-1 ring-[var(--border)]/50 backdrop-blur-sm">
               <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--gradient-primary)] text-white shadow-md">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--gradient-primary)] text-[var(--primary-foreground)] shadow-md">
                   <HeartPulse size={24} />
                 </div>
                 <div>
@@ -179,9 +179,9 @@ const HomePage = () => {
                 </div>
               </div>
 
-              <div className="mt-8 rounded-2xl bg-[var(--gradient-primary)] p-6 text-white shadow-lg">
+              <div className="mt-8 rounded-2xl bg-[var(--gradient-primary)] p-6 text-[var(--primary-foreground)] shadow-lg">
                 <h2 className="text-5xl font-bold tracking-tight sm:text-6xl">96%</h2>
-                <p className="mt-2 text-sm text-white/80">Overall Health Index</p>
+                <p className="mt-2 text-sm text-[var(--primary-foreground)]/80">Overall Health Index</p>
               </div>
 
               <div className="mt-6 space-y-3">
@@ -243,7 +243,7 @@ const HomePage = () => {
                   className="group relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] p-8 shadow-[var(--shadow-card)] transition-all duration-300 hover:border-[var(--border-hover)] hover:shadow-[var(--shadow-card-hover)]"
                 >
                   <div className="absolute right-[-30px] top-[-30px] h-36 w-36 rounded-full bg-[var(--primary)]/8 blur-3xl transition-all duration-500 group-hover:bg-[var(--primary)]/15 group-hover:blur-2xl" />
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--gradient-primary)] text-white shadow-md transition-transform duration-300 group-hover:scale-110">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--gradient-primary)] text-[var(--primary-foreground)] shadow-md transition-transform duration-300 group-hover:scale-110">
                     <Icon size={22} />
                   </div>
                   <h3 className="mt-5 text-lg font-semibold text-[var(--foreground)]">
@@ -353,7 +353,7 @@ const HomePage = () => {
                 {[1, 2, 3, 4].map((item) => (
                   <div
                     key={item}
-                    className="h-14 rounded-xl bg-white/15 backdrop-blur-md"
+                    className="h-14 rounded-xl bg-[var(--primary-foreground)]/15 backdrop-blur-md"
                   />
                 ))}
               </div>
@@ -401,7 +401,7 @@ const HomePage = () => {
                 whileHover={{ y: -6, transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] } }}
                 className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-[var(--shadow-card)] transition-all duration-300 hover:border-[var(--border-hover)] hover:shadow-[var(--shadow-card-hover)] text-center"
               >
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--gradient-primary)] text-2xl font-bold text-white shadow-md">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--gradient-primary)] text-2xl font-bold text-[var(--primary-foreground)] shadow-md">
                   {doctor.name
                     .split(" ")
                     .map((w) => w[0])
@@ -480,7 +480,7 @@ const HomePage = () => {
                   &ldquo;{item.review}&rdquo;
                 </p>
                 <div className="mt-5 flex items-center gap-3 border-t border-[var(--border)] pt-4">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--gradient-primary)] text-[10px] font-bold text-white">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--gradient-primary)] text-[10px] font-bold text-[var(--primary-foreground)]">
                     {item.name
                       .split(" ")
                       .map((w) => w[0])
@@ -505,17 +505,17 @@ const HomePage = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
-            className="relative overflow-hidden rounded-3xl bg-[var(--gradient-primary)] px-8 py-16 text-center text-white shadow-[var(--shadow-xl)] sm:px-16 sm:py-20 lg:px-24"
+            className="relative overflow-hidden rounded-3xl bg-[var(--gradient-primary)] px-8 py-16 text-center text-[var(--primary-foreground)] shadow-[var(--shadow-xl)] sm:px-16 sm:py-20 lg:px-24"
           >
             <div className="absolute inset-0 -z-10">
-              <div className="absolute left-[-20%] top-[-20%] h-[300px] w-[300px] rounded-full bg-white/10 blur-[100px]" />
-              <div className="absolute bottom-[-20%] right-[-20%] h-[300px] w-[300px] rounded-full bg-white/10 blur-[100px]" />
+              <div className="absolute left-[-20%] top-[-20%] h-[300px] w-[300px] rounded-full bg-[var(--primary-foreground)]/10 blur-[100px]" />
+              <div className="absolute bottom-[-20%] right-[-20%] h-[300px] w-[300px] rounded-full bg-[var(--primary-foreground)]/10 blur-[100px]" />
             </div>
             <Badge variant="glass" size="md">Start Today</Badge>
             <h2 className="mx-auto mt-6 max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
               Join The Future Of Digital Healthcare
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base">
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-[var(--primary-foreground)]/80 sm:text-base">
               One intelligent platform for hospitals, doctors and patients with
               AI at its core.
             </p>
@@ -567,14 +567,14 @@ const HomePage = () => {
                 description: "Manage appointments, medical records, prescriptions, and get AI-powered health insights.",
                 features: ["Book appointments", "Track health records", "AI health assistant"],
                 link: "/register",
-                gradient: "from-blue-600 to-cyan-500",
+                gradient: "from-[var(--primary)] to-[var(--accent)]",
               },
               {
                 title: "Doctor",
                 description: "Manage patients, appointments, reports, and leverage AI for better diagnosis.",
                 features: ["Patient management", "AI report analysis", "Digital prescriptions"],
                 link: "/register",
-                gradient: "from-violet-600 to-indigo-600",
+                gradient: "from-[var(--primary)] to-[var(--primary-hover)]",
               },
             ].map((role) => (
               <motion.div

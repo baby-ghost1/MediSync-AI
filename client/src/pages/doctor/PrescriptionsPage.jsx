@@ -120,7 +120,7 @@ const PrescriptionsPage = () => {
           <div className="flex flex-wrap gap-2">
             {statusFilters.map((f) => (
               <button key={f} onClick={() => { setStatusFilter(f); setPage(1); }}
-                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${statusFilter === f ? "bg-[var(--primary)] text-white shadow-sm" : "border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--primary)]"}`}
+                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${statusFilter === f ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm" : "border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--primary)]"}`}
               >{f.charAt(0).toUpperCase() + f.slice(1)}</button>
             ))}
           </div>

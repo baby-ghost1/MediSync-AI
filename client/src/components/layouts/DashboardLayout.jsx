@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import Navbar from "@/components/layouts/Navbar";
 import Sidebar from "@/components/layouts/Sidebar";
-import Footer from "@/components/layouts/Footer";
 import { SocketReconnecting } from "@/components/common/SocketStatus";
 import useAppStore from "@/store/appStore";
 
@@ -16,7 +15,7 @@ const DashboardLayout = () => {
   return (
     <div
       className="
-        min-h-screen
+        min-h-dvh
         bg-[var(--background)]
         text-[var(--foreground)]
       "
@@ -46,7 +45,6 @@ const DashboardLayout = () => {
           ease: [0.16, 1, 0.3, 1],
         }}
         className={`
-          min-h-screen
           transition-all duration-300
 
           ${
@@ -62,42 +60,38 @@ const DashboardLayout = () => {
 
         <main
           className="
-            relative
-            min-h-screen
-            px-4
-            pt-[118px]
-            pb-10
-
-            sm:px-6
-            lg:px-8
-            xl:px-10
-            2xl:px-12
+            min-h-[calc(100dvh-4rem)]
+            pt-20
           "
         >
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 16,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 0.4,
-              ease: [0.16, 1, 0.3, 1],
-            }}
+          <div
             className="
               mx-auto
               w-full
-              max-w-[1700px]
+              max-w-7xl
+              px-4
+              pb-8
+              lg:px-6
             "
           >
-            <Outlet />
-          </motion.div>
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 16,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.4,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+            >
+              <Outlet />
+            </motion.div>
+          </div>
         </main>
-
-        <Footer />
       </motion.div>
     </div>
   );

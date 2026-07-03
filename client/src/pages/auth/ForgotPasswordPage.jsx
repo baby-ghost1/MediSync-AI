@@ -65,7 +65,7 @@ const ForgotPasswordPage = () => {
           animate={{ opacity: 1, x: 0 }}
           className="max-w-xl"
         >
-          <div className="flex h-24 w-24 items-center justify-center rounded-[30px] bg-[var(--gradient-primary)] text-white shadow-[var(--shadow-xl)]">
+          <div className="flex h-24 w-24 items-center justify-center rounded-[30px] bg-[var(--gradient-primary)] text-[var(--primary-foreground)] shadow-[var(--shadow-xl)]">
             <HeartPulse size={48} />
           </div>
 
@@ -153,7 +153,7 @@ const ForgotPasswordPage = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   className="rounded-2xl border border-[var(--success)]/20 bg-[var(--success-light)] p-8 text-center"
                 >
-                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--success)] text-white">
+                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--success)] text-[var(--primary-foreground)]">
                     <Send size={36} />
                   </div>
 

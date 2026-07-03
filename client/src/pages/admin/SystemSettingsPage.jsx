@@ -77,7 +77,7 @@ const SystemSettingsPage = () => {
                 >
                   <div className={`rounded-[var(--radius-md)] p-3 transition-all duration-300 ${
                     isActive
-                      ? "bg-[var(--primary)] text-white shadow-[var(--shadow-md)]"
+                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[var(--shadow-md)]"
                       : "bg-[var(--surface-off)] text-[var(--text-secondary)]"
                   }`}>
                     <Icon size={24} />
@@ -105,7 +105,7 @@ const SystemSettingsPage = () => {
                   <div><p className="font-semibold text-[var(--text-primary)]">{item.label}</p></div>
                 </div>
                 <button onClick={item.action} className={`relative h-7 w-12 shrink-0 rounded-full transition-all duration-300 ${item.value ? "bg-[var(--primary)]" : "bg-[var(--border)]"}`}>
-                  <div className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform duration-300 ${item.value ? "translate-x-5" : ""}`} />
+                  <div className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-[var(--card-foreground)] shadow transition-transform duration-300 ${item.value ? "translate-x-5" : ""}`} />
                 </button>
               </div>
             ))}

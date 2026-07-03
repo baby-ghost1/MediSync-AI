@@ -6,18 +6,24 @@ const STORAGE_KEY = "medisync-theme";
 const THEMES = {
   LIGHT: "light",
   DARK: "dark",
+  SYSTEM: "system",
+};
+
+const getSystemTheme = () => {
+  if (typeof window === "undefined") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 };
 
 const applyTheme = (selectedTheme) => {
   const html = document.documentElement;
-  html.classList.remove("light", "dark");
-  html.classList.add(selectedTheme);
+  const isDark = selectedTheme === THEMES.DARK || (selectedTheme === THEMES.SYSTEM && getSystemTheme() === "dark");
+  html.classList.toggle("dark", isDark);
 };
 
 const useThemeStore = create(
   persist(
     (set, get) => ({
-      theme: THEMES.LIGHT, // Default theme set to LIGHT instead of SYSTEM
+      theme: THEMES.SYSTEM,
       themes: THEMES,
 
       setTheme: (newTheme) => {
@@ -32,7 +38,7 @@ const useThemeStore = create(
       },
 
       initTheme: () => {
-        const saved = get().theme || THEMES.LIGHT; // Fallback to LIGHT
+        const saved = get().theme || THEMES.SYSTEM;
         applyTheme(saved);
       },
     }),

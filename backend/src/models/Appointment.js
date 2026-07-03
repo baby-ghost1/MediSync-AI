@@ -46,8 +46,18 @@ const appointmentSchema =
     },
     {
       timestamps: true,
+      toJSON: { virtuals: true },
+      toObject: { virtuals: true },
     }
   );
+
+appointmentSchema.virtual("date").get(function () {
+  return this.appointmentDate;
+});
+
+appointmentSchema.virtual("time").get(function () {
+  return this.appointmentTime;
+});
 
 export default mongoose.model(
   "Appointment",

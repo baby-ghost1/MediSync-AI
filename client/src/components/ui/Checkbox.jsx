@@ -47,14 +47,14 @@ const Checkbox = ({
         {...props}
       >
         {indeterminate ? (
-          <Minus size={13} className="text-white" strokeWidth={3} />
+          <Minus size={13} className="text-[var(--primary-foreground)]" strokeWidth={3} />
         ) : checked ? (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
           >
-            <Check size={13} className="text-white" strokeWidth={3} />
+            <Check size={13} className="text-[var(--primary-foreground)]" strokeWidth={3} />
           </motion.div>
         ) : null}
       </button>

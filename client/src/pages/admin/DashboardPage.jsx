@@ -70,10 +70,10 @@ const DashboardPage = () => {
       </motion.div>
 
       <motion.div variants={itemVariants} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard title="Total Users" value={stats.totalUsers ?? "0"} icon={Users} color="from-blue-600 to-cyan-500" trend={stats.userGrowth} />
-        <StatCard title="Doctors" value={stats.totalDoctors ?? "0"} icon={UserCog} color="from-violet-600 to-indigo-600" />
-        <StatCard title="Appointments" value={stats.totalAppointments ?? "0"} icon={CalendarDays} color="from-orange-500 to-red-500" trend={stats.appointmentGrowth} />
-        <StatCard title="Completed" value={stats.completedAppointments ?? "0"} icon={Activity} color="from-emerald-500 to-green-600" />
+        <StatCard title="Total Users" value={stats.totalUsers ?? "0"} icon={Users} color="from-[var(--primary)] to-[var(--accent)]" trend={stats.userGrowth} />
+        <StatCard title="Doctors" value={stats.totalDoctors ?? "0"} icon={UserCog} color="from-[var(--primary)] to-[var(--primary-hover)]" />
+        <StatCard title="Appointments" value={stats.totalAppointments ?? "0"} icon={CalendarDays} color="from-[var(--warning)] to-[var(--danger)]" trend={stats.appointmentGrowth} />
+        <StatCard title="Completed" value={stats.completedAppointments ?? "0"} icon={Activity} color="from-[var(--success)] to-[var(--success)]" />
       </motion.div>
 
       {/* System Health */}
@@ -166,14 +166,14 @@ const DashboardPage = () => {
             </div>
           </Card>
 
-          <Card className="overflow-hidden bg-[var(--gradient-accent)] text-white border-0">
+          <Card className="overflow-hidden bg-[var(--gradient-accent)] text-[var(--primary-foreground)] border-0">
             <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <Badge variant="glass" size="md">AI Analytics</Badge>
                 <h2 className="mt-4 text-xl font-bold sm:text-2xl">
                   Platform Intelligence
                 </h2>
-                <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/80">
+                <p className="mt-3 max-w-xl text-sm leading-relaxed text-[var(--primary-foreground)]/80">
                   Monitor AI usage, report generation, diagnostic accuracy,
                   appointment trends, and overall system health.
                 </p>
@@ -186,7 +186,7 @@ const DashboardPage = () => {
               <motion.div
                 animate={{ rotate: [0, 5, -5, 0] }}
                 transition={{ repeat: Infinity, duration: 5 }}
-                className="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-white/15 backdrop-blur-xl"
+                className="mx-auto flex h-28 w-28 items-center justify-center rounded-full bg-[var(--primary-foreground)]/15 backdrop-blur-xl"
               >
                 <BrainCircuit size={56} />
               </motion.div>
@@ -241,7 +241,7 @@ const DashboardPage = () => {
                         whileHover={{ x: 3 }}
                         className="flex items-start gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] p-3 transition-all duration-300 hover:shadow-sm"
                       >
-                        <div className="rounded-lg bg-blue-100 p-1.5 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                        <div className="rounded-lg bg-[var(--primary-light)] p-1.5 text-[var(--primary)]">
                           <CalendarDays size={14} />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -261,7 +261,7 @@ const DashboardPage = () => {
                       whileHover={{ x: 3 }}
                       className="flex items-start gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] p-3 transition-all duration-300 hover:shadow-sm"
                     >
-                      <div className="rounded-lg bg-purple-100 p-1.5 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+                      <div className="rounded-lg bg-[var(--primary-light)] p-1.5 text-[var(--primary)]">
                         <Bell size={14} />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -279,15 +279,15 @@ const DashboardPage = () => {
             </div>
           </Card>
 
-          <Card className="overflow-hidden bg-[var(--gradient-success)] text-white border-0">
+          <Card className="overflow-hidden bg-[var(--gradient-success)] text-[var(--primary-foreground)] border-0">
             <div className="text-center">
               <TrendingUp size={40} className="mx-auto" />
               <h2 className="mt-4 text-4xl font-bold">
                 {stats.verifiedUsers ?? "0"}
               </h2>
-              <p className="mt-1 text-sm text-white/80">Verified Users</p>
-              <div className="mt-5 rounded-[var(--radius-md)] bg-white/15 p-4 backdrop-blur-xl">
-                <p className="text-xs leading-relaxed text-white/90">
+              <p className="mt-1 text-sm text-[var(--primary-foreground)]/80">Verified Users</p>
+              <div className="mt-5 rounded-[var(--radius-md)] bg-[var(--primary-foreground)]/15 p-4 backdrop-blur-xl">
+                <p className="text-xs leading-relaxed text-[var(--primary-foreground)]/90">
                   {stats.verifiedUsers} out of {stats.totalUsers} users are verified.
                 </p>
               </div>

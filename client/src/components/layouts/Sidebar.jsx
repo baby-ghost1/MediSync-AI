@@ -126,7 +126,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={() => setMobileMenuOpen(false)}
-          className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-[var(--foreground)]/40 backdrop-blur-sm lg:hidden"
         />
       )}
 
@@ -134,7 +134,6 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         ref={focusTrapRef}
         animate={{
           width: collapsed ? 78 : 280,
-          x: mobileMenuOpen ? 0 : -300,
         }}
         transition={{
           duration: 0.28,
@@ -147,7 +146,9 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
           border-r border-[var(--border)]
           bg-[var(--sidebar)]
           shadow-[0_8px_40px_rgba(15,23,42,.08)]
-          lg:static
+          -translate-x-full
+          lg:translate-x-0
+          ${mobileMenuOpen ? "translate-x-0" : ""}
         `}
       >
         {/* Logo */}
@@ -160,7 +161,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                 flex h-10 w-10 items-center justify-center
                 rounded-2xl
                 bg-[var(--primary)]
-                text-white
+                text-[var(--primary-foreground)]
                 shadow-[0_8px_24px_rgba(37,99,235,.18)]
               "
             >
@@ -279,8 +280,8 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                           ${
                             active
                               ? `
-                                  border border-[var(--primary)]/10
-                                  bg-[var(--primary)]/8
+                                  border border-[var(--primary-light)]
+                                  bg-[var(--primary-light)]
                                   text-[var(--primary)]
                                   shadow-[0_6px_20px_rgba(37,99,235,.08)]
                                 `
@@ -321,7 +322,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                               {item.badge &&
                                 (typeof item.badge ===
                                 "number" ? (
-                                  <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[var(--danger)] px-1.5 text-[10px] font-bold text-white">
+                                  <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[var(--danger)] px-1.5 text-[10px] font-bold text-[var(--primary-foreground)]">
                                     {item.badge}
                                   </span>
                                 ) : (
@@ -377,7 +378,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                   className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-white shadow-[0_8px_20px_rgba(37,99,235,.18)]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[0_8px_20px_rgba(37,99,235,.18)]">
                       <Hospital size={18} />
                     </div>
 

@@ -59,7 +59,7 @@ const AppointmentsPage = () => {
               {statusFilters.map((s) => (
                 <button key={s} onClick={() => { setStatusFilter(s); setPage(1); }}
                   className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${
-                    statusFilter === s ? "bg-[var(--primary)] text-white shadow-sm" : "border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--primary)]"
+                    statusFilter === s ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm" : "border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--primary)] hover:text-[var(--primary)]"
                   }`}
                 >{s.charAt(0).toUpperCase() + s.slice(1)}</button>
               ))}

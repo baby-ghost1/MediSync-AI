@@ -100,9 +100,9 @@ const AppointmentDetailsPage = () => {
           </Card>
 
           {a.status === "completed" && a.followUp && (
-            <Card variant="gradient" className="text-white">
+            <Card variant="gradient" className="text-[var(--primary-foreground)]">
               <h3 className="text-xl font-bold">Follow-Up Recommended</h3>
-              <p className="mt-2 text-white/80">
+              <p className="mt-2 text-[var(--primary-foreground)]/80">
                 Your doctor has recommended a follow-up on {new Date(a.followUp).toLocaleDateString()}
               </p>
               <Link to={ROUTES.PATIENT.BOOK_APPOINTMENT}>
