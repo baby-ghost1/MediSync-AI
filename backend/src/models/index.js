@@ -15,3 +15,11 @@ export { default as Notification } from "./Notification.js";
 export { default as RefreshToken } from "./RefreshToken.js";
 
 export { default as Chat } from "./Chat.js";
+
+export { default as AuditLog } from "./AuditLog.js";
+
+export { default as ConsultationNote } from "./ConsultationNote.js";
+
+export { default as PrescriptionTemplate } from "./PrescriptionTemplate.js";
+
+export { default as Conversation } from "./Conversation.js";

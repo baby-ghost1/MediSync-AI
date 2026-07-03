@@ -61,6 +61,16 @@ class DoctorService {
     const { data } = await API.patch(`${ENDPOINTS.PATIENTS.DETAILS(id)}/medical`, payload);
     return data;
   }
+
+  async updateSchedule(doctorId, availability) {
+    const { data } = await API.patch(`${ENDPOINTS.DOCTORS.ALL}/${doctorId}/schedule`, { availability });
+    return data;
+  }
+
+  async getAvailableSlots(doctorId, date) {
+    const { data } = await API.get(`${ENDPOINTS.DOCTORS.ALL}/${doctorId}/slots`, { params: { date } });
+    return data;
+  }
 }
 
 export default new DoctorService();

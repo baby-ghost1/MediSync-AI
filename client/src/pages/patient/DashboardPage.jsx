@@ -18,7 +18,7 @@ import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import Avatar from "@/components/ui/Avatar";
 import StatCard from "@/components/common/StatCard";
-import DashboardSkeleton from "@/components/ui/DashboardSkeleton";
+import { DashboardGridSkeleton } from "@/components/ui/Skeletons";
 import patientService from "@/services/patient.service";
 import { useApiQuery } from "@/hooks/useQuery";
 import ROUTES from "@/routes/routeConstants";
@@ -29,7 +29,7 @@ const DashboardPage = () => {
     queryFn: () => patientService.getDashboard(),
   });
 
-  if (isLoading) return <DashboardSkeleton />;
+  if (isLoading) return <DashboardGridSkeleton />;
 
   if (error) {
     return (

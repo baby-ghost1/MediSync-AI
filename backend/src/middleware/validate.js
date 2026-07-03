@@ -19,11 +19,10 @@ const validate =
         }
       }
 
-      res.status(400).json({
-        success: false,
-        message: "Validation failed",
-        errors: Object.keys(errors).length > 0 ? errors : { _error: error.message },
-      });
+      const err = new Error("Validation failed");
+      err.statusCode = 400;
+      err.errors = Object.keys(errors).length > 0 ? errors : { _error: error.message };
+      next(err);
     }
   };
 

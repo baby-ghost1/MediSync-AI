@@ -10,7 +10,7 @@ import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import PageHeader from "@/components/common/PageHeader";
 import Pagination from "@/components/common/Pagination";
-import SectionLoader from "@/components/common/SectionLoader";
+import { ListSkeleton } from "@/components/ui/Skeletons";
 import EmptyState from "@/components/ui/EmptyState";
 import notificationService from "@/services/notification.service";
 import { useApiQuery, useApiMutation } from "@/hooks/useQuery";
@@ -103,7 +103,7 @@ const NotificationsPage = () => {
         </div>
       </Card>
 
-      {isLoading ? <SectionLoader /> : notifications.length === 0 ? (
+      {isLoading ? <ListSkeleton items={6} /> : notifications.length === 0 ? (
         <EmptyState
           title="No notifications"
           description={typeFilter !== "All" ? "No notifications of this type" : "You're all caught up!"}

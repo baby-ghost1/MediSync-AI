@@ -13,7 +13,7 @@ import PageHeader from "@/components/common/PageHeader";
 import SearchInput from "@/components/common/SearchInput";
 import Pagination from "@/components/common/Pagination";
 import StatusBadge from "@/components/common/StatusBadge";
-import SectionLoader from "@/components/common/SectionLoader";
+import { ListSkeleton } from "@/components/ui/Skeletons";
 import EmptyState from "@/components/ui/EmptyState";
 import Modal from "@/components/ui/Modal";
 import prescriptionService from "@/services/prescription.service";
@@ -127,7 +127,7 @@ const PrescriptionsPage = () => {
         </div>
       </Card>
 
-      {isLoading ? <SectionLoader /> : prescriptions.length === 0 ? (
+      {isLoading ? <ListSkeleton items={6} /> : prescriptions.length === 0 ? (
         <EmptyState title="No prescriptions yet" description="Create your first prescription" icon={Pill} actionText="New Prescription" onAction={() => setShowCreate(true)} />
       ) : (
         <>

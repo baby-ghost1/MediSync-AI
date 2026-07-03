@@ -98,6 +98,16 @@ router.post(
 );
 
 router.get(
+  "/audit-logs",
+  AdminController.getAuditLogs
+);
+
+router.get(
+  "/audit-logs/statistics",
+  AdminController.getAuditStatistics
+);
+
+router.get(
   "/settings",
   AdminController.getSettings
 );
@@ -105,6 +115,16 @@ router.get(
 router.patch(
   "/settings",
   AdminController.updateSettings
+);
+
+router.patch(
+  "/doctors/:id/approve",
+  AdminController.approveDoctor
+);
+
+router.patch(
+  "/doctors/:id/reject",
+  AdminController.rejectDoctor
 );
 
 export default router;

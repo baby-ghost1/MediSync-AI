@@ -83,7 +83,7 @@ class DoctorService {
       hospital,
     } = query;
 
-    const filter = {};
+    const filter = { isApproved: true };
 
     if (specialization)
       filter.specialization =
@@ -123,7 +123,8 @@ class DoctorService {
   ========================================== */
 
   async getAvailableDoctors() {
-    return DoctorRepository.getAvailableDoctors();
+    const doctors = await DoctorRepository.getAvailableDoctors();
+    return doctors.filter((d) => d.isApproved);
   }
 
   async updateAvailability(
@@ -144,6 +145,19 @@ class DoctorService {
     }
 
     return doctor;
+  }
+
+  async updateSchedule(doctorId, availability) {
+    const doctor = await DoctorRepository.updateSchedule(doctorId, availability);
+    if (!doctor) throw new ApiError(404, "Doctor not found.");
+    return doctor;
+  }
+
+  async getAvailableSlots(doctorId, date) {
+    const doctor = await DoctorRepository.getDoctor(doctorId);
+    if (!doctor) throw new ApiError(404, "Doctor not found.");
+
+    return DoctorRepository.getAvailableSlotsForDate(doctorId, date);
   }
     /* ==========================================
       Filters

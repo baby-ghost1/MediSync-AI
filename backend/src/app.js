@@ -18,6 +18,8 @@ import {
   errorHandler,
 } from "./middleware/index.js";
 
+import logger, { stream } from "./services/logger.service.js";
+
 const app = express();
 
 /* ==========================================
@@ -31,7 +33,25 @@ app.use(
   })
 );
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "blob:", "res.cloudinary.com", "https://via.placeholder.com"],
+        connectSrc: ["'self'", process.env.CLIENT_URL, "https://res.cloudinary.com"],
+        frameSrc: ["'none'"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
 app.use(compression());
 app.use(cookieParser());
 
@@ -52,9 +72,6 @@ const authLimiter = rateLimit({
 app.use("/api/auth", authLimiter);
 
 // Custom sanitization middleware (Express v5 compatible)
-// express-mongo-sanitize & xss-clean both break in Express v5 because
-// req.query is a getter-only property — they try to reassign it.
-// This middleware sanitizes in-place without reassignment.
 import sanitize from "./middleware/sanitize.js";
 app.use(sanitize());
 
@@ -86,13 +103,33 @@ app.use(
   })
 );
 
+// HTTP request logging
 if (process.env.NODE_ENV !== "production") {
-  app.use(morgan("dev"));
+  app.use(morgan("dev", { stream }));
+} else {
+  app.use(morgan("combined", { stream }));
 }
 
 /* ==========================================
+   Swagger API Documentation
+========================================= */
+
+import { swaggerSpec, swaggerUi } from "./config/swagger.js";
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  explorer: true,
+  customCss: ".swagger-ui .topbar { display: none }",
+  customSiteTitle: "MediSync AI API Docs",
+}));
+
+app.get("/api-docs.json", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(swaggerSpec);
+});
+
+/* ==========================================
    Health Check
-========================================== */
+========================================= */
 
 app.get("/", (req, res) => {
   res.json({
@@ -113,13 +150,13 @@ app.get("/health", (req, res) => {
 
 /* ==========================================
    API Routes
-========================================== */
+========================================= */
 
 app.use("/api", routes);
 
 /* ==========================================
    Error Handling
-========================================== */
+========================================= */
 
 app.use(notFound);
 

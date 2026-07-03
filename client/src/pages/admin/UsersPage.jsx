@@ -13,7 +13,7 @@ import SearchInput from "@/components/common/SearchInput";
 import Pagination from "@/components/common/Pagination";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import StatusBadge from "@/components/common/StatusBadge";
-import SectionLoader from "@/components/common/SectionLoader";
+import { TableSkeleton } from "@/components/ui/Skeletons";
 import EmptyState from "@/components/ui/EmptyState";
 import adminService from "@/services/admin.service";
 import { useApiQuery, useApiMutation } from "@/hooks/useQuery";
@@ -118,7 +118,7 @@ const UsersPage = () => {
         </Card>
       </motion.div>
 
-      {isLoading ? <SectionLoader /> : users.length === 0 ? (
+      {isLoading ? <TableSkeleton rows={6} cols={6} /> : users.length === 0 ? (
         <motion.div variants={itemVariants}>
           <EmptyState title="No users found" description={search || roleFilter !== "All" || statusFilter !== "All" ? "Try adjusting filters" : "No users registered yet"} icon={Users} />
         </motion.div>

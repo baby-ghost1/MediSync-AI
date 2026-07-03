@@ -12,7 +12,9 @@ class AdminController {
       await AdminService.login(
         req.body.email,
         req.body.password,
-        res
+        res,
+        req.ip,
+        req.headers["user-agent"] || ""
       );
     }
   );
@@ -50,7 +52,10 @@ class AdminController {
       async (req, res) => {
         const data =
           await AdminService.verifyUser(
-            req.params.id
+            req.params.id,
+            req.user._id,
+            req.ip,
+            req.headers["user-agent"] || ""
           );
 
         res.json({
@@ -65,7 +70,10 @@ class AdminController {
       async (req, res) => {
         const data =
           await AdminService.blockUser(
-            req.params.id
+            req.params.id,
+            req.user._id,
+            req.ip,
+            req.headers["user-agent"] || ""
           );
 
         res.json({
@@ -80,7 +88,10 @@ class AdminController {
       async (req, res) => {
         const data =
           await AdminService.unblockUser(
-            req.params.id
+            req.params.id,
+            req.user._id,
+            req.ip,
+            req.headers["user-agent"] || ""
           );
 
         res.json({
@@ -95,7 +106,10 @@ class AdminController {
       async (req, res) => {
         const data =
           await AdminService.deleteUser(
-            req.params.id
+            req.params.id,
+            req.user._id,
+            req.ip,
+            req.headers["user-agent"] || ""
           );
 
         res.json(data);
@@ -205,6 +219,42 @@ class AdminController {
         res.json(data);
       }
     );
+
+  approveDoctor =
+    asyncHandler(async (req, res) => {
+      const data = await AdminService.approveDoctor(
+        req.params.id,
+        req.user._id
+      );
+
+      res.json({ success: true, data });
+    });
+
+  rejectDoctor =
+    asyncHandler(async (req, res) => {
+      const data = await AdminService.rejectDoctor(
+        req.params.id
+      );
+
+      res.json({ success: true, data });
+    });
+
+  getAuditLogs =
+    asyncHandler(async (req, res) => {
+      const data = await AdminService.getAuditLogs(
+        req.query.page,
+        req.query.limit
+      );
+
+      res.json({ success: true, ...data });
+    });
+
+  getAuditStatistics =
+    asyncHandler(async (req, res) => {
+      const data = await AdminService.getAuditStatistics();
+
+      res.json({ success: true, data });
+    });
 
   getSystemStatistics =
     asyncHandler(

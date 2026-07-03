@@ -86,6 +86,9 @@ export const ROUTES = {
 
     REPORT_SUMMARY:
       "/patient/ai/report-summary",
+
+    MEDICAL_HISTORY:
+      "/patient/medical-history",
   },
 
   /* ==========================================
@@ -114,6 +117,14 @@ export const ROUTES = {
 
     PRESCRIPTIONS:
       "/doctor/prescriptions",
+
+    CONSULTATION_NOTES:
+      "/doctor/consultation-notes",
+
+    PRESCRIPTION_TEMPLATES:
+      "/doctor/prescription-templates",
+
+    SCHEDULE: "/doctor/schedule",
 
     AI_ASSISTANT:
       "/doctor/ai-assistant",
@@ -168,6 +179,10 @@ export const ROUTES = {
   /* ==========================================
       Errors
   ========================================== */
+
+  SUPPORT: "/support",
+
+  DOCUMENTATION: "/documentation",
 
   NOT_FOUND: "/404",
 

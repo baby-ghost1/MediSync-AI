@@ -103,6 +103,46 @@ class DoctorRepository extends BaseRepository {
     );
   }
 
+  async updateSchedule(id, availability) {
+    return this.model.findByIdAndUpdate(
+      id,
+      { availability },
+      { new: true }
+    );
+  }
+
+  async getAvailableSlotsForDate(doctorId, date) {
+    const dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+    const day = dayNames[new Date(date).getDay()];
+
+    const doctor = await this.model.findById(doctorId);
+    if (!doctor) return [];
+
+    const daySchedule = doctor.availability?.find(
+      (s) => s.day === day && s.isAvailable
+    );
+    if (!daySchedule) return [];
+
+    const { startTime, endTime } = daySchedule;
+    const duration = doctor.slotDuration || 30;
+    const buffer = doctor.bufferBetweenSlots || 15;
+
+    const slots = [];
+    const [startH, startM] = startTime.split(":").map(Number);
+    const [endH, endM] = endTime.split(":").map(Number);
+    let current = startH * 60 + startM;
+    const end = endH * 60 + endM;
+
+    while (current + duration <= end) {
+      const h = Math.floor(current / 60).toString().padStart(2, "0");
+      const m = (current % 60).toString().padStart(2, "0");
+      slots.push(`${h}:${m}`);
+      current += duration + buffer;
+    }
+
+    return slots;
+  }
+
   /* ==========================================
       Search
   ========================================== */

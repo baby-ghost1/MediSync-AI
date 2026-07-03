@@ -3,7 +3,6 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
 import {
-  Bell,
   Menu,
   Search,
   X,
@@ -28,11 +27,10 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 
 import { useAuth } from "@/hooks/useAuth";
 import SocketStatus from "@/components/common/SocketStatus";
+import NotificationDropdown from "@/components/common/NotificationDropdown";
 import useAppStore from "@/store/appStore";
 import authService from "@/services/auth.service";
-import notificationService from "@/services/notification.service";
 import ROUTES from "@/routes/routeConstants";
-import { useApiQuery } from "@/hooks/useQuery";
 
 const Navbar = () => {
   const location = useLocation();
@@ -138,15 +136,6 @@ const Navbar = () => {
     const roleKey = user.role.toUpperCase();
     return ROUTES[roleKey]?.SETTINGS || ROUTES.LOGIN;
   };
-
-  const { data: unreadCount } = useApiQuery({
-    queryKey: ["notification-count"],
-    queryFn: () => notificationService.getUnreadCount(),
-    enabled: isAuthenticated,
-    refetchInterval: 30000,
-  });
-
-  const notificationCount = unreadCount?.data?.unread || unreadCount?.unread || 0;
 
   const handleLogout = async () => {
     try {
@@ -313,33 +302,7 @@ const Navbar = () => {
                   <MessageSquareMore size={18} />
                 </Button>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative h-9 w-9"
-                  onClick={() => navigate(`/${user?.role}/notifications`)}
-                >
-                  <Bell size={18} />
-
-                  {notificationCount > 0 && (
-                    <span
-                      className="
-                        absolute -right-1 -top-1
-                        flex h-5 min-w-[20px] items-center justify-center
-                        rounded-full
-                        bg-[var(--danger)]
-                        px-1
-                        text-[10px]
-                        font-bold
-                        text-[var(--primary-foreground)]
-                        ring-2
-                        ring-[var(--navbar)]
-                      "
-                    >
-                      {notificationCount > 99 ? "99+" : notificationCount}
-                    </span>
-                  )}
-                </Button>
+                <NotificationDropdown />
 
                 <Dropdown
                   trigger={

@@ -17,3 +17,11 @@ export { default as NotificationService } from "./notification.service.js";
 export { default as AIService } from "./ai.service.js";
 
 export { default as AdminService } from "./admin.service.js";
+
+export { default as AuditService } from "./audit.service.js";
+
+export { default as ConsultationService } from "./consultation.service.js";
+
+export { default as PrescriptionTemplateService } from "./prescriptionTemplate.service.js";
+
+export { default as PdfService } from "./pdf.service.js";

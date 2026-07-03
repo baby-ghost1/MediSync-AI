@@ -86,6 +86,26 @@ class AdminService {
     const { data } = await API.patch("/admin/settings", payload);
     return data;
   }
+
+  async approveDoctor(id) {
+    const { data } = await API.patch(ENDPOINTS.ADMIN.APPROVE_DOCTOR(id));
+    return data;
+  }
+
+  async rejectDoctor(id) {
+    const { data } = await API.patch(ENDPOINTS.ADMIN.REJECT_DOCTOR(id));
+    return data;
+  }
+
+  async getAuditLogs(params = {}) {
+    const { data } = await API.get(ENDPOINTS.ADMIN.AUDIT_LOGS, { params });
+    return data;
+  }
+
+  async getAuditStatistics() {
+    const { data } = await API.get(ENDPOINTS.ADMIN.AUDIT_STATISTICS);
+    return data;
+  }
 }
 
 export default new AdminService();

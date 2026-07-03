@@ -47,12 +47,15 @@ const errorHandler = (
     message = "Token expired.";
   }
 
-  const errors =
-    err.name !== "ValidationError" &&
-    Array.isArray(err.errors) &&
-    err.errors.length > 0
-      ? err.errors
-      : undefined;
+  let errors;
+
+  if (err.name === "ValidationError") {
+    errors = err.errors;
+  } else if (err.errors && typeof err.errors === "object" && !Array.isArray(err.errors)) {
+    errors = err.errors;
+  } else if (Array.isArray(err.errors) && err.errors.length > 0) {
+    errors = err.errors;
+  }
 
   res.status(statusCode).json({
     success: false,

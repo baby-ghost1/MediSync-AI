@@ -16,7 +16,7 @@ import Pagination from "@/components/common/Pagination";
 import FileUpload from "@/components/common/FileUpload";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import StatusBadge from "@/components/common/StatusBadge";
-import SectionLoader from "@/components/common/SectionLoader";
+import { ListSkeleton } from "@/components/ui/Skeletons";
 import EmptyState from "@/components/ui/EmptyState";
 import Modal from "@/components/ui/Modal";
 import reportService from "@/services/report.service";
@@ -108,7 +108,7 @@ const ReportsPage = () => {
         <SearchInput value={search} onChange={setSearch} placeholder="Search reports by name or patient..." />
       </Card>
 
-      {isLoading ? <SectionLoader /> : reports.length === 0 ? (
+      {isLoading ? <ListSkeleton items={6} /> : reports.length === 0 ? (
         <EmptyState title="No reports yet" description="Upload a medical report to get started" icon={FileText} actionText="Upload Report" onAction={() => setShowUpload(true)} />
       ) : (
         <>

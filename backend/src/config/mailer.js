@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import logger from "../services/logger.service.js";
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -33,7 +34,7 @@ export const sendEmail = async ({
     process.env.SMTP_PASS;
 
   if (!smtpConfigured) {
-    console.warn("SMTP not configured. Skipping email send.");
+    logger.warn("SMTP not configured. Skipping email send.");
     return null;
   }
 
@@ -49,7 +50,7 @@ export const sendEmail = async ({
     // Account/reset state has already been persisted by callers. Email
     // delivery is auxiliary and must not turn a successful write into a
     // misleading failed response that clients may retry.
-    console.error("Email delivery failed:", error.message);
+    logger.error("Email delivery failed:", error.message);
     return null;
   }
 };

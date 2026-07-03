@@ -31,6 +31,22 @@ const HomePage = lazy(() =>
   import("@/pages/landing/HomePage")
 );
 
+const PrivacyPolicyPage = lazy(() =>
+  import("@/pages/landing/PrivacyPolicyPage")
+);
+
+const TermsPage = lazy(() =>
+  import("@/pages/landing/TermsPage")
+);
+
+const SupportPage = lazy(() =>
+  import("@/pages/landing/SupportPage")
+);
+
+const DocumentationPage = lazy(() =>
+  import("@/pages/landing/DocumentationPage")
+);
+
 const LoginPage = lazy(() =>
   import("@/pages/auth/LoginPage")
 );
@@ -99,6 +115,18 @@ const DoctorSettings = lazy(() =>
   import("@/pages/doctor/SettingsPage")
 );
 
+const DoctorConsultationNotes = lazy(() =>
+  import("@/pages/doctor/ConsultationNotesPage")
+);
+
+const DoctorPrescriptionTemplates = lazy(() =>
+  import("@/pages/doctor/PrescriptionTemplatesPage")
+);
+
+const DoctorSchedule = lazy(() =>
+  import("@/pages/doctor/SchedulePage")
+);
+
 const AdminLoginPage = lazy(() =>
   import("@/pages/admin/AdminLoginPage")
 );
@@ -141,6 +169,10 @@ const AdminNotifications = lazy(() =>
 
 const AdminSystemSettings = lazy(() =>
   import("@/pages/admin/SystemSettingsPage")
+);
+
+const AdminAuditLogs = lazy(() =>
+  import("@/pages/admin/AuditLogsPage")
 );
 
 const PatientProfile = lazy(() =>
@@ -201,6 +233,10 @@ const PatientHealthTips = lazy(() =>
 
 const PatientReportSummary = lazy(() =>
   import("@/pages/patient/ReportSummaryPage")
+);
+
+const PatientMedicalHistory = lazy(() =>
+  import("@/pages/patient/MedicalHistoryPage")
 );
 
 const NotFoundPage = lazy(() =>
@@ -363,6 +399,10 @@ const AppRoutes = () => {
 
           <Route element={<LandingLayout />}>
             <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
+            <Route path="/privacy-policy" element={<PageTransition><PrivacyPolicyPage /></PageTransition>} />
+            <Route path="/terms" element={<PageTransition><TermsPage /></PageTransition>} />
+            <Route path="/support" element={<PageTransition><SupportPage /></PageTransition>} />
+            <Route path="/documentation" element={<PageTransition><DocumentationPage /></PageTransition>} />
           </Route>
 
           {/* ========================================= */}
@@ -406,6 +446,7 @@ const AppRoutes = () => {
             <Route path="/patient/ai/health-score" element={<RoleRoute allowedRoles={["patient"]}><PageTransition><PatientHealthScore /></PageTransition></RoleRoute>} />
             <Route path="/patient/ai/health-tips" element={<RoleRoute allowedRoles={["patient"]}><PageTransition><PatientHealthTips /></PageTransition></RoleRoute>} />
             <Route path="/patient/ai/report-summary" element={<RoleRoute allowedRoles={["patient"]}><PageTransition><PatientReportSummary /></PageTransition></RoleRoute>} />
+            <Route path="/patient/medical-history" element={<RoleRoute allowedRoles={["patient"]}><PageTransition><PatientMedicalHistory /></PageTransition></RoleRoute>} />
             <Route path="/patient/settings" element={<RoleRoute allowedRoles={["patient"]}><PageTransition><PatientSettings /></PageTransition></RoleRoute>} />
             <Route path="/patient/notifications" element={<RoleRoute allowedRoles={["patient"]}><PageTransition><PatientNotifications /></PageTransition></RoleRoute>} />
 
@@ -421,6 +462,9 @@ const AppRoutes = () => {
             <Route path="/doctor/notifications" element={<RoleRoute allowedRoles={["doctor"]}><PageTransition><DoctorNotifications /></PageTransition></RoleRoute>} />
             <Route path="/doctor/ai-analysis" element={<RoleRoute allowedRoles={["doctor"]}><PageTransition><DoctorAIAnalysis /></PageTransition></RoleRoute>} />
             <Route path="/doctor/settings" element={<RoleRoute allowedRoles={["doctor"]}><PageTransition><DoctorSettings /></PageTransition></RoleRoute>} />
+            <Route path="/doctor/consultation-notes" element={<RoleRoute allowedRoles={["doctor"]}><PageTransition><DoctorConsultationNotes /></PageTransition></RoleRoute>} />
+            <Route path="/doctor/prescription-templates" element={<RoleRoute allowedRoles={["doctor"]}><PageTransition><DoctorPrescriptionTemplates /></PageTransition></RoleRoute>} />
+            <Route path="/doctor/schedule" element={<RoleRoute allowedRoles={["doctor"]}><PageTransition><DoctorSchedule /></PageTransition></RoleRoute>} />
 
             {/* Admin */}
             <Route path="/admin/dashboard" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminDashboard /></PageTransition></RoleRoute>} />
@@ -431,6 +475,7 @@ const AppRoutes = () => {
             <Route path="/admin/reports" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminReports /></PageTransition></RoleRoute>} />
             <Route path="/admin/prescriptions" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminPrescriptions /></PageTransition></RoleRoute>} />
             <Route path="/admin/analytics" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminAnalytics /></PageTransition></RoleRoute>} />
+            <Route path="/admin/audit-logs" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminAuditLogs /></PageTransition></RoleRoute>} />
             <Route path="/admin/notifications" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminNotifications /></PageTransition></RoleRoute>} />
             <Route path="/admin/settings" element={<RoleRoute allowedRoles={["admin"]}><PageTransition><AdminSystemSettings /></PageTransition></RoleRoute>} />
 

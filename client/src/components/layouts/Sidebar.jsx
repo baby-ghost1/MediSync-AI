@@ -24,7 +24,7 @@ import {
   Lightbulb,
   FileText,
   TrendingUp,
-  Shield,
+  FileSearch,
 } from "lucide-react";
 
 import Avatar from "@/components/ui/Avatar";
@@ -71,6 +71,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         {
           title: "SYSTEM",
           items: [
+            { title: "Audit Logs", icon: FileSearch, path: "/admin/audit-logs" },
             { title: "Notifications", icon: Bell, path: "/admin/notifications" },
             { title: "Settings", icon: Settings, path: "/admin/settings" },
           ],
@@ -93,6 +94,10 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         items: [
           { title: isDoctor ? "Reports" : "Medical Records", icon: FileHeart, path: `${prefix}/reports` },
           { title: "Prescriptions", icon: ClipboardList, path: `${prefix}/prescriptions` },
+          ...(!isDoctor ? [{ title: "Medical History", icon: FileText, path: `${prefix}/medical-history` }] : []),
+          ...(isDoctor ? [{ title: "Consultation Notes", icon: FileText, path: `${prefix}/consultation-notes` }] : []),
+          ...(isDoctor ? [{ title: "Templates", icon: ClipboardList, path: `${prefix}/prescription-templates` }] : []),
+          ...(isDoctor ? [{ title: "Schedule", icon: CalendarDays, path: `${prefix}/schedule` }] : []),
           { title: isDoctor ? "AI Analysis" : "AI Assistant", icon: BrainCircuit, path: isDoctor ? `${prefix}/ai-analysis` : `${prefix}/ai-assistant`, badge: "AI" },
         ],
       },

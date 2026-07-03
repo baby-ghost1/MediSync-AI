@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import logger from "../services/logger.service.js";
 
 const onlineUsers = new Set();
 
@@ -114,7 +115,7 @@ const setupSocket = (io) => {
   io.use(authenticateSocket);
 
   io.on("connection", (socket) => {
-    console.log(`Socket connected: ${socket.id} (${socket.user?.email || "unknown"})`);
+    logger.info(`Socket connected: ${socket.id} (${socket.user?.email || "unknown"})`);
 
     registerHandlers(io, socket);
 
@@ -125,7 +126,7 @@ const setupSocket = (io) => {
       onlineUsers.delete(userId);
       io.emit("users:online", [...onlineUsers]);
       io.emit("user:offline", userId);
-      console.log(`Socket disconnected: ${socket.id} (${socket.user?.email || "unknown"})`);
+      logger.info(`Socket disconnected: ${socket.id} (${socket.user?.email || "unknown"})`);
     });
   });
 };

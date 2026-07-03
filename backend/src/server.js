@@ -4,9 +4,28 @@ dotenv.config();
 import http from "http";
 import { Server } from "socket.io";
 
+import logger from "./services/logger.service.js";
+
 const { default: app } = await import("./app.js");
 const { connectDB } = await import("./config/index.js");
 const { default: setupSocket } = await import("./sockets/index.js");
+
+/* ==========================================
+   Sentry (optional — requires SENTRY_DSN)
+========================================= */
+
+if (process.env.SENTRY_DSN) {
+  const Sentry = await import("@sentry/node");
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV || "development",
+    tracesSampleRate: 0.2,
+    maxBreadcrumbs: 50,
+    debug: false,
+  });
+  Sentry.setupExpressErrorHandler(app);
+  logger.info("Sentry error tracking initialized");
+}
 
 const PORT = process.env.PORT || 5000;
 
@@ -39,9 +58,9 @@ const seedDefaultAdmin = async () => {
       role: "admin",
       isVerified: true,
     });
-    console.log(`Default admin seeded: ${adminEmail}`);
+    logger.info(`Default admin seeded: ${adminEmail}`);
   } else {
-    console.log("Admin account already exists, skipping seed.");
+    logger.debug("Admin account already exists, skipping seed.");
   }
 };
 
@@ -50,10 +69,14 @@ const startServer = async () => {
     await connectDB();
     await seedDefaultAdmin();
     server.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      logger.info(`Server running on http://localhost:${PORT}`);
+      logger.info(`API docs available at http://localhost:${PORT}/api-docs`);
     });
+
+    const { default: startReminderJob } = await import("./jobs/reminder.job.js");
+    startReminderJob();
   } catch (error) {
-    console.error(error);
+    logger.error("Failed to start server:", error);
     process.exit(1);
   }
 };
@@ -61,10 +84,10 @@ const startServer = async () => {
 startServer();
 
 const shutdown = (signal) => {
-  console.log(`\n${signal} received. Closing server...`);
+  logger.info(`${signal} received. Closing server...`);
   io.close();
   server.close(() => {
-    console.log("HTTP server closed.");
+    logger.info("HTTP server closed.");
     process.exit(0);
   });
 };
@@ -72,10 +95,10 @@ const shutdown = (signal) => {
 process.on("SIGINT", () => shutdown("SIGINT"));
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("uncaughtException", (err) => {
-  console.error("Uncaught Exception:", err);
+  logger.error("Uncaught Exception:", err);
   process.exit(1);
 });
 process.on("unhandledRejection", (err) => {
-  console.error("Unhandled Rejection:", err);
+  logger.error("Unhandled Rejection:", err);
   server.close(() => process.exit(1));
 });

@@ -127,6 +127,28 @@ class DoctorController {
       }
     );
 
+  updateSchedule =
+    asyncHandler(
+      async (req, res) => {
+        const data = await DoctorService.updateSchedule(
+          req.params.id,
+          req.body.availability
+        );
+        res.json({ success: true, data });
+      }
+    );
+
+  getAvailableSlots =
+    asyncHandler(
+      async (req, res) => {
+        const slots = await DoctorService.getAvailableSlots(
+          req.params.doctorId,
+          req.query.date
+        );
+        res.json({ success: true, data: slots });
+      }
+    );
+
   getStatistics =
     asyncHandler(
       async (req, res) => {

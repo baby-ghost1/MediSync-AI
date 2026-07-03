@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import logger from "../services/logger.service.js";
 
 const connectDB = async () => {
   try {
@@ -16,49 +17,27 @@ const connectDB = async () => {
       }
     );
 
-    console.log(`
-=========================================
-✅ MongoDB Connected Successfully
-📦 Database : ${connection.connection.name}
-🌍 Host     : ${connection.connection.host}
-=========================================
-`);
+    logger.info(`MongoDB connected: ${connection.connection.host}/${connection.connection.name}`);
 
     mongoose.connection.on("connected", () => {
-      console.log("🟢 MongoDB Connected");
+      logger.debug("MongoDB re-connected");
     });
 
     mongoose.connection.on("disconnected", () => {
-      console.log("🟡 MongoDB Disconnected");
+      logger.warn("MongoDB disconnected");
     });
 
     mongoose.connection.on("reconnected", () => {
-      console.log("🔄 MongoDB Reconnected");
+      logger.info("MongoDB reconnected");
     });
 
     mongoose.connection.on("error", (error) => {
-      console.error("🔴 MongoDB Error:", error.message);
-    });
-
-    process.on("SIGINT", async () => {
-      await mongoose.connection.close();
-
-      console.log(
-        "📦 MongoDB Connection Closed"
-      );
-
-      process.exit(0);
+      logger.error("MongoDB error:", error.message);
     });
 
     return connection;
   } catch (error) {
-    console.error(`
-=========================================
-❌ MongoDB Connection Failed
-${error.message}
-=========================================
-`);
-
+    logger.error("MongoDB connection failed:", error.message);
     process.exit(1);
   }
 };

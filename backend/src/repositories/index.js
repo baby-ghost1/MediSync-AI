@@ -15,3 +15,5 @@ export { default as PrescriptionRepository } from "./prescription.repository.js"
 export { default as NotificationRepository } from "./notification.repository.js";
 
 export { default as ChatRepository } from "./chat.repository.js";
+
+export { default as AuditLogRepository } from "./audit.repository.js";

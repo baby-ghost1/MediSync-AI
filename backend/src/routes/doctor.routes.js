@@ -43,6 +43,17 @@ router.get(
 );
 
 router.get(
+  "/:doctorId/slots",
+  DoctorController.getAvailableSlots
+);
+
+router.patch(
+  "/:id/schedule",
+  authorize("doctor", "admin"),
+  DoctorController.updateSchedule
+);
+
+router.get(
   "/statistics",
   authorize("admin"),
   DoctorController.getStatistics

@@ -11,7 +11,7 @@ import Badge from "@/components/ui/Badge";
 import Avatar from "@/components/ui/Avatar";
 import PageHeader from "@/components/common/PageHeader";
 import Pagination from "@/components/common/Pagination";
-import SectionLoader from "@/components/common/SectionLoader";
+import { TableSkeleton } from "@/components/ui/Skeletons";
 import EmptyState from "@/components/ui/EmptyState";
 import adminService from "@/services/admin.service";
 import { useApiQuery, useApiMutation } from "@/hooks/useQuery";
@@ -100,7 +100,7 @@ const AppointmentsPage = () => {
         </Card>
       </motion.div>
 
-      {isLoading ? <SectionLoader /> : appointments.length === 0 ? (
+      {isLoading ? <TableSkeleton rows={6} cols={5} /> : appointments.length === 0 ? (
         <motion.div variants={itemVariants}>
           <EmptyState title="No appointments found" description={statusFilter !== "All" ? "No appointments with this status" : "No appointments scheduled yet"} icon={CalendarDays} />
         </motion.div>

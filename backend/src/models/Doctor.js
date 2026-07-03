@@ -1,5 +1,19 @@
 import mongoose from "mongoose";
 
+const availabilitySlotSchema = new mongoose.Schema(
+  {
+    day: {
+      type: String,
+      enum: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+      required: true,
+    },
+    startTime: { type: String, required: true },
+    endTime: { type: String, required: true },
+    isAvailable: { type: Boolean, default: true },
+  },
+  { _id: false }
+);
+
 const doctorSchema =
   new mongoose.Schema(
     {
@@ -8,9 +22,13 @@ const doctorSchema =
           mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
+        unique: true,
       },
 
-      specialization: String,
+      specialization: {
+        type: String,
+        index: true,
+      },
 
       qualification: String,
 
@@ -25,6 +43,19 @@ const doctorSchema =
       available: {
         type: Boolean,
         default: true,
+        index: true,
+      },
+
+      availability: [availabilitySlotSchema],
+
+      slotDuration: {
+        type: Number,
+        default: 30,
+      },
+
+      bufferBetweenSlots: {
+        type: Number,
+        default: 15,
       },
 
       rating: {
@@ -35,6 +66,20 @@ const doctorSchema =
       totalReviews: {
         type: Number,
         default: 0,
+      },
+
+      isApproved: {
+        type: Boolean,
+        default: false,
+        index: true,
+      },
+
+      approvedAt: Date,
+
+      approvedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: null,
       },
     },
     {

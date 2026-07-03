@@ -21,7 +21,9 @@ class AuthController {
       await AuthService.login(
         req.body.email,
         req.body.password,
-        res
+        res,
+        req.ip,
+        req.headers["user-agent"] || ""
       );
     }
   );

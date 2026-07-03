@@ -12,7 +12,7 @@ import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import Avatar from "@/components/ui/Avatar";
 import StatCard from "@/components/common/StatCard";
-import SectionLoader from "@/components/common/SectionLoader";
+import { DashboardGridSkeleton } from "@/components/ui/Skeletons";
 import adminService from "@/services/admin.service";
 import { useApiQuery } from "@/hooks/useQuery";
 import ROUTES from "@/routes/routeConstants";
@@ -50,7 +50,7 @@ const DashboardPage = () => {
     uptime: Math.floor((Date.now() - (d._fetchedAt || Date.now())) / 1000),
   };
 
-  if (isLoading) return <SectionLoader />;
+  if (isLoading) return <DashboardGridSkeleton />;
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-8">

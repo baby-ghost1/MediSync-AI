@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Bot, X, Send, Sparkles, LoaderCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -12,13 +12,18 @@ const SUGGESTIONS = [
   "What can I do as a patient?",
 ];
 
+const DRAG_THRESHOLD = 5;
+
 const FloatingWebsiteAssistant = () => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const dragRef = useRef({ startX: 0, startY: 0, offsetX: 0, offsetY: 0, moved: false });
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,14 +43,47 @@ const FloatingWebsiteAssistant = () => {
     }
   }, [open]);
 
+  const handleMouseDown = useCallback((e) => {
+    dragRef.current.startX = e.clientX;
+    dragRef.current.startY = e.clientY;
+    dragRef.current.offsetX = offset.x;
+    dragRef.current.offsetY = offset.y;
+    dragRef.current.moved = false;
+    setDragging(true);
+  }, [offset]);
+
+  useEffect(() => {
+    if (!dragging) return;
+    const handleMouseMove = (e) => {
+      const dx = e.clientX - dragRef.current.startX;
+      const dy = e.clientY - dragRef.current.startY;
+      if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) {
+        dragRef.current.moved = true;
+      }
+      setOffset({
+        x: dx + dragRef.current.offsetX,
+        y: dy + dragRef.current.offsetY,
+      });
+    };
+    const handleMouseUp = () => setDragging(false);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [dragging]);
+
+  const handleToggle = () => {
+    if (!dragRef.current.moved) setOpen((prev) => !prev);
+  };
+
   const sendMessage = async (text) => {
     if (!text.trim() || loading) return;
-
     const userMsg = { role: "user", text: text.trim() };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setLoading(true);
-
     try {
       const res = await AIService.websiteAssistant(text.trim());
       setMessages((prev) => [...prev, { role: "assistant", text: res.reply }]);
@@ -67,24 +105,19 @@ const FloatingWebsiteAssistant = () => {
   };
 
   return (
-    <>
+    <div
+      className="fixed bottom-24 right-6 z-[100]"
+      style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
+    >
       {/* Bubble */}
       <motion.button
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
-        onClick={() => setOpen((prev) => !prev)}
-        className={`
-          fixed bottom-6 right-6 z-[100]
-          flex h-14 w-14 items-center justify-center
-          rounded-full
-          bg-[var(--primary)]
-          text-[var(--primary-foreground)]
-          shadow-[0_8px_32px_rgba(37,99,235,.35)]
-          transition-shadow duration-300
-          hover:shadow-[0_8px_40px_rgba(37,99,235,.5)]
-        `}
-      >
-        {open ? <X size={24} /> : <Bot size={24} />}
+        onMouseDown={handleMouseDown}
+          onClick={handleToggle}
+          className="relative flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[0_8px_32px_rgba(37,99,235,.35)] transition-shadow duration-300 hover:shadow-[0_8px_40px_rgba(37,99,235,.5)]"
+        >
+          {open ? <X size={24} /> : <Bot size={24} />}
       </motion.button>
 
       {/* Popup */}
@@ -95,16 +128,7 @@ const FloatingWebsiteAssistant = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className={`
-              fixed bottom-24 right-6 z-[100]
-              flex w-[360px] flex-col
-              rounded-2xl
-              border border-[var(--border)]
-              bg-[var(--card)]
-              shadow-[0_20px_60px_rgba(15,23,42,.14)]
-              max-h-[560px]
-              h-[560px]
-            `}
+            className="absolute bottom-16 right-0 flex w-[360px] flex-col rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-[0_20px_60px_rgba(15,23,42,.14)] max-h-[560px] h-[560px]"
           >
             {/* Header */}
             <div className="flex items-center gap-3 border-b border-[var(--border)] px-4 py-3.5">
@@ -128,14 +152,11 @@ const FloatingWebsiteAssistant = () => {
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={`
-                      max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed
-                      ${
-                        msg.role === "user"
-                          ? "bg-[var(--primary)] text-[var(--primary-foreground)]"
-                          : "bg-[var(--secondary)] text-[var(--foreground)]"
-                      }
-                    `}
+                    className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
+                      msg.role === "user"
+                        ? "bg-[var(--primary)] text-[var(--primary-foreground)]"
+                        : "bg-[var(--secondary)] text-[var(--foreground)]"
+                    }`}
                   >
                     {msg.role === "assistant" ? (
                       <div className="prose prose-sm max-w-none dark:prose-invert [&_p]:m-0 [&_ul]:m-0 [&_ol]:m-0 [&_li]:my-0.5">
@@ -147,7 +168,6 @@ const FloatingWebsiteAssistant = () => {
                   </div>
                 </div>
               ))}
-
               {loading && (
                 <div className="flex justify-start">
                   <div className="rounded-2xl bg-[var(--secondary)] px-3.5 py-2.5">
@@ -155,7 +175,6 @@ const FloatingWebsiteAssistant = () => {
                   </div>
                 </div>
               )}
-
               <div ref={messagesEndRef} />
             </div>
 
@@ -200,7 +219,7 @@ const FloatingWebsiteAssistant = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 };
 

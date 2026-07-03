@@ -11,7 +11,7 @@ import PageHeader from "@/components/common/PageHeader";
 import SearchInput from "@/components/common/SearchInput";
 import Pagination from "@/components/common/Pagination";
 import StatusBadge from "@/components/common/StatusBadge";
-import SectionLoader from "@/components/common/SectionLoader";
+import { ListSkeleton } from "@/components/ui/Skeletons";
 import EmptyState from "@/components/ui/EmptyState";
 import appointmentService from "@/services/appointment.service";
 import { useApiQuery } from "@/hooks/useQuery";
@@ -100,7 +100,7 @@ const MyAppointmentsPage = () => {
       </Card>
 
       {isLoading ? (
-        <SectionLoader />
+        <ListSkeleton items={6} />
       ) : appointments.length === 0 ? (
         <EmptyState
           title="No appointments found"

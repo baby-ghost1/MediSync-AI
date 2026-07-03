@@ -9,7 +9,7 @@ import Avatar from "@/components/ui/Avatar";
 import PageHeader from "@/components/common/PageHeader";
 import SearchInput from "@/components/common/SearchInput";
 import Pagination from "@/components/common/Pagination";
-import SectionLoader from "@/components/common/SectionLoader";
+import { ListSkeleton } from "@/components/ui/Skeletons";
 import EmptyState from "@/components/ui/EmptyState";
 import ErrorState from "@/components/ui/ErrorState";
 import doctorService from "@/services/doctor.service";
@@ -66,7 +66,7 @@ const DoctorsPage = () => {
       </Card>
 
       {isLoading ? (
-        <SectionLoader />
+        <ListSkeleton items={6} />
       ) : doctors.length === 0 ? (
         <EmptyState title="No doctors found" description="Try adjusting your search or filters" icon={Stethoscope} />
       ) : (

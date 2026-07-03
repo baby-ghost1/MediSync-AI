@@ -11,6 +11,9 @@ import notificationRoutes from "./notification.routes.js";
 import aiRoutes from "./ai.routes.js";
 import adminRoutes from "./admin.routes.js";
 import uploadRoutes from "./upload.routes.js";
+import consultationRoutes from "./consultation.routes.js";
+import prescriptionTemplateRoutes from "./prescriptionTemplate.routes.js";
+import pdfRoutes from "./pdf.routes.js";
 
 const router = Router();
 
@@ -67,6 +70,21 @@ router.use(
 router.use(
   "/upload",
   uploadRoutes
+);
+
+router.use(
+  "/consultations",
+  consultationRoutes
+);
+
+router.use(
+  "/prescription-templates",
+  prescriptionTemplateRoutes
+);
+
+router.use(
+  "/pdf",
+  pdfRoutes
 );
 
 export default router;

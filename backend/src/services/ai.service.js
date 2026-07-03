@@ -1,6 +1,8 @@
 import ai from "../config/googleAI.js";
 import { ReportRepository, ChatRepository } from "../repositories/index.js";
+import Conversation from "../models/Conversation.js";
 import { ApiError } from "../utils/index.js";
+import logger from "./logger.service.js";
 
 const MEDICAL_SYSTEM_PROMPT = `You are MediSync AI, a helpful medical information assistant. Your purpose is to provide general health education, discuss symptoms in an informational context, explain medical conditions and medications, and offer lifestyle and nutrition guidance.
 
@@ -43,7 +45,7 @@ class AIService {
       await ChatRepository.addMessage(userId, "assistant", reply);
       return { reply };
     } catch (error) {
-      console.error("AI Chat Error:", error?.message || error);
+      logger.error("AI Chat Error:", error?.message || error);
       const fallback = "AI request failed. Please verify the Gemini API key and try again.";
       await ChatRepository.addMessage(userId, "assistant", fallback);
       return { reply: fallback };
@@ -108,7 +110,7 @@ ${MEDICAL_SYSTEM_PROMPT}`;
 
       return ReportRepository.saveAISummary(reportId, summary, report.healthScore);
     } catch (error) {
-      console.error("AI Summarize Error:", error?.message || error);
+      logger.error("AI Summarize Error:", error?.message || error);
       return {
         success: true,
         message: "AI summary failed. Please verify the Gemini API key.",
@@ -160,7 +162,7 @@ Return ONLY a number.`;
 
       return ReportRepository.saveAISummary(reportId, report.aiSummary, score);
     } catch (error) {
-      console.error("AI Health Score Error:", error?.message || error);
+      logger.error("AI Health Score Error:", error?.message || error);
       return {
         success: true,
         message: "Health score generation failed. Please verify the Gemini API key.",
@@ -232,7 +234,7 @@ Return ONLY the JSON object, no other text.`;
         },
       };
     } catch (error) {
-      console.error("AI Health Score Calculation Error:", error?.message || error);
+      logger.error("AI Health Score Calculation Error:", error?.message || error);
       return {
         healthScore: {
           score: 70,
@@ -287,7 +289,7 @@ Keep the response clear and educational.`;
         analysis: response.text,
       };
     } catch (error) {
-      console.error("AI Symptom Analysis Error:", error?.message || error);
+      logger.error("AI Symptom Analysis Error:", error?.message || error);
       return {
         symptoms,
         analysis: "AI symptom analysis failed. Please verify the Gemini API key.",
@@ -338,7 +340,7 @@ Always advise consulting a healthcare professional.`;
         information: response.text,
       };
     } catch (error) {
-      console.error("AI Medicine Error:", error?.message || error);
+      logger.error("AI Medicine Error:", error?.message || error);
       return {
         medicine,
         information: "AI medicine guidance failed. Please verify the Gemini API key.",
@@ -380,7 +382,7 @@ Include recommendations for:
         tips: response.text,
       };
     } catch (error) {
-      console.error("AI Health Tips Error:", error?.message || error);
+      logger.error("AI Health Tips Error:", error?.message || error);
       return {
         tips: "AI health tips failed. Please verify the Gemini API key.",
       };
@@ -455,7 +457,7 @@ MediSync AI is a healthcare management platform with three roles: Patient, Docto
 
       return { reply: response.text };
     } catch (error) {
-      console.error("Website Assistant Error:", error?.message || error);
+      logger.error("Website Assistant Error:", error?.message || error);
       return {
         reply: "Sorry, I'm having trouble connecting right now. Please try again later.",
       };
@@ -487,9 +489,215 @@ MediSync AI is a healthcare management platform with three roles: Patient, Docto
         answer: response.text,
       };
     } catch (error) {
-      console.error("AI Ask Error:", error?.message || error);
+      logger.error("AI Ask Error:", error?.message || error);
       return {
         answer: "AI assistant request failed. Please verify the Gemini API key.",
+      };
+    }
+  }
+
+  /* ==========================================
+      Conversations (Multi-Conversation)
+  ========================================== */
+
+  async listConversations(userId) {
+    const conversations = await Conversation.find({ user: userId })
+      .sort({ updatedAt: -1 })
+      .select("title updatedAt createdAt")
+      .lean();
+    return conversations;
+  }
+
+  async createConversation(userId, title) {
+    const conversation = await Conversation.create({
+      user: userId,
+      title: title || "New Conversation",
+    });
+    return conversation;
+  }
+
+  async getConversation(conversationId, userId) {
+    const conversation = await Conversation.findOne({
+      _id: conversationId,
+      user: userId,
+    });
+    if (!conversation) throw new ApiError(404, "Conversation not found.");
+    return conversation;
+  }
+
+  async renameConversation(conversationId, userId, title) {
+    const conversation = await Conversation.findOneAndUpdate(
+      { _id: conversationId, user: userId },
+      { title },
+      { new: true, runValidators: true }
+    );
+    if (!conversation) throw new ApiError(404, "Conversation not found.");
+    return conversation;
+  }
+
+  async deleteConversation(conversationId, userId) {
+    const conversation = await Conversation.findOneAndDelete({
+      _id: conversationId,
+      user: userId,
+    });
+    if (!conversation) throw new ApiError(404, "Conversation not found.");
+    return { success: true, message: "Conversation deleted." };
+  }
+
+  /* ==========================================
+      Conversation Chat (with context)
+  ========================================== */
+
+  async conversationChat(conversationId, userId, prompt) {
+    if (!prompt) throw new ApiError(400, "Prompt is required.");
+
+    const conversation = await this.getConversation(conversationId, userId);
+
+    conversation.messages.push({ role: "user", content: prompt });
+
+    if (!ai) {
+      const fallback = "AI service is not configured. Please set a Gemini API key.";
+      conversation.messages.push({ role: "assistant", content: fallback });
+      await conversation.save();
+      return { reply: fallback };
+    }
+
+    try {
+      const historyContext = conversation.messages
+        .slice(-20)
+        .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
+        .join("\n");
+
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: `${MEDICAL_SYSTEM_PROMPT}\n\n${historyContext}`,
+      });
+
+      const reply = response.text;
+      conversation.messages.push({ role: "assistant", content: reply });
+      conversation.title = conversation.messages.length <= 2
+        ? prompt.slice(0, 100)
+        : conversation.title;
+      await conversation.save();
+
+      return { reply };
+    } catch (error) {
+      logger.error("AI Conversation Chat Error:", error?.message || error);
+      const fallback = "AI request failed. Please try again.";
+      conversation.messages.push({ role: "assistant", content: fallback });
+      await conversation.save();
+      return { reply: fallback };
+    }
+  }
+
+  /* ==========================================
+      Conversation Chat Streaming (SSE)
+  ========================================== */
+
+  async conversationChatStream(conversationId, userId, prompt, res) {
+    if (!prompt) throw new ApiError(400, "Prompt is required.");
+
+    const conversation = await this.getConversation(conversationId, userId);
+
+    conversation.messages.push({ role: "user", content: prompt });
+
+    if (!ai) {
+      const fallback = "AI service is not configured. Please set a Gemini API key.";
+      conversation.messages.push({ role: "assistant", content: fallback });
+      await conversation.save();
+      res.write(`data: ${JSON.stringify({ type: "text", content: fallback })}\n\n`);
+      res.write("data: [DONE]\n\n");
+      res.end();
+      return;
+    }
+
+    try {
+      const historyContext = conversation.messages
+        .slice(-20)
+        .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`)
+        .join("\n");
+
+      const stream = await ai.models.generateContentStream({
+        model: "gemini-2.5-flash",
+        contents: `${MEDICAL_SYSTEM_PROMPT}\n\n${historyContext}`,
+      });
+
+      let fullReply = "";
+      for await (const chunk of stream) {
+        const text = chunk.text;
+        if (text) {
+          fullReply += text;
+          res.write(`data: ${JSON.stringify({ type: "text", content: text })}\n\n`);
+        }
+      }
+
+      conversation.messages.push({ role: "assistant", content: fullReply });
+      conversation.title = conversation.messages.length <= 2
+        ? prompt.slice(0, 100)
+        : conversation.title;
+      await conversation.save();
+
+      res.write("data: [DONE]\n\n");
+      res.end();
+    } catch (error) {
+      logger.error("AI Stream Error:", error?.message || error);
+      const fallback = "AI request failed. Please try again.";
+      conversation.messages.push({ role: "assistant", content: fallback });
+      await conversation.save();
+      res.write(`data: ${JSON.stringify({ type: "text", content: fallback })}\n\n`);
+      res.write("data: [DONE]\n\n");
+      res.end();
+    }
+  }
+
+  /* ==========================================
+      Lab Interpretation
+  ========================================== */
+
+  async interpretLabResults(labData) {
+    const { testType, results, patientAge, patientGender } = labData;
+
+    if (!testType || !results) {
+      throw new ApiError(400, "Test type and results are required.");
+    }
+
+    const prompt = `${MEDICAL_SYSTEM_PROMPT}
+
+You are a clinical laboratory interpretation assistant. Analyze the following lab results and provide a structured interpretation.
+
+Test Type: ${testType}
+${patientAge ? `Patient Age: ${patientAge}` : ""}
+${patientGender ? `Patient Gender: ${patientGender}` : ""}
+
+Results:
+${typeof results === "string" ? results : JSON.stringify(results, null, 2)}
+
+Provide a structured interpretation with:
+1. Summary of key findings
+2. Values outside normal range (highlighted)
+3. Potential clinical significance
+4. Recommendations for follow-up
+5. Caveats and limitations
+
+Format the response in clear sections with markdown. Always include the standard medical disclaimer.`;
+
+    if (!ai) {
+      return {
+        interpretation: "AI lab interpretation is unavailable because the Gemini API key is not configured.",
+      };
+    }
+
+    try {
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: prompt,
+      });
+
+      return { interpretation: response.text };
+    } catch (error) {
+      logger.error("AI Lab Interpretation Error:", error?.message || error);
+      return {
+        interpretation: "AI lab interpretation failed. Please verify the Gemini API key.",
       };
     }
   }

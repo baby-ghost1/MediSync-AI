@@ -11,7 +11,7 @@ import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import Avatar from "@/components/ui/Avatar";
 import StatCard from "@/components/common/StatCard";
-import SectionLoader from "@/components/common/SectionLoader";
+import { DashboardGridSkeleton } from "@/components/ui/Skeletons";
 import doctorService from "@/services/doctor.service";
 import appointmentService from "@/services/appointment.service";
 import notificationService from "@/services/notification.service";
@@ -47,7 +47,7 @@ const DashboardPage = () => {
     queryFn: () => notificationService.getNotifications({ limit: 5 }),
   });
 
-  if (isLoading) return <SectionLoader />;
+  if (isLoading) return <DashboardGridSkeleton />;
 
   const d = dashboard || {};
   const stats = d.stats || d.statistics || {};

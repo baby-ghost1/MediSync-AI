@@ -9,7 +9,7 @@ import Avatar from "@/components/ui/Avatar";
 import PageHeader from "@/components/common/PageHeader";
 import SearchInput from "@/components/common/SearchInput";
 import Pagination from "@/components/common/Pagination";
-import SectionLoader from "@/components/common/SectionLoader";
+import { CardSkeleton } from "@/components/ui/Skeletons";
 import EmptyState from "@/components/ui/EmptyState";
 import doctorService from "@/services/doctor.service";
 import { useApiQuery } from "@/hooks/useQuery";
@@ -46,7 +46,7 @@ const PatientsPage = () => {
         <SearchInput value={search} onChange={setSearch} placeholder="Search patients by name, email..." />
       </Card>
 
-      {isLoading ? <SectionLoader /> : patients.length === 0 ? (
+      {isLoading ? <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{Array.from({length:6}).map((_,i)=><CardSkeleton key={i}/>)}</div> : patients.length === 0 ? (
         <EmptyState title="No patients found" description={search ? "Try a different search" : "No patients assigned yet"} icon={Users} />
       ) : (
         <>

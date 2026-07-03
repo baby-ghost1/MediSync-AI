@@ -17,3 +17,7 @@ export { default as NotificationController } from "./notification.controller.js"
 export { default as AIController } from "./ai.controller.js";
 
 export { default as AdminController } from "./admin.controller.js";
+
+export * as ConsultationController from "./consultation.controller.js";
+
+export * as PrescriptionTemplateController from "./prescriptionTemplate.controller.js";

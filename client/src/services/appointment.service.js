@@ -81,6 +81,11 @@ class AppointmentService {
     const { data } = await API.patch(`${ENDPOINTS.APPOINTMENTS.DETAILS(id)}/notes`, { notes });
     return data;
   }
+
+  async getMyAppointments(params = {}) {
+    const { data } = await API.get(ENDPOINTS.APPOINTMENTS.ALL, { params });
+    return data;
+  }
 }
 
 export default new AppointmentService();

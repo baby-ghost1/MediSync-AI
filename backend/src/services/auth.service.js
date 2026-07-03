@@ -14,6 +14,11 @@ import {
 
 import { sendEmail } from "../config/mailer.js";
 
+import { AuditService } from "./index.js";
+
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCK_DURATION_MINUTES = 15;
+
 class AuthService {
   /* ==========================================
       Register
@@ -84,16 +89,49 @@ class AuthService {
   /* ==========================================
       Login
   ========================================== */
-  async login(email, password, res) {
+  async login(email, password, res, ip = "", userAgent = "") {
     const user = await UserRepository.findByEmail(email);
 
     if (!user) {
       throw new ApiError(401, "Invalid email or password.");
     }
 
+    if (user.lockUntil && user.lockUntil > new Date()) {
+      const remaining = Math.ceil((user.lockUntil - new Date()) / 1000 / 60);
+      throw new ApiError(429, `Account temporarily locked. Try again in ${remaining} minutes.`);
+    }
+
     const matched = await user.comparePassword(password);
 
     if (!matched) {
+      user.loginAttempts = (user.loginAttempts || 0) + 1;
+
+      if (user.loginAttempts >= MAX_LOGIN_ATTEMPTS) {
+        user.lockUntil = new Date(Date.now() + LOCK_DURATION_MINUTES * 60 * 1000);
+        user.loginAttempts = 0;
+        await user.save();
+
+        AuditService.log({
+          actor: user._id,
+          action: "LOGIN_FAIL",
+          metadata: { reason: "Account locked after max attempts", ip },
+          ip,
+          userAgent,
+        });
+
+        throw new ApiError(429, `Account locked for ${LOCK_DURATION_MINUTES} minutes due to too many failed attempts.`);
+      }
+
+      await user.save();
+
+      AuditService.log({
+        actor: user._id,
+        action: "LOGIN_FAIL",
+        metadata: { attempt: user.loginAttempts, ip },
+        ip,
+        userAgent,
+      });
+
       throw new ApiError(401, "Invalid email or password.");
     }
 
@@ -105,7 +143,19 @@ class AuthService {
       throw new ApiError(403, "Account blocked.");
     }
 
+    user.loginAttempts = 0;
+    user.lockUntil = null;
+    await user.save();
+
     await UserRepository.updateLastLogin(user._id);
+
+    AuditService.log({
+      actor: user._id,
+      action: "LOGIN_SUCCESS",
+      metadata: { ip },
+      ip,
+      userAgent,
+    });
 
     return sendToken(res, user, 200, "Login successful.");
   }
@@ -198,35 +248,33 @@ class AuthService {
   async forgotPassword(email) {
     const user = await UserRepository.findOne({ email });
 
-    if (!user) {
-      throw new ApiError(404, "User not found.");
+    if (user) {
+      const token = crypto.randomBytes(32).toString("hex");
+      const tokenHash = crypto
+        .createHash("sha256")
+        .update(token)
+        .digest("hex");
+
+      user.resetPasswordToken = tokenHash;
+      user.resetPasswordExpire = Date.now() + 1000 * 60 * 15;
+
+      await user.save();
+
+      await sendEmail({
+        to: user.email,
+        subject: "Reset Password",
+        html: `
+          <h2>Password Reset</h2>
+          <a href="${process.env.CLIENT_URL}/reset-password/${token}">
+            Reset Password
+          </a>
+        `,
+      });
     }
-
-    const token = crypto.randomBytes(32).toString("hex");
-    const tokenHash = crypto
-      .createHash("sha256")
-      .update(token)
-      .digest("hex");
-
-    user.resetPasswordToken = tokenHash;
-    user.resetPasswordExpire = Date.now() + 1000 * 60 * 15;
-
-    await user.save();
-
-    await sendEmail({
-      to: user.email,
-      subject: "Reset Password",
-      html: `
-        <h2>Password Reset</h2>
-        <a href="${process.env.CLIENT_URL}/reset-password/${token}">
-          Reset Password
-        </a>
-      `,
-    });
 
     return {
       success: true,
-      message: "Password reset link sent.",
+      message: "If the account exists, a reset link has been sent.",
     };
   }
 

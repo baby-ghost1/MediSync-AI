@@ -8,6 +8,7 @@ const appointmentSchema =
           mongoose.Schema.Types.ObjectId,
         ref: "Patient",
         required: true,
+        index: true,
       },
 
       doctor: {
@@ -15,6 +16,7 @@ const appointmentSchema =
           mongoose.Schema.Types.ObjectId,
         ref: "Doctor",
         required: true,
+        index: true,
       },
 
       appointmentDate: {
@@ -40,6 +42,7 @@ const appointmentSchema =
           "cancelled",
         ],
         default: "pending",
+        index: true,
       },
 
       notes: String,
@@ -58,6 +61,8 @@ appointmentSchema.virtual("date").get(function () {
 appointmentSchema.virtual("time").get(function () {
   return this.appointmentTime;
 });
+
+appointmentSchema.index({ status: 1, appointmentDate: 1 });
 
 export default mongoose.model(
   "Appointment",
