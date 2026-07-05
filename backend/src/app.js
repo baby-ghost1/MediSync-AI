@@ -28,7 +28,14 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: (origin, callback) => {
+      const allowed = process.env.CLIENT_URL?.split(",").map((o) => o.trim()) || [];
+      if (!origin || allowed.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
@@ -42,7 +49,7 @@ app.use(
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
         imgSrc: ["'self'", "data:", "blob:", "res.cloudinary.com", "https://via.placeholder.com"],
-        connectSrc: ["'self'", process.env.CLIENT_URL, "https://res.cloudinary.com"],
+        connectSrc: ["'self'", ...(process.env.CLIENT_URL?.split(",").map((o) => o.trim()) || []), "https://res.cloudinary.com"],
         frameSrc: ["'none'"],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: [],

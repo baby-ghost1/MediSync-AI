@@ -33,7 +33,7 @@ const server = http.createServer(app);
 
 export const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL,
+    origin: process.env.CLIENT_URL?.split(",").map((o) => o.trim()) || "*",
     credentials: true,
   },
   transports: ["websocket", "polling"],
