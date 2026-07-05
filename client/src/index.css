@@ -152,3 +152,56 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--muted-foreground); }
+
+@keyframes rgbRotate {
+  0%   { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+@keyframes rgbGlow {
+  0%   { box-shadow: 0 0 8px 2px rgba(255,0,0,.45), 0 8px 32px rgba(37,99,235,.35); }
+  33%  { box-shadow: 0 0 8px 2px rgba(0,255,0,.45), 0 8px 32px rgba(37,99,235,.35); }
+  66%  { box-shadow: 0 0 8px 2px rgba(0,100,255,.45), 0 8px 32px rgba(37,99,235,.35); }
+  100% { box-shadow: 0 0 8px 2px rgba(255,0,0,.45), 0 8px 32px rgba(37,99,235,.35); }
+}
+
+@keyframes speechBounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
+.rgb-bubble {
+  position: relative;
+}
+.rgb-bubble::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  padding: 3px;
+  background: conic-gradient(
+    from 0deg,
+    #ff0000, #ff8800, #ffff00, #00ff00, #00ffff, #0000ff, #8800ff, #ff00ff, #ff0000
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rgbRotate 3s linear infinite;
+  pointer-events: none;
+}
+.rgb-bubble::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  background: conic-gradient(
+    from 0deg,
+    #ff0000, #ff8800, #ffff00, #00ff00, #00ffff, #0000ff, #8800ff, #ff00ff, #ff0000
+  );
+  filter: blur(10px);
+  opacity: 0.5;
+  animation: rgbRotate 3s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}

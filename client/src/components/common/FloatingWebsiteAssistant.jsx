@@ -15,6 +15,7 @@ const SUGGESTIONS = [
 
 const DRAG_THRESHOLD = 5;
 const DISMISS_KEY = "assistantDismissed";
+const GREETING_KEY = "assistantGreetingShown";
 
 const FloatingWebsiteAssistant = () => {
   const location = useLocation();
@@ -30,6 +31,10 @@ const FloatingWebsiteAssistant = () => {
   const [loading, setLoading] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [showGreeting, setShowGreeting] = useState(() => {
+    try { return !localStorage.getItem(GREETING_KEY); }
+    catch { return true; }
+  });
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const dragRef = useRef({ startX: 0, startY: 0, offsetX: 0, offsetY: 0, moved: false });
@@ -44,6 +49,16 @@ const FloatingWebsiteAssistant = () => {
       try { sessionStorage.removeItem(DISMISS_KEY); } catch {}
     }
   }, [isHome]);
+
+  useEffect(() => {
+    if (showGreeting) {
+      const timer = setTimeout(() => {
+        setShowGreeting(false);
+        try { localStorage.setItem(GREETING_KEY, "true"); } catch {}
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [showGreeting]);
 
   useEffect(() => {
     if (open) {
@@ -97,7 +112,14 @@ const FloatingWebsiteAssistant = () => {
   const handleDismiss = () => {
     setOpen(false);
     setDismissed(true);
+    setShowGreeting(false);
     try { sessionStorage.setItem(DISMISS_KEY, "true"); } catch {}
+    try { localStorage.setItem(GREETING_KEY, "true"); } catch {}
+  };
+
+  const dismissGreeting = () => {
+    setShowGreeting(false);
+    try { localStorage.setItem(GREETING_KEY, "true"); } catch {}
   };
 
   const sendMessage = async (text) => {
@@ -140,7 +162,7 @@ const FloatingWebsiteAssistant = () => {
           whileTap={{ scale: 0.92 }}
           onMouseDown={handleMouseDown}
             onClick={handleToggle}
-            className="relative flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[0_8px_32px_rgba(37,99,235,.35)] transition-shadow duration-300 hover:shadow-[0_8px_40px_rgba(37,99,235,.5)]"
+            className="rgb-bubble relative flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[0_8px_32px_rgba(37,99,235,.35)] transition-shadow duration-300 hover:shadow-[0_8px_40px_rgba(37,99,235,.5)]"
           >
             {open ? <X size={24} /> : <Bot size={24} />}
         </motion.button>
@@ -150,6 +172,27 @@ const FloatingWebsiteAssistant = () => {
         >
           <X size={12} />
         </button>
+
+        {/* First-visit greeting tooltip */}
+        <AnimatePresence>
+          {showGreeting && !open && (
+            <motion.div
+              initial={{ opacity: 0, x: 10, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 10, scale: 0.9 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              onClick={dismissGreeting}
+              className="absolute right-full top-1/2 -translate-y-1/2 mr-3 w-[200px] cursor-pointer rounded-xl border border-[var(--border)] bg-[var(--card)] px-3.5 py-2.5 text-sm text-[var(--foreground)] shadow-lg"
+              style={{ animation: "speechBounce 2s ease-in-out infinite" }}
+            >
+              <p className="font-medium leading-snug">Hi! I'm your Website Assistant <span className="text-[var(--primary)]">👋</span></p>
+              <p className="mt-1 text-[11px] text-[var(--muted-foreground)]">Click me to ask anything!</p>
+              <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1.5">
+                <div className="h-0 w-0 border-y-[5px] border-y-transparent border-l-[6px] border-l-[var(--card)]" />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Popup */}
