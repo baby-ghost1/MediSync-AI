@@ -32,7 +32,7 @@ const FloatingWebsiteAssistant = () => {
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [showGreeting, setShowGreeting] = useState(() => {
-    try { return !localStorage.getItem(GREETING_KEY); }
+    try { return sessionStorage.getItem(GREETING_KEY) !== "true"; }
     catch { return true; }
   });
   const messagesEndRef = useRef(null);
@@ -54,7 +54,7 @@ const FloatingWebsiteAssistant = () => {
     if (showGreeting) {
       const timer = setTimeout(() => {
         setShowGreeting(false);
-        try { localStorage.setItem(GREETING_KEY, "true"); } catch {}
+        try { sessionStorage.setItem(GREETING_KEY, "true"); } catch {}
       }, 6000);
       return () => clearTimeout(timer);
     }
@@ -114,12 +114,12 @@ const FloatingWebsiteAssistant = () => {
     setDismissed(true);
     setShowGreeting(false);
     try { sessionStorage.setItem(DISMISS_KEY, "true"); } catch {}
-    try { localStorage.setItem(GREETING_KEY, "true"); } catch {}
+    try { sessionStorage.setItem(GREETING_KEY, "true"); } catch {}
   };
 
   const dismissGreeting = () => {
     setShowGreeting(false);
-    try { localStorage.setItem(GREETING_KEY, "true"); } catch {}
+    try { sessionStorage.setItem(GREETING_KEY, "true"); } catch {}
   };
 
   const sendMessage = async (text) => {
