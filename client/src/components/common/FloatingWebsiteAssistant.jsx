@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Bot, X, Send, Sparkles, LoaderCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -13,8 +14,16 @@ const SUGGESTIONS = [
 ];
 
 const DRAG_THRESHOLD = 5;
+const DISMISS_KEY = "assistantDismissed";
 
 const FloatingWebsiteAssistant = () => {
+  const location = useLocation();
+  const isHome = location.pathname === "/" || location.pathname === "";
+
+  const [dismissed, setDismissed] = useState(() => {
+    try { return sessionStorage.getItem(DISMISS_KEY) === "true"; }
+    catch { return false; }
+  });
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -28,6 +37,13 @@ const FloatingWebsiteAssistant = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    if (isHome) {
+      setDismissed(false);
+      try { sessionStorage.removeItem(DISMISS_KEY); } catch {}
+    }
+  }, [isHome]);
 
   useEffect(() => {
     if (open) {
@@ -78,6 +94,12 @@ const FloatingWebsiteAssistant = () => {
     if (!dragRef.current.moved) setOpen((prev) => !prev);
   };
 
+  const handleDismiss = () => {
+    setOpen(false);
+    setDismissed(true);
+    try { sessionStorage.setItem(DISMISS_KEY, "true"); } catch {}
+  };
+
   const sendMessage = async (text) => {
     if (!text.trim() || loading) return;
     const userMsg = { role: "user", text: text.trim() };
@@ -104,6 +126,8 @@ const FloatingWebsiteAssistant = () => {
     }
   };
 
+  if (dismissed) return null;
+
   return (
     <div
       className="fixed bottom-24 right-6 z-[100]"
@@ -128,19 +152,19 @@ const FloatingWebsiteAssistant = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute bottom-16 right-0 flex w-[360px] flex-col rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-[0_20px_60px_rgba(15,23,42,.14)] max-h-[560px] h-[560px]"
+            className="absolute bottom-16 right-0 flex w-[320px] flex-col rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-[0_20px_60px_rgba(15,23,42,.14)] h-[440px]"
           >
             {/* Header */}
-            <div className="flex items-center gap-3 border-b border-[var(--border)] px-4 py-3.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--primary)]/10">
-                <Sparkles size={16} className="text-[var(--primary)]" />
+            <div className="flex items-center gap-3 border-b border-[var(--border)] px-4 py-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--primary)]/10">
+                <Sparkles size={14} className="text-[var(--primary)]" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-[var(--foreground)]">Website Assistant</p>
                 <p className="text-[11px] text-[var(--muted-foreground)]">Ask me anything about MediSync AI</p>
               </div>
               <button
-                onClick={() => setOpen(false)}
+                onClick={handleDismiss}
                 className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--muted-foreground)] transition-colors hover:bg-[var(--secondary)] hover:text-[var(--foreground)]"
               >
                 <X size={15} />
@@ -152,7 +176,7 @@ const FloatingWebsiteAssistant = () => {
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
+                    className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
                       msg.role === "user"
                         ? "bg-[var(--primary)] text-[var(--primary-foreground)]"
                         : "bg-[var(--secondary)] text-[var(--foreground)]"
@@ -170,7 +194,7 @@ const FloatingWebsiteAssistant = () => {
               ))}
               {loading && (
                 <div className="flex justify-start">
-                  <div className="rounded-2xl bg-[var(--secondary)] px-3.5 py-2.5">
+                  <div className="rounded-2xl bg-[var(--secondary)] px-3.5 py-2">
                     <LoaderCircle size={16} className="animate-spin text-[var(--muted-foreground)]" />
                   </div>
                 </div>
@@ -205,7 +229,7 @@ const FloatingWebsiteAssistant = () => {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Type your question..."
-                  className="min-w-0 flex-1 bg-transparent py-2.5 text-sm text-[var(--foreground)] outline-none placeholder:text-[var(--muted-foreground)]"
+                  className="min-w-0 flex-1 bg-transparent py-2 text-sm text-[var(--foreground)] outline-none placeholder:text-[var(--muted-foreground)]"
                 />
                 <button
                   onClick={() => sendMessage(input)}
