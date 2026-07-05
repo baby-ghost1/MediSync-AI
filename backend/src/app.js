@@ -26,10 +26,17 @@ const app = express();
    Security Middleware
 ========================================= */
 
+const DEFAULT_ALLOWED_ORIGINS = [
+  "https://app-medisync.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowed = process.env.CLIENT_URL?.split(",").map((o) => o.trim()) || [];
+      const envOrigins = process.env.CLIENT_URL?.split(",").map((o) => o.trim()) || [];
+      const allowed = [...new Set([...DEFAULT_ALLOWED_ORIGINS, ...envOrigins])];
       if (!origin || allowed.includes(origin)) {
         callback(null, true);
       } else {
