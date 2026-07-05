@@ -134,15 +134,23 @@ const FloatingWebsiteAssistant = () => {
       style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
     >
       {/* Bubble */}
-      <motion.button
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.92 }}
-        onMouseDown={handleMouseDown}
-          onClick={handleToggle}
-          className="relative flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[0_8px_32px_rgba(37,99,235,.35)] transition-shadow duration-300 hover:shadow-[0_8px_40px_rgba(37,99,235,.5)]"
+      <div className="relative">
+        <motion.button
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
+          onMouseDown={handleMouseDown}
+            onClick={handleToggle}
+            className="relative flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[0_8px_32px_rgba(37,99,235,.35)] transition-shadow duration-300 hover:shadow-[0_8px_40px_rgba(37,99,235,.5)]"
+          >
+            {open ? <X size={24} /> : <Bot size={24} />}
+        </motion.button>
+        <button
+          onClick={handleDismiss}
+          className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow-md transition-transform hover:scale-110"
         >
-          {open ? <X size={24} /> : <Bot size={24} />}
-      </motion.button>
+          <X size={12} />
+        </button>
+      </div>
 
       {/* Popup */}
       <AnimatePresence>
