@@ -6,7 +6,8 @@ services:
     rootDir: backend
     buildCommand: npm install
     startCommand: npm start
-    healthCheckPath: /api/health
+    healthCheckPath: /health
+    healthCheckTimeoutSeconds: 60
     envVars:
       - key: NODE_ENV
         value: production

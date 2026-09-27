@@ -75,6 +75,9 @@ const startServer = async () => {
 
     const { default: startReminderJob } = await import("./jobs/reminder.job.js");
     startReminderJob();
+
+    const { default: startKeepAliveJob } = await import("./jobs/keepAlive.job.js");
+    startKeepAliveJob();
   } catch (error) {
     logger.error("Failed to start server:", error);
     process.exit(1);
